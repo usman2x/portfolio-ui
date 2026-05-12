@@ -35,6 +35,8 @@ The goal is to keep layout in components and content in configurable source file
 
 - `src/content/misc/identity.json`
 - `src/content/misc/contact-data.json`
+- `src/content/misc/book-call.json`
+- `src/content/misc/work-experience.json`
 
 ### Landing page
 
@@ -42,7 +44,8 @@ The goal is to keep layout in components and content in configurable source file
 
 Suggested contents:
 
-- intro block
+- identity block copy:
+  eyebrow, headline, supporting text, trust chips, below-hero line, CTA labels
 - featured project ids
 - featured writing ids or count
 - CTA labels
@@ -55,6 +58,7 @@ Suggested contents:
 
 - intro
 - extended summary
+- chronological work experience references
 - strengths
 - working principles
 - experience highlights

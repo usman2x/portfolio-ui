@@ -1,7 +1,7 @@
 # Gatsby Repo Payload Integration Design
 
-Status: Proposed  
-Reviewed on 2026-05-07.
+Status: Implemented (CMS-first with Markdown fallback)  
+Reviewed on 2026-05-12.
 
 This document is the source of truth for integrating the separate Payload CMS repository into this Gatsby site.
 
@@ -64,6 +64,17 @@ This is required for:
 - Payload REST API
 - published posts only
 - tag and media metadata included
+
+### Runtime Source Strategy (Implemented)
+
+- The Gatsby build now sources published posts from Payload into Gatsby nodes.
+- The blog UI merges:
+  - Payload posts
+  - local Markdown posts in `src/content/blog/*.md`
+- Deduplication is slug-based.
+- If the same slug exists in both sources, Payload wins.
+
+This supports incremental migration while preserving existing URLs and content continuity.
 
 ## 6. Required Gatsby-Side Data Shape
 
@@ -254,12 +265,22 @@ After verification:
 Local environment:
 
 - `PAYLOAD_API_URL`
+- optional alias: `BLOG_CMS_API_URL`
+- optional posts endpoint override: `PAYLOAD_POSTS_ENDPOINT`
+- optional posts endpoint alias: `BLOG_CMS_POSTS_ENDPOINT`
 
 Staging environment:
 
 - staging `PAYLOAD_API_URL`
 
-The Gatsby build must fail clearly if the Payload API is unreachable for environments that depend on it.
+Default behavior:
+
+- if no env var is set, the build uses the deployed endpoint:
+  - `https://portfolio-cms-production-8546.up.railway.app`
+- if no posts endpoint override is set, the build uses:
+  - `/api/posts`
+
+If the Payload API is unreachable, Gatsby logs a warning and falls back to local Markdown posts.
 
 ## 17. Repo Tasks
 

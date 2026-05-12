@@ -114,10 +114,9 @@ Recommended page order:
 5. Role and responsibilities
 6. Outcomes / impact
 7. Project link / reference
-8. Transition into CTA
-9. CTA block
-10. Related projects
-11. Footer
+8. Related projects
+9. Book a call block
+10. Footer
 
 ## 1. Case Study Header
 
@@ -244,44 +243,7 @@ Rule:
 
 - Treat this as a supporting reference, not the primary proof.
 
-## 8. Transition Into CTA
-
-Purpose:
-
-- Give the page a deliberate closing handoff before conversion
-
-Should include:
-
-- a restrained transition line or label
-- a clear emotional shift from case study to next step
-
-Rule:
-
-- Use this transition sparingly and keep it typographic, not promotional.
-
-## 9. CTA Block
-
-Purpose:
-
-- Convert proof into action
-
-Primary CTA:
-
-- `Get a Quote`
-
-Secondary CTA:
-
-- `Book a Call`
-
-Trust CTA:
-
-- `View Credentials`
-
-Supporting copy:
-
-- `If you need similar engineering help, send a concrete ask or book a short call.`
-
-## 10. Related Projects
+## 8. Related Projects
 
 Purpose:
 
@@ -294,6 +256,22 @@ Should include:
 Rule:
 
 - Related projects should be chosen by domain, stack, or type of problem.
+
+## 9. Book a Call Block
+
+Purpose:
+
+- Offer a focused conversion step after the case-study and related navigation
+
+Required content order:
+
+- business proposition line
+- short subtitle
+- `Book a Call` button
+
+Rule:
+
+- Keep this block as the last section before the footer.
 
 ## SEO Requirements
 

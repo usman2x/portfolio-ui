@@ -45,6 +45,10 @@ Required content:
 - link to detail page
 - link to `/blog/`
 
+Presentation rule:
+
+- On the homepage preview, use a vertical list for latest writings (stacked entries), not a multi-column card grid.
+
 Rule:
 - Homepage should preview the archive, not replace it.
 
@@ -144,11 +148,9 @@ Recommended page order:
 2. Article body
 3. Tags
 4. Share actions
-5. Related writings
-6. Previous / next navigation
-7. Optional CTA block
-8. Comments if enabled
-9. Footer
+5. Comments if enabled
+6. Book a call block
+7. Footer
 
 ### Article Header
 Required content:
@@ -198,44 +200,17 @@ Recommended options:
 Rule:
 - share UI should not interrupt reading.
 
-### Related Writings
+### Book a Call Block
 Purpose:
-- keep readers exploring
+- convert engaged readers with one focused action
 
-Recommended logic:
-- first match by shared tags
-- then by nearest topic or recency
-
-Recommended amount:
-- 2 to 4 related articles
+Required order:
+- business proposition text
+- short subtitle
+- `Book a Call` button
 
 Rule:
-- related posts should feel genuinely connected, not random.
-
-### Previous / Next Navigation
-Purpose:
-- provide linear exploration
-
-Behavior:
-- previous post
-- next post
-
-Rule:
-- keep labels explicit and easy to understand.
-
-### Optional CTA Block
-Purpose:
-- convert engaged readers when relevant
-
-Recommended CTA:
-- `Get a Quote`
-- `Book a Call`
-
-Recommended supporting copy:
-- `If you need help with similar engineering or product problems, start with a concrete ask.`
-
-Rule:
-- CTA should appear after the article, not before the reader reaches the content.
+- place it after article content and comments, just before footer.
 
 ### Comments
 If enabled:
@@ -288,8 +263,6 @@ Archive should link to:
 
 Articles should link to:
 - tag-filtered archive pages
-- related articles
-- previous / next articles
 - optional relevant project or CTA page when appropriate
 
 ## SEO Requirements

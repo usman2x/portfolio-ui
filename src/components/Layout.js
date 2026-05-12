@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "./Header";
+import BookCallSection from "./BookCallSection";
 import Footer from "./Footer";
 
 const Layout = ({ children }) => {
@@ -7,6 +8,7 @@ const Layout = ({ children }) => {
     <div className="layout">
       <Header />
       <main className="content">{children}</main>
+      <BookCallSection />
       <Footer />
     </div>
   );

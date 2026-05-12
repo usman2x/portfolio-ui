@@ -15,40 +15,28 @@ const LatestWritings = ({ posts }) => {
           {homeContent.writings.archiveLabel}
         </Link>
       </div>
-      <div className="preview-grid writings-preview-grid">
+      <div className="latest-writings-list">
         {posts.map(post => (
-          <article key={post.id} className="preview-card writing-preview-card">
-            <p className="preview-meta">
-              {format(new Date(post.frontmatter.date), "MMMM d, yyyy")}
-            </p>
+          <article key={post.id} className="writing-preview-item">
+            <p className="preview-meta">{format(new Date(post.date), "MMMM d, yyyy")}</p>
             <h3 className="preview-card-title">
-              <Link
-                to={`/blog/${post.frontmatter.slug}`}
-                className="post-link link-underline"
-              >
-                {post.frontmatter.title}
+              <Link to={`/blog/${post.slug}`} className="post-link link-underline">
+                {post.title}
               </Link>
             </h3>
-            <p className="preview-card-summary">
-              {post.frontmatter.description || post.excerpt}
-            </p>
+            <p className="preview-card-summary">{post.description || post.excerpt}</p>
             <div className="preview-tag-list">
-              {(post.frontmatter.tags || []).map(tag => (
+              {(post.tags || []).map(tag => (
                 <Link
                   key={tag}
-                  to={`/blog/?page=1&tag=${encodeURIComponent(
-                    tag.toLowerCase()
-                  )}`}
+                  to={`/blog/?page=1&tag=${encodeURIComponent(tag.toLowerCase())}`}
                   className="tag-chip"
                 >
                   #{tag}
                 </Link>
               ))}
             </div>
-            <Link
-              to={`/blog/${post.frontmatter.slug}`}
-              className="text-link-cta link-underline"
-            >
+            <Link to={`/blog/${post.slug}`} className="text-link-cta link-underline">
               Read article
             </Link>
           </article>

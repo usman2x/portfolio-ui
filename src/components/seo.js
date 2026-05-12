@@ -3,7 +3,17 @@ import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 import { useStaticQuery, graphql } from "gatsby";
 
-const SEO = ({ title, description, meta, lang, pathname, image, type }) => {
+const SEO = ({
+  title,
+  description,
+  meta,
+  lang,
+  pathname,
+  image,
+  type,
+  canonicalUrl,
+  noindex,
+}) => {
   const { site } = useStaticQuery(
     graphql`
       query {
@@ -21,7 +31,8 @@ const SEO = ({ title, description, meta, lang, pathname, image, type }) => {
 
   const metaDescription = description || site.siteMetadata.description;
   const defaultTitle = site.siteMetadata.title;
-  const canonicalUrl = `${site.siteMetadata.siteUrl}${pathname}`;
+  const resolvedCanonicalUrl =
+    canonicalUrl || `${site.siteMetadata.siteUrl}${pathname}`;
 
   const resolvedImage = image || "";
 
@@ -49,6 +60,14 @@ const SEO = ({ title, description, meta, lang, pathname, image, type }) => {
           property: "og:type",
           content: type,
         },
+        ...(noindex
+          ? [
+              {
+                name: "robots",
+                content: "noindex, nofollow",
+              },
+            ]
+          : []),
         ...(resolvedImage
           ? [
               {
@@ -81,7 +100,7 @@ const SEO = ({ title, description, meta, lang, pathname, image, type }) => {
       link={[
         {
           rel: "canonical",
-          href: canonicalUrl,
+          href: resolvedCanonicalUrl,
         },
       ]}
     />
@@ -95,6 +114,8 @@ SEO.defaultProps = {
   pathname: "/",
   image: "",
   type: "website",
+  canonicalUrl: "",
+  noindex: false,
 };
 
 SEO.propTypes = {
@@ -105,6 +126,8 @@ SEO.propTypes = {
   pathname: PropTypes.string,
   image: PropTypes.string,
   type: PropTypes.string,
+  canonicalUrl: PropTypes.string,
+  noindex: PropTypes.bool,
 };
 
 export default SEO;

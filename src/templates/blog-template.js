@@ -3,89 +3,130 @@ import { graphql, Link } from "gatsby"
 import Layout from "../components/Layout"
 import { format } from "date-fns"
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
-import SEO from "../components/seo" // Import the SEO component
+import SEO from "../components/seo"
 import ShareActions from "../components/ShareActions"
 import GiscusComments from "../components/GiscusComments"
-import contactData from "../content/misc/contact-data.json"
 
-const BlogTemplate = ({ data }) => {
-  const { markdownRemark, site, allMarkdownRemark } = data
-  const { frontmatter, html } = markdownRemark
-  const { title, date, description, tags = [], slug, cover } = frontmatter
-  const coverImage = getImage(cover)
-  const allPosts = allMarkdownRemark.nodes
-  const currentPostIndex = allPosts.findIndex(
-    post => post.frontmatter.slug === slug
+const wrapInlineImagesWithLinks = (html = "") => {
+  if (!html) {
+    return ""
+  }
+
+  return html.replace(
+    /<img([^>]*?)src=("[^"]+"|'[^']+')([^>]*)>/gi,
+    (_match, before, src, after) =>
+      `<a href=${src} target="_blank" rel="noopener noreferrer" class="article-inline-image-link"><img${before}src=${src}${after}></a>`
   )
-  const newerPost = currentPostIndex > 0 ? allPosts[currentPostIndex - 1] : null
-  const olderPost =
-    currentPostIndex >= 0 && currentPostIndex < allPosts.length - 1
-      ? allPosts[currentPostIndex + 1]
+}
+
+const BlogTemplate = ({ data, pageContext }) => {
+  const { site, markdownRemark, portfolioBlogPost } = data
+
+  const sourceType = pageContext?.sourceType || (portfolioBlogPost ? "cms" : "markdown")
+  const isMarkdownPost = sourceType === "markdown" || !portfolioBlogPost
+
+  const markdownFrontmatter = markdownRemark?.frontmatter
+  const markdownOgImage =
+    markdownFrontmatter?.cover?.childImageSharp?.gatsbyImageData?.images?.fallback
+      ?.src
+      ? `${site.siteMetadata.siteUrl}${markdownFrontmatter.cover.childImageSharp.gatsbyImageData.images.fallback.src}`
       : null
-  const relatedPosts = allPosts
-    .filter(post => post.frontmatter.slug !== slug)
-    .map(post => {
-      const sharedTagCount = (post.frontmatter.tags || []).filter(tag =>
-        tags.includes(tag)
-      ).length
-      return { ...post, sharedTagCount }
-    })
-    .sort((left, right) => {
-      if (right.sharedTagCount !== left.sharedTagCount) {
-        return right.sharedTagCount - left.sharedTagCount
+
+  const currentPost = isMarkdownPost
+    ? {
+        title: markdownFrontmatter?.title || "Untitled",
+        slug: markdownFrontmatter?.slug || pageContext.slug,
+        date: markdownFrontmatter?.date,
+        description: markdownFrontmatter?.description || "",
+        tags: markdownFrontmatter?.tags || [],
+        seoTitle: markdownFrontmatter?.title || "Untitled",
+        seoDescription: markdownFrontmatter?.description || "",
+        canonicalUrl: null,
+        noindex: false,
+        ogImageUrl: markdownOgImage,
+        coverImageUrl: null,
+        coverImageAlt: markdownFrontmatter?.title || "",
+      }
+    : {
+        title: portfolioBlogPost.title,
+        slug: portfolioBlogPost.slug,
+        date: portfolioBlogPost.date,
+        description: portfolioBlogPost.description || portfolioBlogPost.excerpt || "",
+        tags: portfolioBlogPost.tags || [],
+        seoTitle: portfolioBlogPost.seoTitle || portfolioBlogPost.title,
+        seoDescription:
+          portfolioBlogPost.seoDescription ||
+          portfolioBlogPost.description ||
+          portfolioBlogPost.excerpt ||
+          "",
+        canonicalUrl: portfolioBlogPost.canonicalUrl || null,
+        noindex: Boolean(portfolioBlogPost.noindex),
+        ogImageUrl: portfolioBlogPost.ogImageUrl || portfolioBlogPost.coverImageUrl || null,
+        coverImageUrl: portfolioBlogPost.coverImageUrl || null,
+        coverImageAlt: portfolioBlogPost.coverImageAlt || portfolioBlogPost.title,
       }
 
-      return (
-        new Date(right.frontmatter.date).getTime() -
-        new Date(left.frontmatter.date).getTime()
-      )
-    })
-    .filter(post => post.sharedTagCount > 0)
-    .slice(0, 3)
-  const fallbackRelatedPosts =
-    relatedPosts.length > 0
-      ? relatedPosts
-      : allPosts.filter(post => post.frontmatter.slug !== slug).slice(0, 3)
+  const coverImage = isMarkdownPost ? getImage(markdownFrontmatter?.cover) : null
+  const title = currentPost.title
+  const slug = currentPost.slug
+  const date = currentPost.date
+  const description = currentPost.description
+  const tags = currentPost.tags
   const postUrl = `${site.siteMetadata.siteUrl}/blog/${slug}`
-  const ogImage = cover?.childImageSharp?.gatsbyImageData?.images?.fallback?.src
-    ? `${site.siteMetadata.siteUrl}${cover.childImageSharp.gatsbyImageData.images.fallback.src}`
-    : null
+  const canonicalUrl = currentPost.canonicalUrl || postUrl
+  const postContentHtml = isMarkdownPost
+    ? wrapInlineImagesWithLinks(markdownRemark?.html || "")
+    : portfolioBlogPost?.contentHtml || ""
+  const readingTimeMinutes = isMarkdownPost
+    ? markdownRemark?.timeToRead || 1
+    : portfolioBlogPost?.readingTimeMinutes || 1
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: title,
     description: description || `A detailed article on ${title}`,
-    datePublished: new Date(date).toISOString(),
+    datePublished: date ? new Date(date).toISOString() : undefined,
     author: {
       "@type": "Person",
       name: site.siteMetadata.author,
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": postUrl,
+      "@id": canonicalUrl,
     },
-    image: ogImage ? [ogImage] : undefined,
+    image: currentPost.ogImageUrl ? [currentPost.ogImageUrl] : undefined,
   }
 
   return (
     <Layout>
       <SEO
-        title={title}
-        description={description || `A detailed article on ${title}`}
+        title={currentPost.seoTitle || title}
+        description={currentPost.seoDescription || description || `A detailed article on ${title}`}
         pathname={`/blog/${slug}`}
-        image={ogImage}
+        image={currentPost.ogImageUrl || ""}
         type="article"
+        canonicalUrl={currentPost.canonicalUrl || null}
+        noindex={currentPost.noindex}
       />
       <section className="container blog-post-shell">
         <Link to="/blog/" className="blog-post-back">
           ← Back to writings
         </Link>
         <article className="blog-article">
-          {coverImage ? (
+          {isMarkdownPost && coverImage ? (
             <GatsbyImage
               image={coverImage}
               alt={title}
               className="blog-cover-image"
+            />
+          ) : null}
+          {!isMarkdownPost && currentPost.coverImageUrl ? (
+            <img
+              src={currentPost.coverImageUrl}
+              alt={currentPost.coverImageAlt || title}
+              className="blog-cover-image"
+              loading="lazy"
             />
           ) : null}
           <header className="blog-post-header">
@@ -96,13 +137,13 @@ const BlogTemplate = ({ data }) => {
             <p className="blog-post-meta">
               <span>{format(new Date(date), "MMMM d, yyyy")}</span>
               <span>•</span>
-              <span>{markdownRemark.timeToRead} min read</span>
+              <span>{readingTimeMinutes} min read</span>
             </p>
           </header>
           <div className="blog-article-layout">
             <div
               className="blog-post-content article-prose"
-              dangerouslySetInnerHTML={{ __html: html }}
+              dangerouslySetInnerHTML={{ __html: postContentHtml }}
             />
             <aside className="blog-share-rail">
               <p className="blog-detail-label">Share this article</p>
@@ -111,7 +152,7 @@ const BlogTemplate = ({ data }) => {
           </div>
           {tags.length ? (
             <div className="blog-post-tags">
-              {tags.map(tag => (
+              {tags.map((tag) => (
                 <Link
                   key={tag}
                   className="tag-chip"
@@ -123,71 +164,6 @@ const BlogTemplate = ({ data }) => {
             </div>
           ) : null}
         </article>
-        {fallbackRelatedPosts.length ? (
-          <section className="blog-detail-section">
-            <div className="blog-detail-section-header">
-              <h2 className="interior-section-title">Related writings</h2>
-              <Link to="/blog/" className="text-link-cta link-underline">
-                View all writings
-              </Link>
-            </div>
-            <div className="blog-related-grid">
-              {fallbackRelatedPosts.map(post => (
-                <article
-                  key={post.frontmatter.slug}
-                  className="blog-related-card"
-                >
-                  <p className="preview-meta">
-                    {format(new Date(post.frontmatter.date), "MMMM d, yyyy")}
-                  </p>
-                  <h3 className="blog-related-title">
-                    <Link
-                      to={`/blog/${post.frontmatter.slug}`}
-                      className="writing-list-title-link link-underline"
-                    >
-                      {post.frontmatter.title}
-                    </Link>
-                  </h3>
-                  <p className="preview-card-summary">
-                    {post.frontmatter.description || post.excerpt}
-                  </p>
-                </article>
-              ))}
-            </div>
-          </section>
-        ) : null}
-        {newerPost || olderPost ? (
-          <nav className="blog-post-pagination" aria-label="Article navigation">
-            {newerPost ? (
-              <Link
-                to={`/blog/${newerPost.frontmatter.slug}`}
-                className="project-pagination-card"
-              >
-                <span className="project-pagination-label">Newer post</span>
-                <span>{newerPost.frontmatter.title}</span>
-              </Link>
-            ) : (
-              <div className="project-pagination-card project-pagination-card-disabled">
-                <span className="project-pagination-label">Newer post</span>
-                <span>No newer article</span>
-              </div>
-            )}
-            {olderPost ? (
-              <Link
-                to={`/blog/${olderPost.frontmatter.slug}`}
-                className="project-pagination-card project-pagination-card-next"
-              >
-                <span className="project-pagination-label">Older post</span>
-                <span>{olderPost.frontmatter.title}</span>
-              </Link>
-            ) : (
-              <div className="project-pagination-card project-pagination-card-next project-pagination-card-disabled">
-                <span className="project-pagination-label">Older post</span>
-                <span>No older article</span>
-              </div>
-            )}
-          </nav>
-        ) : null}
         <section className="comments-section">
           <h3 className="interior-section-title">Comments</h3>
           <GiscusComments slug={slug} />
@@ -200,6 +176,25 @@ const BlogTemplate = ({ data }) => {
 
 export const query = graphql`
   query ($slug: String!) {
+    portfolioBlogPost(slug: { eq: $slug }) {
+      id
+      payloadId
+      title
+      slug
+      excerpt
+      description
+      date
+      tags
+      readingTimeMinutes
+      contentHtml
+      seoTitle
+      seoDescription
+      canonicalUrl
+      noindex
+      coverImageUrl
+      coverImageAlt
+      ogImageUrl
+    }
     markdownRemark(frontmatter: { slug: { eq: $slug } }) {
       html
       timeToRead
@@ -218,21 +213,6 @@ export const query = graphql`
               formats: [AUTO, WEBP, AVIF]
             )
           }
-        }
-      }
-    }
-    allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/blog/" } }
-      sort: { frontmatter: { date: DESC } }
-    ) {
-      nodes {
-        excerpt(pruneLength: 140)
-        frontmatter {
-          title
-          date
-          description
-          tags
-          slug
         }
       }
     }

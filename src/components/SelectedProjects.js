@@ -46,7 +46,7 @@ const SelectedProjects = ({ projects }) => {
                   to={`/projects/${project.slug}/`}
                   className="text-link-cta link-underline project-inline-more"
                 >
-                  Read more...
+                  Read more
                 </Link>
               </p>
               <div className="preview-tag-list">

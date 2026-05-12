@@ -3,17 +3,21 @@ import Layout from "../components/Layout"
 import { graphql, Link } from "gatsby"
 import { format } from "date-fns"
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
-import SEO from "../components/seo" // Import the SEO component
+import SEO from "../components/seo"
+import { mergeBlogPosts } from "../utils/blog-posts"
 
 const BlogPage = ({ data, location }) => {
-  const posts = data.allMarkdownRemark.nodes
+  const posts = mergeBlogPosts({
+    cmsPosts: data.allPortfolioBlogPost.nodes,
+    markdownPosts: data.allMarkdownRemark.nodes,
+  })
   const postsPerPage = 6
   const query = new URLSearchParams(location?.search || "")
   const selectedTag = query.get("tag") || "all-tags"
   const requestedPage = Number.parseInt(query.get("page") || "1", 10)
   const allTags = Array.from(
     posts.reduce((tagMap, post) => {
-      ;(post.frontmatter.tags || []).forEach(tag => {
+      ;(post.tags || []).forEach((tag) => {
         const normalizedTag = tag.toLowerCase()
         if (!tagMap.has(normalizedTag)) {
           tagMap.set(normalizedTag, tag)
@@ -27,15 +31,13 @@ const BlogPage = ({ data, location }) => {
   const filteredPosts =
     selectedTag === "all-tags"
       ? posts
-      : posts.filter(post =>
-          (post.frontmatter.tags || []).some(
-            tag => tag.toLowerCase() === selectedTag
-          )
+      : posts.filter((post) =>
+          (post.tags || []).some((tag) => tag.toLowerCase() === selectedTag)
         )
   const selectedTagLabel =
     selectedTag === "all-tags"
       ? "All"
-      : allTags.find(tag => tag.value === selectedTag)?.label || selectedTag
+      : allTags.find((tag) => tag.value === selectedTag)?.label || selectedTag
   const totalPages = Math.max(1, Math.ceil(filteredPosts.length / postsPerPage))
   const currentPage =
     Number.isFinite(requestedPage) && requestedPage > 0
@@ -88,7 +90,7 @@ const BlogPage = ({ data, location }) => {
                 >
                   All
                 </Link>
-                {allTags.map(tag => (
+                {allTags.map((tag) => (
                   <Link
                     key={tag.value}
                     to={buildArchivePath(tag.value)}
@@ -114,22 +116,36 @@ const BlogPage = ({ data, location }) => {
                 </Link>
               </div>
               <div className="writings-list">
-                {visiblePosts.map(post => {
-                  const { title, slug, date, description, cover, tags } =
-                    post.frontmatter
-                  const coverImage = getImage(cover)
+                {visiblePosts.map((post) => {
+                  const {
+                    id,
+                    title,
+                    slug,
+                    date,
+                    description,
+                    excerpt,
+                    tags,
+                    source,
+                    coverImageSharp,
+                    coverImageUrl,
+                    coverImageAlt,
+                    readingTimeMinutes,
+                  } = post
+                  const markdownCoverImage = getImage(coverImageSharp)
+                  const hasImage = Boolean(markdownCoverImage || coverImageUrl)
+
                   return (
                     <article
-                      key={post.id}
+                      key={id}
                       className={`writing-list-item ${
-                        coverImage ? "writing-list-item-with-media" : ""
+                        hasImage ? "writing-list-item-with-media" : ""
                       }`}
                     >
                       <div className="writing-list-body">
                         <p className="writing-list-meta">
                           <span>{format(new Date(date), "MMMM d, yyyy")}</span>
                           <span>•</span>
-                          <span>{post.timeToRead} min read</span>
+                          <span>{readingTimeMinutes} min read</span>
                         </p>
                         <h2 className="writing-list-title">
                           <Link
@@ -140,11 +156,11 @@ const BlogPage = ({ data, location }) => {
                           </Link>
                         </h2>
                         <p className="writing-list-description">
-                          {description || post.excerpt}
+                          {description || excerpt}
                         </p>
                         {tags?.length ? (
                           <div className="writing-list-tags">
-                            {tags.map(tag => (
+                            {tags.map((tag) => (
                               <Link
                                 key={tag}
                                 className="tag-chip"
@@ -162,15 +178,22 @@ const BlogPage = ({ data, location }) => {
                           Read article
                         </Link>
                       </div>
-                      {coverImage ? (
-                        <Link
-                          to={`/blog/${slug}`}
-                          className="writing-list-media"
-                        >
+                      {source === "markdown" && markdownCoverImage ? (
+                        <Link to={`/blog/${slug}`} className="writing-list-media">
                           <GatsbyImage
-                            image={coverImage}
+                            image={markdownCoverImage}
                             alt={title}
                             className="writing-list-image"
+                          />
+                        </Link>
+                      ) : null}
+                      {source === "cms" && coverImageUrl ? (
+                        <Link to={`/blog/${slug}`} className="writing-list-media">
+                          <img
+                            src={coverImageUrl}
+                            alt={coverImageAlt || title}
+                            className="writing-list-image"
+                            loading="lazy"
                           />
                         </Link>
                       ) : null}
@@ -222,6 +245,27 @@ const BlogPage = ({ data, location }) => {
 
 export const query = graphql`
   query {
+    allPortfolioBlogPost {
+      nodes {
+        id
+        payloadId
+        title
+        slug
+        excerpt
+        description
+        date
+        tags
+        readingTimeMinutes
+        contentHtml
+        seoTitle
+        seoDescription
+        canonicalUrl
+        noindex
+        coverImageUrl
+        coverImageAlt
+        ogImageUrl
+      }
+    }
     allMarkdownRemark(
       filter: { fileAbsolutePath: { regex: "/blog/" } }
       sort: { frontmatter: { date: DESC } }

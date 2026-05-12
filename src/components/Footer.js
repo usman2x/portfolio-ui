@@ -1,7 +1,36 @@
 import React from "react"
 import { Link } from "gatsby"
+import { FileText, Github, Linkedin, Mail, MessageCircle } from "lucide-react"
 import identity from "../content/misc/identity.json"
 import contactData from "../content/misc/contact-data.json"
+
+const credentialLinks = [
+  {
+    label: "LinkedIn",
+    href: contactData.socialLinks.find((link) => link.name === "LinkedIn")?.url,
+    icon: Linkedin,
+  },
+  {
+    label: "GitHub",
+    href: contactData.socialLinks.find((link) => link.name === "GitHub")?.url,
+    icon: Github,
+  },
+  {
+    label: "WhatsApp",
+    href: contactData.meetingLink,
+    icon: MessageCircle,
+  },
+  {
+    label: "Email",
+    href: `mailto:${contactData.email.value}`,
+    icon: Mail,
+  },
+  {
+    label: "Resume",
+    href: identity.resumeLink,
+    icon: FileText,
+  },
+].filter((item) => item.href)
 
 const Footer = () => {
   return (
@@ -14,9 +43,25 @@ const Footer = () => {
               Software engineer writing and building across full-stack, data,
               and AI systems.
             </p>
-            <p className="footer-prompt">
-              Have a project in mind? Start with a quote or book a short call.
-            </p>
+            <div className="footer-credential-icons" aria-label="Credentials">
+              {credentialLinks.map((item) => {
+                const Icon = item.icon
+                const isExternal = item.href.startsWith("http")
+                return (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target={isExternal ? "_blank" : undefined}
+                    rel={isExternal ? "noopener noreferrer" : undefined}
+                    className="footer-credential-icon"
+                    aria-label={item.label}
+                    title={item.label}
+                  >
+                    <Icon size={16} strokeWidth={2.1} aria-hidden="true" />
+                  </a>
+                )
+              })}
+            </div>
           </div>
           <div className="footer-column">
             <p className="footer-heading">Navigate</p>
@@ -24,29 +69,6 @@ const Footer = () => {
             <Link to="/projects/">Projects</Link>
             <Link to="/blog/">Writings</Link>
             <Link to="/quote/">Get a Quote</Link>
-          </div>
-          <div className="footer-column">
-            <p className="footer-heading">Connect</p>
-            <a href={`mailto:${contactData.email.value}`}>
-              {contactData.email.value}
-            </a>
-            <a
-              href={contactData.meetingLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              WhatsApp / Book a Call
-            </a>
-            {contactData.socialLinks.map(link => (
-              <a
-                key={link.name}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {link.name}
-              </a>
-            ))}
           </div>
         </div>
         <div className="footer-legal">

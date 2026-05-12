@@ -15,9 +15,9 @@ It translates `docs/structure/STRUCTURE.md` into a concrete landing page plan.
 
 1. Header
 2. Identity block
-3. Selected projects
-4. Latest writings
-5. CTA block
+3. Latest writings
+4. Selected projects
+5. Book a call block
 6. Footer
 
 ## 1. Header
@@ -54,7 +54,11 @@ Required content:
 - Portrait
 - Name
 - Professional title
-- 1 to 2 line introduction
+- Small eyebrow
+- Main headline
+- Supporting text
+- Focus cues:
+  who you help, what you build, why trust you, what to do next
 - Link to `/about`
 
 Recommended framing:
@@ -69,25 +73,24 @@ Content intent:
 
 Suggested content pattern:
 
-- Name
-- Title
-- Short value statement
-- Small supporting line about blog + work
+- Small eyebrow
+- Main headline
+- Supporting text
+- Focus cues list
 
 Example structure:
 
-- `Muhammad Usman`
-- `Software Engineer | Full-Stack, Data, and AI Delivery`
-- `I build reliable software systems and write about engineering, AI, and product execution.`
-- `Read more about me`
+- `Senior Software Engineer · Backend · Data · AI Systems`
+- `Building reliable backend, data, and AI systems for teams that need software to scale.`
+- `8+ years delivering production-grade systems across full-stack engineering, data platforms, and infrastructure for global teams.`
 
 Primary action inside this section:
 
-- `Read about me`
+- `Book a Call`
 
 Secondary action:
 
-- `Book a call`
+- `View Projects`
 
 Rule:
 
@@ -138,7 +141,7 @@ Rule:
 - Keep the section intro to one visible heading.
 - Do not place long project descriptions on the landing page.
 - Keep selected-project previews visually light with consistent image sizing and minimal card chrome.
-- Keep the project CTA inline at the end of supporting text as `Read more...`, not as a detached control.
+- Keep the project CTA inline at the end of supporting text as `Read more`, not as a detached control.
 
 ## 4. Latest Writings
 
@@ -186,51 +189,23 @@ Rule:
 - Writings should feel equal to or stronger than projects in importance.
 - Keep the section intro to one visible heading.
 
-## 5. CTA Block
+## 5. Book a Call Block
 
 Purpose:
 
-- Convert interest into action
-- Replace vague contact behavior with structured options
+- Offer a single high-intent action before the footer
+- Make the conversion handoff clear and focused
 
-Primary CTA:
+Required content order:
 
-- `Get a quote`
-
-Secondary CTA:
-
-- `Book a call`
-
-Trust CTA:
-
-- `See credentials`
-
-Credential links:
-
-- LinkedIn
-- GitHub
-- WhatsApp
-- Email
-
-Preferred quote flow:
-
-1. What do you need help with?
-2. Project type
-3. Timeline
-4. Budget or engagement range
-5. Contact details
+- business proposition line
+- short supporting subtitle
+- `Book a Call` button
 
 Rule:
 
-- Do not use a generic `Contact Me` form as the main action.
-- The user should know what each action is for.
-- Keep this section intro compact and avoid stacked eyebrow/title/description treatments.
-
-Suggested CTA copy:
-
-- `Tell me what you need`
-- `Book a call`
-- `View credentials`
+- Keep this as a dedicated full-width section before the footer.
+- Use one primary action only.
 
 ## 6. Footer
 
@@ -245,6 +220,8 @@ Footer should include:
 - Navigation
 - Credentials/social links
 - Email or booking link
+
+Credentials should appear as icon links directly under the footer name/introduction block.
 
 Optional:
 
@@ -349,15 +326,13 @@ Recommended content draft:
 
 Primary action:
 
-- `Read About Me`
+- `Book a Call`
 
 Secondary action:
 
-- `Book a Call`
+- `View Projects`
 
-Optional supporting line:
-
-- `Latest writing, selected work, and ways to start a conversation are below.`
+Supporting line about writings and selected work should be placed below the identity block, not inside the hero copy.
 
 Linking rule:
 
@@ -470,83 +445,24 @@ Detail page requirements:
 - Previous and next post
 - Share actions
 
-## 5. CTA Block
+## 5. Book a Call Block
 
-This section should replace a generic contact-first approach with clearer action paths.
+This section should provide a clear single conversion path before footer.
 
-Recommended section title:
+Required content order:
 
-- `Start a conversation with a concrete ask`
-
-Recommended supporting copy:
-
-- `If you need help with product engineering, platform work, data systems, or AI integration, tell me what you are trying to build and where you are blocked.`
-
-Primary CTA:
-
-- `Get a Quote`
-
-Secondary CTA:
-
-- `Book a Call`
-
-Trust CTA:
-
-- `See Credentials`
-
-Recommended credential links:
-
-- LinkedIn
-- GitHub
-- WhatsApp
-- Email
-
-Suggested behavior:
-
-### Get a Quote
-
-This should eventually lead to a wizard-based flow:
-
-1. What do you need help with?
-2. Project type
-3. Timeline
-4. Budget or engagement range
-5. Contact details
-
-### Book a Call
-
-- Link to calendar if added later
-- If no calendar exists, temporarily use WhatsApp or direct email scheduling
-
-### See Credentials
-
-- Show:
-  - LinkedIn
-  - GitHub
-  - Resume
-  - Email
-  - WhatsApp
-
-Recommended CTA labels:
-
-- `Get a Quote`
-- `Book a Call`
-- `View Credentials`
-- `Email Me`
-- `Connect on WhatsApp`
+- business proposition line
+- short subtitle
+- `Book a Call` button
 
 ## 6. Footer
 
 Recommended footer structure:
 
-### Column 1: Short identity
+### Column 1: Identity and trust
 
 - Name
 - One-line positioning
-
-Suggested line:
-
-- `Software engineer writing and building across full-stack, data, and AI systems.`
 
 ### Column 2: Navigate
 
@@ -555,25 +471,10 @@ Suggested line:
 - Writings
 - Get a Quote
 
-### Column 3: Connect
+Credentials placement:
 
-- LinkedIn
-- GitHub
-- Email
-- WhatsApp
-- Book a Call
-
-### Column 4: Optional engagement slot
-
-Choose one:
-
-- Featured article
-- Featured project
-- Short CTA
-
-Recommended footer CTA:
-
-- `Have a project in mind? Start with a quote or book a short call.`
+- Show credentials as icon links (LinkedIn, GitHub, WhatsApp, Email, Resume)
+- Place icons directly under the name/intro block in the footer
 
 Rule:
 
@@ -581,10 +482,7 @@ Rule:
 
 ## Recommended Homepage CTA Hierarchy
 
-- Primary: `Get a Quote`
-- Secondary: `Book a Call`
-- Trust: `View Credentials`
-- Utility: `Email` and `WhatsApp`
+- Primary: `Book a Call`
 
 ## Implementation Notes
 

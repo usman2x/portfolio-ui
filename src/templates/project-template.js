@@ -2,7 +2,6 @@ import React from "react"
 import { Link } from "gatsby"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
-import contactData from "../content/misc/contact-data.json"
 import projectDetailContent from "../content/pages/project-detail.json"
 import ProjectVisual from "../components/ProjectVisual"
 
@@ -55,7 +54,7 @@ const renderSectionBlock = (block, projectTitle) => {
 
 const ProjectTemplate = ({ pageContext }) => {
   const { project, previousProject, nextProject } = pageContext
-  const { navigation, meta, link: linkContent, cta } = projectDetailContent
+  const { navigation, meta, link: linkContent } = projectDetailContent
   const projectLinkLabel = project.linkLabel || linkContent.defaultLabel
 
   return (
@@ -126,30 +125,6 @@ const ProjectTemplate = ({ pageContext }) => {
             </div>
           </section>
         ))}
-
-        <div className="project-cta-transition" aria-hidden="true">
-          <span className="project-cta-transition-label">
-            {cta.transitionLabel}
-          </span>
-        </div>
-
-        <section className="project-case-study-cta">
-          <h2 className="project-case-study-cta-title">{cta.title}</h2>
-          <p className="project-case-study-cta-copy">{cta.description}</p>
-          <div className="cta-actions">
-            <Link to="/quote/" className="theme-btn-primary theme-btn-sm">
-              {cta.primaryLabel}
-            </Link>
-            <a
-              href={contactData.meetingLink}
-              className="theme-btn-outline theme-btn-sm"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {cta.secondaryLabel}
-            </a>
-          </div>
-        </section>
 
         {(previousProject || nextProject) && (
           <nav className="project-pagination" aria-label="Project pagination">

@@ -1,7 +1,7 @@
 # Payload CMS Blog Integration
 
-Status: Proposed  
-Reviewed against the current repo on 2026-05-07.
+Status: In progress (CMS integrated, migration fallback active)  
+Reviewed against the current repo on 2026-05-12.
 
 This document is the cross-repo source of truth for integrating a separate Payload CMS repository with this Gatsby site.
 
@@ -61,6 +61,12 @@ Design document:
 - Payload CMS is the source of truth for blog content.
 - This Gatsby repo consumes published content only.
 - Markdown blog files in this repo are temporary until content migration is complete.
+
+Current transition behavior:
+
+- Gatsby consumes published Payload posts first.
+- Existing Markdown posts continue to render as fallback.
+- Slug collisions resolve in favor of Payload content.
 
 ### Public URL Contract
 

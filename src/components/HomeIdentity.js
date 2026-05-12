@@ -6,7 +6,15 @@ import homeContent from "../content/pages/home.json"
 import contactData from "../content/misc/contact-data.json"
 
 const HomeIdentity = () => {
-  const { aboutLabel, callLabel } = homeContent.identity
+  const identitySection = homeContent.identity || {}
+  const eyebrow = identitySection.eyebrow
+  const headline = identitySection.headline
+  const supportingText = identitySection.supportingText
+  const trustChips = Array.isArray(identitySection.trustChips)
+    ? identitySection.trustChips
+    : []
+  const primaryCtaLabel = identitySection.primaryCtaLabel
+  const secondaryCtaLabel = identitySection.secondaryCtaLabel
 
   return (
     <section
@@ -27,26 +35,35 @@ const HomeIdentity = () => {
             />
           </div>
           <div className="identity-heading-block">
-            <h1 className="identity-name">{identity.name}</h1>
+            <p className="identity-name">{identity.name}</p>
             <p className="identity-title">{identity.title}</p>
           </div>
         </Link>
         <div className="identity-body">
-          <p className="identity-intro">{identity.intro}</p>
-          <p className="identity-secondary">{identity.secondaryIntro}</p>
-          <p className="identity-supporting">{identity.supportingLine}</p>
+          <p className="identity-eyebrow">{eyebrow}</p>
+          <h1 className="identity-headline">{headline}</h1>
+          <p className="identity-supporting">{supportingText}</p>
+          {trustChips.length ? (
+            <ul className="identity-trust-chips">
+              {trustChips.map((item) => (
+                <li key={item} className="identity-trust-chip">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          ) : null}
           <div className="identity-actions">
-            <Link to="/about/" className="theme-btn-outline theme-btn-sm">
-              {aboutLabel}
-            </Link>
             <a
               href={contactData.meetingLink}
-              className="theme-btn-primary theme-btn-sm"
+              className="theme-btn-primary theme-btn-lg"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {callLabel}
+              {primaryCtaLabel}
             </a>
+            <Link to="/projects/" className="theme-btn-outline theme-btn-sm">
+              {secondaryCtaLabel}
+            </Link>
           </div>
         </div>
       </div>

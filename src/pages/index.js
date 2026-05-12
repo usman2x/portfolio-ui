@@ -5,12 +5,15 @@ import SEO from "../components/seo";
 import HomeIdentity from "../components/HomeIdentity";
 import SelectedProjects from "../components/SelectedProjects";
 import LatestWritings from "../components/LatestWritings";
-import HomeCta from "../components/HomeCta";
 import homeContent from "../content/pages/home.json";
 import projects from "../content/misc/projects.json";
+import { mergeBlogPosts } from "../utils/blog-posts";
 
 const IndexPage = ({ data }) => {
-  const posts = data.allMarkdownRemark.nodes;
+  const posts = mergeBlogPosts({
+    cmsPosts: data.allPortfolioBlogPost.nodes,
+    markdownPosts: data.allMarkdownRemark.nodes,
+  }).slice(0, 3);
   const featuredProjects = homeContent.projects.featuredSlugs
     .map((slug) => projects.find((project) => project.slug === slug))
     .filter(Boolean);
@@ -24,9 +27,11 @@ const IndexPage = ({ data }) => {
       />
       <div className="home-page landing-home">
         <HomeIdentity />
-        <SelectedProjects projects={featuredProjects} />
+        <section className="container landing-post-hero-note">
+          <p>{homeContent.identity.postHeroLine}</p>
+        </section>
         <LatestWritings posts={posts} />
-        <HomeCta />
+        <SelectedProjects projects={featuredProjects} />
       </div>
     </Layout>
   );
@@ -34,10 +39,30 @@ const IndexPage = ({ data }) => {
 
 export const query = graphql`
   query HomePageWritingsQuery {
+    allPortfolioBlogPost {
+      nodes {
+        id
+        payloadId
+        title
+        slug
+        excerpt
+        description
+        date
+        tags
+        readingTimeMinutes
+        contentHtml
+        seoTitle
+        seoDescription
+        canonicalUrl
+        noindex
+        coverImageUrl
+        coverImageAlt
+        ogImageUrl
+      }
+    }
     allMarkdownRemark(
       filter: { fileAbsolutePath: { regex: "/blog/" } }
       sort: { frontmatter: { date: DESC } }
-      limit: 3
     ) {
       nodes {
         id
