@@ -32,6 +32,7 @@ Before implementing a page or layout change, use this order:
 - `docs/pages/QUOTE_PAGE.md`
 - `docs/seo/SEO_URLS.md`
 - `docs/content/CONTENT_CONFIGURATION.md`
+- `docs/BLOG_UI_UX_AUDIT.md`
 - `docs/PAYLOAD_CMS_BLOG_INTEGRATION.md`
 - `docs/PAYLOAD_CMS_REPO.md`
 - `docs/GATSBY_BLOG_PAYLOAD_INTEGRATION.md`

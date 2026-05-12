@@ -1,33 +1,34 @@
-name: Deploy to GitHub Pages
+name: Deploy Portfolio UI
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-portfolio-ui
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-      # Step 1: Check out the repository
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: List files
-        run: ls -R ./src
-
-      # Step 2: Set up Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
+          cache: npm
 
-      # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      # Step 4: Build the Gatsby site
       - name: Build Gatsby site
         run: npm run build
         env:
@@ -39,11 +40,9 @@ jobs:
           GATSBY_GISCUS_CATEGORY: ${{ vars.GATSBY_GISCUS_CATEGORY }}
           GATSBY_GISCUS_CATEGORY_ID: ${{ vars.GATSBY_GISCUS_CATEGORY_ID }}
 
-      # Step 5: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
           cname: www.musman.online
-        
