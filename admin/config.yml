@@ -1,0 +1,35 @@
+backend:
+  name: github
+  repo: usman2x/portfolio-gatsby
+  branch: main
+
+site_url: https://www.musman.online
+logo_url: /images/portfolio.png
+
+publish_mode: simple
+
+media_folder: src/content/blog/images
+public_folder: ./images
+
+collections:
+  - name: blog
+    label: Blog Posts
+    folder: src/content/blog
+    create: true
+    slug: '{{slug}}'
+    extension: md
+    format: frontmatter
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime, format: 'MMMM DD, YYYY' }
+      - { label: Slug, name: slug, widget: string, hint: 'URL-safe slug, e.g. ai-adoption-playbook' }
+      - { label: Description, name: description, widget: text }
+      - label: Cover Image
+        name: cover
+        widget: image
+        choose_url: false
+      - label: Tags
+        name: tags
+        widget: list
+        allow_add: true
+      - { label: Body, name: body, widget: markdown }
