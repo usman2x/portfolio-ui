@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://www.musman.online/sitemap-index.xml
-Host: https://www.musman.online
+Sitemap: http://localhost:8000/sitemap-index.xml
+Host: localhost:8000
