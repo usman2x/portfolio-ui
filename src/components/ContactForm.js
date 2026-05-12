@@ -3,8 +3,12 @@ import contactData from "../content/misc/contact-data.json"
 
 const ContactForm = () => {
   const formLink = process.env.GATSBY_FORM_LINK || "#"
-  const siteUrl = process.env.GATSBY_SITE_URL || "https://www.musman.online"
-  const redirectPage = new URL(contactData["redirect-page"], siteUrl).href
+  const siteUrl = (
+    process.env.GATSBY_SITE_URL || "http://localhost:8000"
+  ).replace(/\/+$/, "")
+  const redirectPage = siteUrl
+    ? new URL(contactData["redirect-page"], siteUrl).href
+    : contactData["redirect-page"]
 
   return (
     <div className="mx-auto w-full max-w-3xl">

@@ -3,7 +3,7 @@
 ## 1. Objective
 Design a maintainable architecture for a personal portfolio + blog where:
 - only one author manages content (you),
-- visitors can like/comment/share posts,
+- visitors can share posts,
 - images stay in the repo,
 - Git-based CMS is used,
 - SEO remains equivalent to current implementation,
@@ -14,7 +14,7 @@ Design a maintainable architecture for a personal portfolio + blog where:
 In scope:
 - content authoring architecture,
 - build/deploy flow,
-- engagement features (likes/comments/shares),
+- engagement features (shares and related reader actions),
 - UI/theming consistency model,
 - Gatsby image/performance improvements while keeping repo images.
 
@@ -36,15 +36,15 @@ Out of scope:
 1. `Gatsby` remains SSG rendering layer.
 2. `Markdown + JSON in repo` remain source of truth.
 3. `Git-based CMS`: Decap CMS as admin UI for editing content in-repo.
-4. `Engagement`: giscus (GitHub Discussions-backed comments + reactions).
+4. `Engagement`: lightweight post-share and CTA actions.
 5. `Sharing`: native Web Share + fallback social share links.
 6. `Analytics`: keep current GA setup for engagement events.
 
 ### 4.2 Why this fits the constraints
 - Full content ownership: all content remains in Git repo.
-- Free hosting path: GitHub Pages + GitHub Discussions.
+- Free hosting path: GitHub Pages.
 - Single-author workflow is simple and robust.
-- No DB required for comments/likes.
+- No DB required for reader interaction.
 
 ## 5. Content and Authoring Model
 
@@ -87,24 +87,13 @@ Single-author fallback (simplest):
 
 ## 6. Engagement Features
 
-### 6.1 Likes and comments
-Use `giscus` on each blog detail page:
-- Comments stored in GitHub Discussions.
-- Likes handled via Discussion reactions.
-- Requires GitHub login for interaction.
-
-Integration point:
-- Add giscus component in `src/templates/blog-template.js`.
-- Map each post to a discussion using pathname/slug.
-
-### 6.2 Share
+### 6.1 Share
 Add share actions on post page:
 - Native `navigator.share()` if available.
 - Fallback links for X, LinkedIn, and copy-link.
 
 Track events:
 - `share_click`
-- `comment_open`
 - `cta_click`
 
 ## 7. SEO Strategy (Keep same baseline)
@@ -191,9 +180,8 @@ Large and static assets are currently loaded via plain `<img>` and CSS backgroun
 3. Standardize blog frontmatter fields (`description`, `cover`).
 
 ### Phase 2 (engagement)
-1. Integrate giscus in blog template.
-2. Add share component with event tracking.
-3. Add post-level CTA blocks.
+1. Add share component with event tracking.
+2. Add post-level CTA blocks.
 
 ### Phase 3 (authoring UX)
 1. Add Decap admin and config.
@@ -203,14 +191,11 @@ Large and static assets are currently loaded via plain `<img>` and CSS backgroun
 ## 13. Risks and Mitigations
 - Risk: Decap GitHub auth setup complexity on GitHub Pages.
   - Mitigation: start with local markdown workflow; add OAuth proxy later.
-- Risk: Comment spam/noise in discussions.
-  - Mitigation: GitHub moderation tools + community guidelines.
 - Risk: Slow build as image volume grows.
   - Mitigation: image size policy + incremental maintenance.
 
 ## 14. Acceptance Criteria
 - Blog updates are manageable by one author with Git workflow.
-- Visitors can comment and react (like) on posts.
 - Share actions are available on each post.
 - SEO metadata behavior remains equivalent to current baseline.
 - UI is visually consistent across pages.

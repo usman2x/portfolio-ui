@@ -5,7 +5,6 @@ import { format } from "date-fns"
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
 import SEO from "../components/seo"
 import ShareActions from "../components/ShareActions"
-import GiscusComments from "../components/GiscusComments"
 
 const wrapInlineImagesWithLinks = (html = "") => {
   if (!html) {
@@ -21,6 +20,7 @@ const wrapInlineImagesWithLinks = (html = "") => {
 
 const BlogTemplate = ({ data, pageContext }) => {
   const { site, markdownRemark, portfolioBlogPost } = data
+  const baseSiteUrl = site.siteMetadata.siteUrl || ""
 
   const sourceType = pageContext?.sourceType || (portfolioBlogPost ? "cms" : "markdown")
   const isMarkdownPost = sourceType === "markdown" || !portfolioBlogPost
@@ -29,7 +29,7 @@ const BlogTemplate = ({ data, pageContext }) => {
   const markdownOgImage =
     markdownFrontmatter?.cover?.childImageSharp?.gatsbyImageData?.images?.fallback
       ?.src
-      ? `${site.siteMetadata.siteUrl}${markdownFrontmatter.cover.childImageSharp.gatsbyImageData.images.fallback.src}`
+      ? `${baseSiteUrl}${markdownFrontmatter.cover.childImageSharp.gatsbyImageData.images.fallback.src}`
       : null
 
   const currentPost = isMarkdownPost
@@ -72,7 +72,7 @@ const BlogTemplate = ({ data, pageContext }) => {
   const date = currentPost.date
   const description = currentPost.description
   const tags = currentPost.tags
-  const postUrl = `${site.siteMetadata.siteUrl}/blog/${slug}`
+  const postUrl = baseSiteUrl ? `${baseSiteUrl}/blog/${slug}` : `/blog/${slug}`
   const canonicalUrl = currentPost.canonicalUrl || postUrl
   const postContentHtml = isMarkdownPost
     ? wrapInlineImagesWithLinks(markdownRemark?.html || "")
@@ -164,10 +164,6 @@ const BlogTemplate = ({ data, pageContext }) => {
             </div>
           ) : null}
         </article>
-        <section className="comments-section">
-          <h3 className="interior-section-title">Comments</h3>
-          <GiscusComments slug={slug} />
-        </section>
       </section>
       <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
     </Layout>

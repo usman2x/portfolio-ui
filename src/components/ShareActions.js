@@ -2,13 +2,14 @@ import React, { useMemo } from "react";
 import { trackEvent } from "../utils/analytics";
 
 const ShareActions = ({ title, pathname }) => {
+  const baseSiteUrl = (process.env.GATSBY_SITE_URL || "").replace(/\/+$/, "");
   const url = useMemo(() => {
     if (typeof window !== "undefined") {
       return window.location.href;
     }
 
-    return `https://www.musman.online${pathname}`;
-  }, [pathname]);
+    return baseSiteUrl ? `${baseSiteUrl}${pathname}` : pathname;
+  }, [baseSiteUrl, pathname]);
 
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);

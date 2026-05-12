@@ -1,18 +1,30 @@
 require("dotenv").config();
 
+const normalizePathPrefix = (value) => {
+  if (!value || value === "/") {
+    return "/";
+  }
+
+  const normalizedValue = value.trim().replace(/\/+$/, "");
+  return normalizedValue.startsWith("/") ? normalizedValue : `/${normalizedValue}`;
+};
+
+const siteUrl = (
+  process.env.GATSBY_SITE_URL ||
+  process.env.SITE_URL ||
+  "http://localhost:8000"
+).replace(/\/+$/, "");
+const pathPrefix = normalizePathPrefix(
+  process.env.GATSBY_PATH_PREFIX || process.env.PATH_PREFIX || "/"
+);
+
 module.exports = {
-  pathPrefix: "/",
+  pathPrefix,
   siteMetadata: {
     title: "Muhammad Usman | Engineering Journal and Selected Work",
     description: "Software engineering notes, selected delivery work, and practical ways to start a project conversation.",
     author: "Muhammad Usman",
-    siteUrl: "https://www.musman.online",
-    giscus: {
-      repo: process.env.GATSBY_GISCUS_REPO || "",
-      repoId: process.env.GATSBY_GISCUS_REPO_ID || "",
-      category: process.env.GATSBY_GISCUS_CATEGORY || "General",
-      categoryId: process.env.GATSBY_GISCUS_CATEGORY_ID || "",
-    },
+    siteUrl,
   },
   plugins: [
     "gatsby-plugin-postcss",
@@ -76,7 +88,7 @@ module.exports = {
       options: {
         name: `Muhammad Usman`,
         short_name: `musman`,
-        start_url: `/`,
+        start_url: pathPrefix === "/" ? "/" : `${pathPrefix}/`,
         background_color: `#f7f3ee`,
         display: `minimal-ui`,
         icon: `static/images/portfolio.png`, // This path is relative to the root of the site.

@@ -30,19 +30,28 @@ jobs:
         run: npm ci
 
       - name: Build Gatsby site
-        run: npm run build
+        run: npm run build -- --prefix-paths
         env:
           GA_TRACKING_ID: ${{ secrets.GA_TRACKING_ID }}
           GATSBY_FORM_LINK: ${{ vars.GATSBY_FORM_LINK }}
           GATSBY_SITE_URL: ${{ vars.GATSBY_SITE_URL }}
-          GATSBY_GISCUS_REPO: ${{ vars.GATSBY_GISCUS_REPO }}
-          GATSBY_GISCUS_REPO_ID: ${{ vars.GATSBY_GISCUS_REPO_ID }}
-          GATSBY_GISCUS_CATEGORY: ${{ vars.GATSBY_GISCUS_CATEGORY }}
-          GATSBY_GISCUS_CATEGORY_ID: ${{ vars.GATSBY_GISCUS_CATEGORY_ID }}
+          GATSBY_PATH_PREFIX: ${{ vars.GATSBY_PATH_PREFIX }}
+          PAYLOAD_API_URL: ${{ vars.PAYLOAD_API_URL }}
+          BLOG_CMS_API_URL: ${{ vars.BLOG_CMS_API_URL }}
+          PAYLOAD_POSTS_ENDPOINT: ${{ vars.PAYLOAD_POSTS_ENDPOINT }}
+          BLOG_CMS_POSTS_ENDPOINT: ${{ vars.BLOG_CMS_POSTS_ENDPOINT }}
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages with custom domain
+        if: ${{ vars.GITHUB_PAGES_CNAME != '' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
-          cname: www.musman.online
+          cname: ${{ vars.GITHUB_PAGES_CNAME }}
+
+      - name: Deploy to GitHub Pages
+        if: ${{ vars.GITHUB_PAGES_CNAME == '' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public

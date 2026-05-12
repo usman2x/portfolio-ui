@@ -31,8 +31,9 @@ const SEO = ({
 
   const metaDescription = description || site.siteMetadata.description;
   const defaultTitle = site.siteMetadata.title;
+  const baseSiteUrl = site.siteMetadata.siteUrl || "";
   const resolvedCanonicalUrl =
-    canonicalUrl || `${site.siteMetadata.siteUrl}${pathname}`;
+    canonicalUrl || (baseSiteUrl ? `${baseSiteUrl}${pathname}` : pathname);
 
   const resolvedImage = image || "";
 
@@ -97,12 +98,16 @@ const SEO = ({
           content: metaDescription,
         },
       ].concat(meta)}
-      link={[
-        {
-          rel: "canonical",
-          href: resolvedCanonicalUrl,
-        },
-      ]}
+      link={
+        resolvedCanonicalUrl
+          ? [
+              {
+                rel: "canonical",
+                href: resolvedCanonicalUrl,
+              },
+            ]
+          : []
+      }
     />
   );
 };

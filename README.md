@@ -30,13 +30,10 @@ If your site will be deployed under a subdirectory like `https://username.github
 
 ### ✅ Steps:
 
-1. Set the `pathPrefix` in `gatsby-config.js`:
+1. Set `GATSBY_PATH_PREFIX` in your environment:
 
-```js
-module.exports = {
-  pathPrefix: "/my-site", // replace with your repo name
-  // other config...
-}
+```bash
+export GATSBY_PATH_PREFIX=/my-site
 ```
 
 2. Build the site with prefix:
@@ -53,6 +50,52 @@ gatsby serve --prefix-paths
 
 - Opens at `http://localhost:9000/my-site/`
 - Good for verifying routing, assets, and links before pushing to GitHub Pages
+
+---
+
+## ⚙️ Environment Variables
+
+Deployment should now be configured through environment variables rather than hardcoded domain or CMS values.
+
+Recommended variables:
+
+```bash
+GATSBY_SITE_URL=https://example.com
+GATSBY_PATH_PREFIX=/portfolio-ui
+PAYLOAD_API_URL=https://cms.example.com
+PAYLOAD_POSTS_ENDPOINT=/api/posts
+```
+
+Optional aliases supported by the blog source:
+
+```bash
+BLOG_CMS_API_URL=https://cms.example.com
+BLOG_CMS_POSTS_ENDPOINT=/api/posts
+```
+
+If no CMS URL variable is provided, the site falls back to local Markdown posts only.
+
+## 📌 GitHub Pages Root Path
+
+Root-path hosting on GitHub Pages is possible only for a user or organization site repository, for example:
+
+```text
+https://usman2x.github.io/
+```
+
+That requires the repository name to be:
+
+```text
+usman2x.github.io
+```
+
+For the current repository name `portfolio-ui`, the GitHub Pages URL is a project site and will live under:
+
+```text
+https://usman2x.github.io/portfolio-ui/
+```
+
+Unless you use a custom domain.
 
 ---
 

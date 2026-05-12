@@ -1,14 +1,13 @@
 const path = require("path");
 const projects = require("./src/content/misc/projects.json");
 
-const DEFAULT_CMS_API_URL = "https://portfolio-cms-production-8546.up.railway.app";
 const DEFAULT_CMS_POSTS_ENDPOINT = "/api/posts";
 const BLOG_NODE_TYPE = "PortfolioBlogPost";
 
 const getPayloadApiUrl = () =>
   process.env.PAYLOAD_API_URL ||
   process.env.BLOG_CMS_API_URL ||
-  DEFAULT_CMS_API_URL;
+  "";
 
 const getPayloadPostsEndpoint = () =>
   process.env.PAYLOAD_POSTS_ENDPOINT ||
@@ -195,6 +194,10 @@ const pickMediaUrl = (media, baseUrl, sizeKey) => {
 
 const fetchPayloadPosts = async () => {
   const payloadApiUrl = getPayloadApiUrl();
+  if (!payloadApiUrl) {
+    return [];
+  }
+
   const endpoint = new URL(
     resolvePostsEndpointUrl(payloadApiUrl, getPayloadPostsEndpoint())
   );
@@ -248,10 +251,14 @@ exports.sourceNodes = async ({
 }) => {
   const { createNode } = actions;
   const payloadApiUrl = getPayloadApiUrl();
-  const payloadPostsEndpoint = resolvePostsEndpointUrl(
-    payloadApiUrl,
-    getPayloadPostsEndpoint()
-  );
+  if (!payloadApiUrl) {
+    reporter.info(
+      "[blog-cms] No PAYLOAD_API_URL or BLOG_CMS_API_URL provided. Using local Markdown posts only."
+    );
+    return;
+  }
+
+  const payloadPostsEndpoint = resolvePostsEndpointUrl(payloadApiUrl, getPayloadPostsEndpoint());
 
   let posts = [];
   try {
