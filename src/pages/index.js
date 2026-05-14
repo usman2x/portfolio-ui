@@ -1,22 +1,27 @@
-import React from "react";
-import { graphql } from "gatsby";
-import Layout from "../components/Layout";
-import SEO from "../components/seo";
-import HomeIdentity from "../components/HomeIdentity";
-import SelectedProjects from "../components/SelectedProjects";
-import LatestWritings from "../components/LatestWritings";
-import homeContent from "../content/pages/home.json";
-import projects from "../content/misc/projects.json";
-import { mergeBlogPosts } from "../utils/blog-posts";
+import React from "react"
+import { graphql } from "gatsby"
+import Layout from "../components/Layout"
+import SEO from "../components/seo"
+import HomeIdentity from "../components/HomeIdentity"
+import SelectedProjects from "../components/SelectedProjects"
+import LatestWritings from "../components/LatestWritings"
+import homeContent from "../content/pages/home.json"
+import localProjects from "../content/misc/projects.json"
+import { mergeBlogPosts } from "../utils/blog-posts"
+import { mergeProjects } from "../utils/projects"
 
 const IndexPage = ({ data }) => {
   const posts = mergeBlogPosts({
     cmsPosts: data.allPortfolioBlogPost.nodes,
     markdownPosts: data.allMarkdownRemark.nodes,
-  }).slice(0, 3);
+  }).slice(0, 3)
+  const projects = mergeProjects({
+    cmsProjects: data.allPortfolioProject.nodes,
+    localProjects,
+  })
   const featuredProjects = homeContent.projects.featuredSlugs
-    .map((slug) => projects.find((project) => project.slug === slug))
-    .filter(Boolean);
+    .map(slug => projects.find(project => project.slug === slug))
+    .filter(Boolean)
 
   return (
     <Layout>
@@ -34,12 +39,33 @@ const IndexPage = ({ data }) => {
         <SelectedProjects projects={featuredProjects} />
       </div>
     </Layout>
-  );
-};
+  )
+}
 
 export const query = graphql`
   query HomePageWritingsQuery {
     allPortfolioBlogPost {
+      nodes {
+        id
+        payloadId
+        title
+        slug
+        excerpt
+        description
+        date
+        tags
+        readingTimeMinutes
+        contentHtml
+        seoTitle
+        seoDescription
+        canonicalUrl
+        noindex
+        coverImageUrl
+        coverImageAlt
+        ogImageUrl
+      }
+    }
+    allPortfolioProject(sort: { date: DESC }) {
       nodes {
         id
         payloadId
@@ -77,6 +103,6 @@ export const query = graphql`
       }
     }
   }
-`;
+`
 
-export default IndexPage;
+export default IndexPage

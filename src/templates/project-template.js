@@ -1,9 +1,11 @@
 import React from "react"
-import { Link } from "gatsby"
+import { graphql, Link } from "gatsby"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
 import projectDetailContent from "../content/pages/project-detail.json"
 import ProjectVisual from "../components/ProjectVisual"
+import { findProjectBySlug, mergeProjects } from "../utils/projects"
+import localProjects from "../content/misc/projects.json"
 
 const renderSectionBlock = (block, projectTitle) => {
   if (block.type === "text") {
@@ -52,17 +54,45 @@ const renderSectionBlock = (block, projectTitle) => {
   return null
 }
 
-const ProjectTemplate = ({ pageContext }) => {
-  const { project, previousProject, nextProject } = pageContext
-  const { navigation, meta, link: linkContent } = projectDetailContent
+const ProjectTemplate = ({ data, pageContext }) => {
+  const { portfolioProject } = data
+  const { previousProject, nextProject } = pageContext
+  const { navigation, meta, link: linkContent, story } = projectDetailContent
+  const project = portfolioProject
+    ? findProjectBySlug(
+        mergeProjects({
+          cmsProjects: [portfolioProject],
+          localProjects: [],
+        }),
+        portfolioProject.slug
+      )
+    : findProjectBySlug(
+        mergeProjects({
+          cmsProjects: [],
+          localProjects: pageContext.project
+            ? [pageContext.project]
+            : localProjects,
+        }),
+        pageContext.slug
+      )
+
+  if (!project) {
+    return null
+  }
+
   const projectLinkLabel = project.linkLabel || linkContent.defaultLabel
 
   return (
     <Layout>
       <SEO
-        title={`${project.title} | Project Case Study`}
-        description={project.summary || project.description}
+        title={project.seoTitle || `${project.title} | Project Case Study`}
+        description={
+          project.seoDescription || project.summary || project.description
+        }
         pathname={`/projects/${project.slug}/`}
+        image={project.ogImageUrl || project.image || ""}
+        canonicalUrl={project.canonicalUrl || null}
+        noindex={project.noindex}
       />
       <section className="container interior-page project-template-shell">
         <section className="project-case-study-hero">
@@ -107,6 +137,31 @@ const ProjectTemplate = ({ pageContext }) => {
             ) : null}
           </aside>
         </section>
+
+        {project.image ? (
+          <figure className="project-story-figure project-story-cover">
+            <ProjectVisual
+              image={project.image}
+              alt={project.imageAlt || `${project.title} project preview`}
+              title={project.title}
+              className="project-story-media"
+            />
+          </figure>
+        ) : null}
+
+        {project.contentHtml ? (
+          <section className="project-story-section">
+            <div className="project-story-heading">
+              <h2 className="project-story-title">{story.fallbackTitle}</h2>
+            </div>
+            <div className="project-story-content">
+              <div
+                className="article-prose"
+                dangerouslySetInnerHTML={{ __html: project.contentHtml }}
+              />
+            </div>
+          </section>
+        ) : null}
 
         {(project.sections || []).map((section, index) => (
           <section
@@ -154,5 +209,29 @@ const ProjectTemplate = ({ pageContext }) => {
     </Layout>
   )
 }
+
+export const query = graphql`
+  query ProjectTemplateQuery($slug: String!) {
+    portfolioProject(slug: { eq: $slug }) {
+      id
+      payloadId
+      title
+      slug
+      excerpt
+      description
+      date
+      tags
+      readingTimeMinutes
+      contentHtml
+      seoTitle
+      seoDescription
+      canonicalUrl
+      noindex
+      coverImageUrl
+      coverImageAlt
+      ogImageUrl
+    }
+  }
+`
 
 export default ProjectTemplate

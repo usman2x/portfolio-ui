@@ -1,12 +1,47 @@
-const parseDateValue = (value) => {
-  const timestamp = new Date(value || "").getTime();
-  return Number.isFinite(timestamp) ? timestamp : 0;
-};
+const parseDateValue = value => {
+  const timestamp = new Date(value || "").getTime()
+  return Number.isFinite(timestamp) ? timestamp : 0
+}
 
-const sortPostsByDateDesc = (posts) =>
-  [...posts].sort((left, right) => parseDateValue(right.date) - parseDateValue(left.date));
+const sortPostsByDateDesc = posts =>
+  [...posts].sort(
+    (left, right) => parseDateValue(right.date) - parseDateValue(left.date)
+  )
 
-const normalizeCmsPost = (post) => ({
+const canonicalizeTag = value =>
+  String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[_\s]+/g, "-")
+    .replace(/-+/g, "-")
+
+const getTagCandidates = tag => {
+  if (typeof tag === "string") {
+    return [tag]
+  }
+
+  if (!tag || typeof tag !== "object") {
+    return []
+  }
+
+  return [tag.slug, tag.value, tag.name, tag.label, tag.title].filter(
+    candidate => typeof candidate === "string" && candidate.trim()
+  )
+}
+
+const hasTag = (tags, tagName) => {
+  const normalizedTagName = canonicalizeTag(tagName)
+
+  return Array.isArray(tags)
+    ? tags.some(tag =>
+        getTagCandidates(tag).some(
+          candidate => canonicalizeTag(candidate) === normalizedTagName
+        )
+      )
+    : false
+}
+
+const normalizeCmsPost = post => ({
   id: `cms-${post.payloadId || post.id}`,
   source: "cms",
   slug: post.slug,
@@ -24,9 +59,9 @@ const normalizeCmsPost = (post) => ({
   coverImageUrl: post.coverImageUrl || null,
   coverImageAlt: post.coverImageAlt || post.title || "",
   ogImageUrl: post.ogImageUrl || null,
-});
+})
 
-const normalizeMarkdownPost = (post) => ({
+const normalizeMarkdownPost = post => ({
   id: post.id,
   source: "markdown",
   slug: post.frontmatter?.slug,
@@ -45,27 +80,29 @@ const normalizeMarkdownPost = (post) => ({
   coverImageUrl: null,
   coverImageAlt: post.frontmatter?.title || "",
   ogImageUrl: null,
-});
+})
 
 export const mergeBlogPosts = ({ cmsPosts = [], markdownPosts = [] }) => {
-  const merged = new Map();
+  const merged = new Map()
 
   markdownPosts
     .map(normalizeMarkdownPost)
-    .filter((post) => post.slug)
-    .forEach((post) => {
-      merged.set(post.slug, post);
-    });
+    .filter(post => post.slug)
+    .filter(post => !hasTag(post.tags, "case-study"))
+    .forEach(post => {
+      merged.set(post.slug, post)
+    })
 
   cmsPosts
     .map(normalizeCmsPost)
-    .filter((post) => post.slug)
-    .forEach((post) => {
-      merged.set(post.slug, post);
-    });
+    .filter(post => post.slug)
+    .filter(post => !hasTag(post.tags, "case-study"))
+    .forEach(post => {
+      merged.set(post.slug, post)
+    })
 
-  return sortPostsByDateDesc(Array.from(merged.values()));
-};
+  return sortPostsByDateDesc(Array.from(merged.values()))
+}
 
 export const findPostBySlug = (posts, slug) =>
-  posts.find((post) => post.slug === slug) || null;
+  posts.find(post => post.slug === slug) || null

@@ -35,6 +35,12 @@ const ProjectVisual = ({ image, alt, title, className }) => {
     .filter(Boolean)
     .join(" ")
 
+  if (typeof image === "string" && /^https?:\/\//i.test(image)) {
+    return (
+      <img src={image} alt={alt} className={visualClassName} loading="lazy" />
+    )
+  }
+
   if (projectImage) {
     return (
       <GatsbyImage image={projectImage} alt={alt} className={visualClassName} />

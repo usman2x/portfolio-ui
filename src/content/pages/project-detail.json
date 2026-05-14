@@ -10,6 +10,9 @@
     "defaultLabel": "View external reference",
     "description": "Explore the external reference for additional context around the project."
   },
+  "story": {
+    "fallbackTitle": "Case study"
+  },
   "cta": {
     "transitionLabel": "From case study to collaboration",
     "title": "Need help with a similar engineering challenge?",

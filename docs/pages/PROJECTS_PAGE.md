@@ -67,6 +67,11 @@ Required content:
 - Project list
 - Optional filtering by category or tag
 
+Content source rule:
+
+- published Payload posts tagged `case-study` are the primary source for project archive entries
+- local `src/content/misc/projects.json` remains migration fallback only when CMS case studies are unavailable
+
 Recommended title:
 
 - `Projects`

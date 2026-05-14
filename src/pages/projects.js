@@ -1,12 +1,18 @@
 import React from "react"
-import { Link } from "gatsby"
+import { graphql, Link } from "gatsby"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
 import projectPage from "../content/pages/projects.json"
-import projects from "../content/misc/projects.json"
+import localProjects from "../content/misc/projects.json"
 import ProjectVisual from "../components/ProjectVisual"
+import { mergeProjects } from "../utils/projects"
 
-const ProjectsPage = () => {
+const ProjectsPage = ({ data }) => {
+  const projects = mergeProjects({
+    cmsProjects: data.allPortfolioProject.nodes,
+    localProjects,
+  })
+
   return (
     <Layout>
       <SEO
@@ -29,7 +35,7 @@ const ProjectsPage = () => {
               >
                 <ProjectVisual
                   image={project.image}
-                  alt={`${project.title} project preview`}
+                  alt={project.imageAlt || `${project.title} project preview`}
                   title={project.title}
                   className="project-preview-media"
                 />
@@ -44,7 +50,9 @@ const ProjectsPage = () => {
                   </Link>
                 </h2>
                 <p className="project-detail-summary">{project.summary}</p>
-                <p className="project-detail-role">{project.role}</p>
+                {project.role ? (
+                  <p className="project-detail-role">{project.role}</p>
+                ) : null}
                 <div className="preview-tag-list">
                   {(project.tags || []).map(tag => (
                     <span key={tag} className="tag-chip">
@@ -68,5 +76,31 @@ const ProjectsPage = () => {
     </Layout>
   )
 }
+
+export const query = graphql`
+  query ProjectsPageQuery {
+    allPortfolioProject(sort: { date: DESC }) {
+      nodes {
+        id
+        payloadId
+        title
+        slug
+        excerpt
+        description
+        date
+        tags
+        readingTimeMinutes
+        contentHtml
+        seoTitle
+        seoDescription
+        canonicalUrl
+        noindex
+        coverImageUrl
+        coverImageAlt
+        ogImageUrl
+      }
+    }
+  }
+`
 
 export default ProjectsPage

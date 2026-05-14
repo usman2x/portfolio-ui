@@ -25,7 +25,7 @@ const SelectedProjects = ({ projects }) => {
             >
               <ProjectVisual
                 image={project.image}
-                alt={`${project.title} project preview`}
+                alt={project.imageAlt || `${project.title} project preview`}
                 title={project.title}
                 className="project-preview-media"
               />

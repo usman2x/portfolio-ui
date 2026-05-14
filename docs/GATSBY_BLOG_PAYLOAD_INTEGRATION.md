@@ -35,6 +35,17 @@ Current reader-facing capabilities already in place:
 - previous and next post navigation
 - SEO component usage
 
+Current project-facing capabilities now sourced from the same Payload posts collection:
+
+- `/projects/`
+- `/projects/<slug>/`
+- homepage selected-project previews
+
+Routing rule:
+
+- posts tagged `case-study` are treated as project case studies
+- published posts without the `case-study` tag remain writings
+
 ## 3. Integration Goal
 
 Keep the frontend behavior and URL structure, but change the source of content from Markdown to Payload.
@@ -74,6 +85,8 @@ This is required for:
 - Deduplication is slug-based.
 - If the same slug exists in both sources, Payload wins.
 - The chosen delivery model is static generation plus rebuild on publish, not runtime CMS fetching.
+- The Gatsby build also derives project nodes from the same Payload posts collection by filtering for the `case-study` tag.
+- Project pages and homepage project previews prefer CMS case studies and keep local `projects.json` only as migration fallback.
 
 This supports incremental migration while preserving existing URLs and content continuity.
 
@@ -81,21 +94,21 @@ This supports incremental migration while preserving existing URLs and content c
 
 The site needs these post fields at build time:
 
-| Field | Purpose |
-| --- | --- |
-| `title` | archive and detail heading |
-| `slug` | page creation and links |
-| `excerpt` | archive summaries and fallback SEO |
-| `content` | detail body |
-| `publishedAt` | article date |
-| `tags` | filters and related content |
-| `coverImage` | archive and detail images |
-| `ogImage` | SEO |
-| `seoTitle` | page title |
-| `seoDescription` | meta description |
-| `canonicalUrl` | canonical tag |
-| `noindex` | SEO control |
-| `readingTimeMinutes` | optional display |
+| Field                | Purpose                            |
+| -------------------- | ---------------------------------- |
+| `title`              | archive and detail heading         |
+| `slug`               | page creation and links            |
+| `excerpt`            | archive summaries and fallback SEO |
+| `content`            | detail body                        |
+| `publishedAt`        | article date                       |
+| `tags`               | filters and related content        |
+| `coverImage`         | archive and detail images          |
+| `ogImage`            | SEO                                |
+| `seoTitle`           | page title                         |
+| `seoDescription`     | meta description                   |
+| `canonicalUrl`       | canonical tag                      |
+| `noindex`            | SEO control                        |
+| `readingTimeMinutes` | optional display                   |
 
 ## 7. Integration Approach
 

@@ -71,6 +71,11 @@ Suggested contents:
 
 Current file is a reasonable starting point for project previews.
 
+Current runtime rule:
+
+- published Payload posts tagged `case-study` are the active source for project archive, homepage project previews, and project detail pages
+- `src/content/misc/projects.json` remains migration fallback content until all case studies live in CMS
+
 Recommended later split:
 
 - preview metadata and structured case-study sections in JSON
