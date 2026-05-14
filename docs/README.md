@@ -21,6 +21,8 @@ Before implementing a page or layout change, use this order:
   - route, slug, canonical, and page SEO conventions
 - `docs/content/`
   - content modeling and configuration rules
+- root docs
+  - implementation audits, integration notes, architecture briefs, and engineering standards
 
 ## Active Docs
 - `docs/style/STYLEGUIDE.md`
@@ -32,6 +34,8 @@ Before implementing a page or layout change, use this order:
 - `docs/pages/QUOTE_PAGE.md`
 - `docs/seo/SEO_URLS.md`
 - `docs/content/CONTENT_CONFIGURATION.md`
+- `docs/UI_PROJECT_BRIEF.md`
+- `docs/ENGINEERING_EXCELLENCE.md`
 - `docs/BLOG_UI_UX_AUDIT.md`
 - `docs/PAYLOAD_CMS_BLOG_INTEGRATION.md`
 - `docs/PAYLOAD_CMS_REPO.md`
