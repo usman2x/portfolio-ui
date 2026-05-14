@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: http://localhost:8000/sitemap-index.xml
-Host: localhost:8000
+Sitemap: https://usman2x.github.io/portfolio-ui/sitemap-index.xml
+Host: https://usman2x.github.io
