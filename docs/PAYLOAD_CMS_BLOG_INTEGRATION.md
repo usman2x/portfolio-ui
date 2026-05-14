@@ -1,6 +1,6 @@
 # Payload CMS Blog Integration
 
-Status: In progress (CMS integrated, migration fallback active)  
+Status: In progress (CMS integrated, fallback explicit during migration)  
 Reviewed against the current repo on 2026-05-12.
 
 This document is the cross-repo source of truth for integrating a separate Payload CMS repository with this Gatsby site.
@@ -65,8 +65,9 @@ Design document:
 Current transition behavior:
 
 - Gatsby consumes published Payload posts first.
-- Existing Markdown posts continue to render as fallback.
+- Existing Markdown posts continue to render only when CMS sourcing is intentionally disabled or explicit fallback is enabled.
 - Slug collisions resolve in favor of Payload content.
+- The public site delivery model is static generation plus rebuild on publish.
 
 ### Public URL Contract
 
@@ -92,6 +93,7 @@ The chosen integration method is:
 - drafts must not be publicly visible
 - published posts must have required SEO fields
 - slugs must remain stable after publish unless explicitly changed
+- publishing alone does not update the static UI until a frontend rebuild or redeploy runs
 
 ### Shared Media Rules
 
@@ -107,7 +109,8 @@ Recommended order:
 2. implement schema, access control, and migrations there
 3. migrate Markdown blog content into Payload
 4. update this Gatsby repo to fetch published content from Payload
-5. remove Markdown as the source of truth
+5. wire publish-triggered rebuilds for the Gatsby frontend
+6. remove Markdown as the source of truth
 
 ## Related Docs
 

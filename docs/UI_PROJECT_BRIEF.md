@@ -38,6 +38,7 @@ The project is a Gatsby-based personal site for Muhammad Usman that combines:
 - Gatsby 5 static site generation
 - React 18 component tree
 - shared page shell through `src/components/Layout.js`
+- blog content delivery follows static generation plus rebuild on publish
 
 ### Content Sources
 
@@ -53,13 +54,14 @@ The project is a Gatsby-based personal site for Muhammad Usman that combines:
 
 - route pages live under `src/pages/`
 - project and blog detail pages are created from `gatsby-node.js`
-- blog rendering supports Markdown fallback plus CMS-first content merging
+- blog rendering is CMS-first, with Markdown fallback only when CMS is intentionally disabled or fallback is explicitly enabled
 
 ## Key Features
 
 - responsive homepage, about, projects, writings, and quote flow
 - build-time blog ingestion from Payload CMS
-- Markdown blog fallback when CMS data is unavailable
+- hard-fail CMS fetches by default to prevent stale local blog content from masking publish issues
+- published CMS articles appear in the UI on the next successful Gatsby build or deployment
 - tag-filtered writings archive with pagination
 - case-study project detail pages
 - share actions and SEO metadata on article pages
@@ -81,3 +83,8 @@ The project is a Gatsby-based personal site for Muhammad Usman that combines:
 - configured by `vercel.json`
 - local production deploy via `npm run deploy:vercel`
 - automatic deployment available when the repo is linked in Vercel and `main` is set as the production branch
+
+## Future Consideration
+
+- runtime blog rendering through SSR or a hybrid framework is intentionally deferred unless no-rebuild publishing becomes a hard requirement
+- Gatsby-to-Next.js migration for revalidation-based publishing is a future option, not part of the current architecture

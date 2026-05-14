@@ -1,6 +1,6 @@
 # Gatsby Repo Payload Integration Design
 
-Status: Implemented (CMS-first with Markdown fallback)  
+Status: Implemented (CMS-first with explicit fallback only)  
 Reviewed on 2026-05-12.
 
 This document is the source of truth for integrating the separate Payload CMS repository into this Gatsby site.
@@ -73,6 +73,7 @@ This is required for:
   - local Markdown posts in `src/content/blog/*.md`
 - Deduplication is slug-based.
 - If the same slug exists in both sources, Payload wins.
+- The chosen delivery model is static generation plus rebuild on publish, not runtime CMS fetching.
 
 This supports incremental migration while preserving existing URLs and content continuity.
 
@@ -104,6 +105,7 @@ Preferred build strategy:
 2. create Gatsby nodes from Payload response
 3. update page creation to use Payload-backed nodes
 4. update archive and detail queries to stop using `MarkdownRemark`
+5. trigger a frontend rebuild after publish in production
 
 This keeps the site static and does not require client-side fetching for the public blog.
 
@@ -280,7 +282,12 @@ Default behavior:
 - if no posts endpoint override is set, the build uses:
   - `/api/posts`
 
-If the Payload API is unreachable, Gatsby logs a warning and falls back to local Markdown posts.
+If the Payload API is unreachable and a CMS URL is configured, Gatsby fails the build by default so stale Markdown content is not served silently.
+
+Intentional fallback remains available with:
+
+- `PAYLOAD_ALLOW_FALLBACK=true`
+- optional alias: `BLOG_CMS_ALLOW_FALLBACK=true`
 
 ## 17. Repo Tasks
 
@@ -322,3 +329,11 @@ If the Payload API is unreachable, Gatsby logs a warning and falls back to local
 - only published Payload posts are shown
 - SEO metadata is sourced from Payload
 - existing Markdown files are no longer the active source of truth
+- production publishing relies on rebuild-on-publish rather than runtime blog rendering
+
+## 19. Deferred Option
+
+- SSR or hybrid runtime rendering for the blog is deferred for now
+- reconsider it only if rebuild-on-publish becomes operationally unacceptable
+- optimize rebuild-on-publish toward affected-page or incremental rebuilds only instead of full-site Gatsby builds when the deployment platform supports it reliably
+- consider a future Gatsby-to-Next.js migration if on-demand revalidation becomes the desired publishing model

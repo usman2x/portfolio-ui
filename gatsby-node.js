@@ -14,6 +14,15 @@ const getPayloadPostsEndpoint = () =>
   process.env.BLOG_CMS_POSTS_ENDPOINT ||
   DEFAULT_CMS_POSTS_ENDPOINT;
 
+const shouldAllowPayloadFallback = () => {
+  const fallbackValue =
+    process.env.PAYLOAD_ALLOW_FALLBACK ||
+    process.env.BLOG_CMS_ALLOW_FALLBACK ||
+    "";
+
+  return /^(1|true|yes)$/i.test(fallbackValue.trim());
+};
+
 const resolvePostsEndpointUrl = (baseUrl, endpoint) => {
   try {
     return new URL(endpoint).toString();
@@ -259,13 +268,24 @@ exports.sourceNodes = async ({
   }
 
   const payloadPostsEndpoint = resolvePostsEndpointUrl(payloadApiUrl, getPayloadPostsEndpoint());
+  const allowFallback = shouldAllowPayloadFallback();
 
   let posts = [];
   try {
     posts = await fetchPayloadPosts();
   } catch (error) {
-    reporter.warn(
-      `[blog-cms] Failed to fetch CMS posts from ${payloadPostsEndpoint}. Falling back to local Markdown. ${error.message}`
+    const errorMessage =
+      `[blog-cms] Failed to fetch CMS posts from ${payloadPostsEndpoint}. ${error.message}`;
+
+    if (allowFallback) {
+      reporter.warn(
+        `${errorMessage} Continuing with local Markdown because PAYLOAD_ALLOW_FALLBACK or BLOG_CMS_ALLOW_FALLBACK is enabled.`
+      );
+      return;
+    }
+
+    reporter.panicOnBuild(
+      `${errorMessage} Set PAYLOAD_ALLOW_FALLBACK=true to continue with local Markdown posts intentionally.`
     );
     return;
   }

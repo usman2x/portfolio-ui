@@ -152,6 +152,12 @@ BLOG_CMS_POSTS_ENDPOINT=/api/posts
 
 If no CMS URL variable is provided, the build falls back to local Markdown posts.
 
+If a CMS URL is provided and the CMS fetch fails, the build now fails by default. To continue intentionally with local Markdown posts, set:
+
+```bash
+PAYLOAD_ALLOW_FALLBACK=true
+```
+
 Recommended Vercel variables:
 
 ```bash
@@ -168,6 +174,22 @@ BLOG_CMS_API_URL=https://cms.example.com
 BLOG_CMS_POSTS_ENDPOINT=/api/posts
 ```
 
+## CMS Publish Model
+
+The current blog delivery model is:
+
+- static generation in Gatsby
+- published CMS content fetched during build
+- UI rebuild or redeploy required after publish
+
+This repo does not use runtime CMS fetching for the public blog.
+
+Recommended production flow:
+
+1. Publish in Payload CMS.
+2. Trigger a UI rebuild through Vercel or GitHub Actions.
+3. Serve the newly generated static pages.
+
 ## Troubleshooting
 
 If `main` is pushed and nothing deploys:
@@ -182,3 +204,16 @@ If Vercel deploys but the site still shows prefixed URLs:
 1. Check that `GATSBY_PATH_PREFIX` is `/` or unset in Vercel.
 2. Check that `GATSBY_SITE_URL` matches the real production domain.
 3. Redeploy after changing environment variables, because env changes do not update old deployments.
+
+If a local build does not pick up newly published CMS content:
+
+1. Restart `gatsby develop` or rerun `npm run build`.
+2. Check for `[blog-cms] Sourced ... published post(s) from CMS.` in the build log.
+3. If the CMS fetch fails, the build now stops instead of silently serving stale Markdown content.
+4. Use `PAYLOAD_ALLOW_FALLBACK=true` only when you intentionally want Markdown fallback.
+
+If you publish in CMS and expect the local UI to update without a rebuild:
+
+1. That is not the current architecture.
+2. Gatsby sources CMS blog content at build or startup time, not continuously at runtime.
+3. The chosen production direction is static generation plus rebuild on publish.
