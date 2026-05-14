@@ -5,6 +5,7 @@ import { format } from "date-fns"
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
 import SEO from "../components/seo"
 import ShareActions from "../components/ShareActions"
+import { resolveSiteAssetUrl } from "../utils/url"
 
 const wrapInlineImagesWithLinks = (html = "") => {
   if (!html) {
@@ -29,7 +30,11 @@ const BlogTemplate = ({ data, pageContext }) => {
   const markdownOgImage =
     markdownFrontmatter?.cover?.childImageSharp?.gatsbyImageData?.images?.fallback
       ?.src
-      ? `${baseSiteUrl}${markdownFrontmatter.cover.childImageSharp.gatsbyImageData.images.fallback.src}`
+      ? resolveSiteAssetUrl(
+          baseSiteUrl,
+          markdownFrontmatter.cover.childImageSharp.gatsbyImageData.images.fallback
+            .src
+        )
       : null
 
   const currentPost = isMarkdownPost

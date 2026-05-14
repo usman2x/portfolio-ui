@@ -1,140 +1,96 @@
-# 📄 Gatsby Site: Local Testing & GitHub Pages Deployment
+# Gatsby Site: Local Testing and GitHub Pages Deployment
 
 ## Requirements
 
-Use Node.js 20 LTS (or any Node.js version `>=18.0.0`).
-
-If you use `nvm`, run:
+Use Node.js `20`.
 
 ```bash
 nvm use
 ```
 
-## 🚀 1. Run Gatsby Locally (for Development)
+## Production URL
 
-To start the site in development mode:
+This repository is `usman2x/portfolio-ui`, so the GitHub Pages project-site URL is:
 
-```bash
-gatsby develop
+```text
+https://usman2x.github.io/portfolio-ui/
 ```
 
-- Opens at `http://localhost:8000`
-- Live reload, fast refresh enabled
-- Ignores `pathPrefix`, so URL paths are root-based (good for local dev)
+`https://usman2x.github.io/` is the root URL for a user-site repository named `usman2x.github.io`. This repo will not deploy there unless you rename the repository or use that separate repo as the publishing target.
 
----
+If `GITHUB_PAGES_CNAME` is configured in GitHub Actions variables, the site publishes to that custom domain instead.
 
-## 🧪 2. Test Site Locally With `pathPrefix` (Like on GitHub Pages)
+## Local Development
 
-If your site will be deployed under a subdirectory like `https://username.github.io/my-site`, you need to test it locally with `pathPrefix`.
-
-### ✅ Steps:
-
-1. Set `GATSBY_PATH_PREFIX` in your environment:
+Run the dev server:
 
 ```bash
-export GATSBY_PATH_PREFIX=/my-site
+npm run develop
 ```
 
-2. Build the site with prefix:
+This opens `http://localhost:8000`.
+
+## Production-Like Local Test
+
+Use the same path prefix GitHub Pages expects:
 
 ```bash
-gatsby build --prefix-paths
-```
-
-3. Serve the site locally:
-
-```bash
+export GATSBY_PATH_PREFIX=/portfolio-ui
+npm run build -- --prefix-paths
 gatsby serve --prefix-paths
 ```
 
-- Opens at `http://localhost:9000/my-site/`
-- Good for verifying routing, assets, and links before pushing to GitHub Pages
+This opens `http://localhost:9000/portfolio-ui/`.
 
----
+## Deployment
 
-## ⚙️ Environment Variables
+The primary deployment path is automatic:
 
-Deployment should now be configured through environment variables rather than hardcoded domain or CMS values.
+1. Push to `main`.
+2. GitHub Actions runs `.github/workflows/deploy.yml`.
+3. The workflow builds Gatsby with `--prefix-paths`.
+4. The built site is pushed to the `gh-pages` branch.
 
-Recommended variables:
+For this to work, GitHub must be configured correctly:
+
+- GitHub Actions must be enabled for the repository.
+- GitHub Pages must publish from the `gh-pages` branch at `/ (root)`.
+- `GATSBY_PATH_PREFIX` should be `/portfolio-ui` unless a custom domain is used.
+- `GATSBY_SITE_URL` should match the public site URL.
+
+Manual fallback:
 
 ```bash
-GATSBY_SITE_URL=https://example.com
+npm run deploy
+```
+
+That builds with `--prefix-paths` and pushes `public/` to `gh-pages`.
+
+## Environment Variables
+
+Recommended GitHub Actions variables:
+
+```bash
+GATSBY_SITE_URL=https://usman2x.github.io/portfolio-ui
 GATSBY_PATH_PREFIX=/portfolio-ui
 PAYLOAD_API_URL=https://cms.example.com
 PAYLOAD_POSTS_ENDPOINT=/api/posts
 ```
 
-Optional aliases supported by the blog source:
+Optional aliases:
 
 ```bash
 BLOG_CMS_API_URL=https://cms.example.com
 BLOG_CMS_POSTS_ENDPOINT=/api/posts
 ```
 
-If no CMS URL variable is provided, the site falls back to local Markdown posts only.
+If no CMS URL variable is provided, the build falls back to local Markdown posts.
 
-## 📌 GitHub Pages Root Path
+## Troubleshooting
 
-Root-path hosting on GitHub Pages is possible only for a user or organization site repository, for example:
+If `main` is pushed and nothing deploys:
 
-```text
-https://usman2x.github.io/
-```
-
-That requires the repository name to be:
-
-```text
-usman2x.github.io
-```
-
-For the current repository name `portfolio-ui`, the GitHub Pages URL is a project site and will live under:
-
-```text
-https://usman2x.github.io/portfolio-ui/
-```
-
-Unless you use a custom domain.
-
----
-
-## 🚀 3. Deploy to GitHub Pages
-
-### 1. Make sure you have `gh-pages` installed:
-
-```bash
-npm install gh-pages --save-dev
-```
-
-### 2. Update your `package.json`:
-
-```json
-"scripts": {
-  "develop": "gatsby develop",
-  "build": "gatsby build",
-  "serve": "npm run build && gatsby serve",
-  "deploy": "gatsby build --prefix-paths && gh-pages -d public"
-}
-```
-
-### 3. Deploy:
-
-```bash
-npm run deploy
-```
-
-- This builds the project with the correct path prefix and pushes the `public/` folder to the `gh-pages` branch.
-
----
-
-## ✅ Bonus: Test Build Without Deploying
-
-You can also manually test the build before deploying:
-
-```bash
-npm run build
-gatsby serve --prefix-paths
-```
-
-For this repo specifically, `npm run serve` already runs the build step before starting the server. If you run `gatsby serve` directly, make sure a successful `gatsby build` has completed first.
+1. Check the Actions tab for a `Deploy Portfolio UI` run.
+2. If no run exists, Actions are not being triggered at the repo level.
+3. Check that GitHub Pages is serving `gh-pages`, not `main`.
+4. Check that you are opening `https://usman2x.github.io/portfolio-ui/`, not `https://usman2x.github.io/`.

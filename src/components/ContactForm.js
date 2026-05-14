@@ -1,5 +1,6 @@
 import React from "react"
 import contactData from "../content/misc/contact-data.json"
+import { resolveSitePageUrl } from "../utils/url"
 
 const ContactForm = () => {
   const formLink = process.env.GATSBY_FORM_LINK || "#"
@@ -7,7 +8,7 @@ const ContactForm = () => {
     process.env.GATSBY_SITE_URL || "http://localhost:8000"
   ).replace(/\/+$/, "")
   const redirectPage = siteUrl
-    ? new URL(contactData["redirect-page"], siteUrl).href
+    ? resolveSitePageUrl(siteUrl, contactData["redirect-page"])
     : contactData["redirect-page"]
 
   return (

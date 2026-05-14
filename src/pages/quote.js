@@ -3,6 +3,7 @@ import Layout from "../components/Layout"
 import SEO from "../components/seo"
 import quotePage from "../content/pages/quote.json"
 import contactData from "../content/misc/contact-data.json"
+import { resolveSitePageUrl } from "../utils/url"
 
 const QuotePage = () => {
   const formLink = process.env.GATSBY_FORM_LINK || "#"
@@ -10,7 +11,7 @@ const QuotePage = () => {
     process.env.GATSBY_SITE_URL || "http://localhost:8000"
   ).replace(/\/+$/, "")
   const redirectPage = siteUrl
-    ? new URL(contactData["redirect-page"], siteUrl).href
+    ? resolveSitePageUrl(siteUrl, contactData["redirect-page"])
     : contactData["redirect-page"]
 
   return (
