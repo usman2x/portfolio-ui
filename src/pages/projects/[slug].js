@@ -1,11 +1,10 @@
 import React from "react"
-import { graphql, Link } from "gatsby"
-import Layout from "../components/Layout"
-import SEO from "../components/seo"
-import projectDetailContent from "../content/pages/project-detail.json"
-import ProjectVisual from "../components/ProjectVisual"
-import { findProjectBySlug, mergeProjects } from "../utils/projects"
-import localProjects from "../content/misc/projects.json"
+import Link from "next/link"
+import Layout from "../../components/Layout"
+import SEO from "../../components/seo"
+import projectDetailContent from "../../content/pages/project-detail.json"
+import ProjectVisual from "../../components/ProjectVisual"
+import { getAllProjects, getProjectPagination } from "../../lib/content"
 
 const renderSectionBlock = (block, projectTitle) => {
   if (block.type === "text") {
@@ -54,32 +53,8 @@ const renderSectionBlock = (block, projectTitle) => {
   return null
 }
 
-const ProjectTemplate = ({ data, pageContext }) => {
-  const { portfolioProject } = data
-  const { previousProject, nextProject } = pageContext
+const ProjectPage = ({ project, previousProject, nextProject }) => {
   const { navigation, meta, link: linkContent, story } = projectDetailContent
-  const project = portfolioProject
-    ? findProjectBySlug(
-        mergeProjects({
-          cmsProjects: [portfolioProject],
-          localProjects: [],
-        }),
-        portfolioProject.slug
-      )
-    : findProjectBySlug(
-        mergeProjects({
-          cmsProjects: [],
-          localProjects: pageContext.project
-            ? [pageContext.project]
-            : localProjects,
-        }),
-        pageContext.slug
-      )
-
-  if (!project) {
-    return null
-  }
-
   const projectLinkLabel = project.linkLabel || linkContent.defaultLabel
 
   return (
@@ -98,7 +73,7 @@ const ProjectTemplate = ({ data, pageContext }) => {
         <section className="project-case-study-hero">
           <div className="project-case-study-copy">
             <Link
-              to="/projects/"
+              href="/projects/"
               className="text-link-cta link-underline project-case-study-back"
             >
               {navigation.backLabel}
@@ -185,7 +160,7 @@ const ProjectTemplate = ({ data, pageContext }) => {
           <nav className="project-pagination" aria-label="Project pagination">
             {previousProject ? (
               <Link
-                to={`/projects/${previousProject.slug}/`}
+                href={`/projects/${previousProject.slug}/`}
                 className="project-pagination-card"
               >
                 <span className="project-pagination-label">
@@ -196,7 +171,7 @@ const ProjectTemplate = ({ data, pageContext }) => {
             ) : null}
             {nextProject ? (
               <Link
-                to={`/projects/${nextProject.slug}/`}
+                href={`/projects/${nextProject.slug}/`}
                 className="project-pagination-card project-pagination-card-next"
               >
                 <span className="project-pagination-label">Next project</span>
@@ -210,28 +185,31 @@ const ProjectTemplate = ({ data, pageContext }) => {
   )
 }
 
-export const query = graphql`
-  query ProjectTemplateQuery($slug: String!) {
-    portfolioProject(slug: { eq: $slug }) {
-      id
-      payloadId
-      title
-      slug
-      excerpt
-      description
-      date
-      tags
-      readingTimeMinutes
-      contentHtml
-      seoTitle
-      seoDescription
-      canonicalUrl
-      noindex
-      coverImageUrl
-      coverImageAlt
-      ogImageUrl
+export const getStaticPaths = async () => {
+  const projects = await getAllProjects()
+
+  return {
+    paths: projects.map(project => ({ params: { slug: project.slug } })),
+    fallback: false,
+  }
+}
+
+export const getStaticProps = async ({ params }) => {
+  const projects = await getAllProjects()
+  const project = projects.find(item => item.slug === params.slug) || null
+
+  if (!project) {
+    return {
+      notFound: true,
     }
   }
-`
 
-export default ProjectTemplate
+  return {
+    props: {
+      project,
+      ...getProjectPagination(projects, project.slug),
+    },
+  }
+}
+
+export default ProjectPage

@@ -1,5 +1,5 @@
 import React from "react"
-import { Link } from "gatsby"
+import Link from "next/link"
 import { FileText, Github, Linkedin, Mail, MessageCircle } from "lucide-react"
 import identity from "../content/misc/identity.json"
 import contactData from "../content/misc/contact-data.json"
@@ -65,10 +65,10 @@ const Footer = () => {
           </div>
           <div className="footer-column">
             <p className="footer-heading">Navigate</p>
-            <Link to="/about/">About</Link>
-            <Link to="/projects/">Projects</Link>
-            <Link to="/blog/">Writings</Link>
-            <Link to="/quote/">Get a Quote</Link>
+            <Link href="/about/">About</Link>
+            <Link href="/projects/">Projects</Link>
+            <Link href="/blog/">Writings</Link>
+            <Link href="/quote/">Get a Quote</Link>
           </div>
         </div>
         <div className="footer-legal">

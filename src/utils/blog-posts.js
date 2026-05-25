@@ -61,26 +61,38 @@ const normalizeCmsPost = post => ({
   ogImageUrl: post.ogImageUrl || null,
 })
 
-const normalizeMarkdownPost = post => ({
-  id: post.id,
-  source: "markdown",
-  slug: post.frontmatter?.slug,
-  title: post.frontmatter?.title,
-  date: post.frontmatter?.date,
-  description: post.frontmatter?.description || post.excerpt || "",
-  excerpt: post.excerpt || "",
-  tags: Array.isArray(post.frontmatter?.tags) ? post.frontmatter.tags : [],
-  readingTimeMinutes: post.timeToRead || 1,
-  contentHtml: post.html || "",
-  seoTitle: post.frontmatter?.title,
-  seoDescription: post.frontmatter?.description || post.excerpt || "",
-  canonicalUrl: null,
-  noindex: false,
-  coverImageSharp: post.frontmatter?.cover || null,
-  coverImageUrl: null,
-  coverImageAlt: post.frontmatter?.title || "",
-  ogImageUrl: null,
-})
+const normalizeMarkdownPost = post => {
+  if (post.source === "markdown") {
+    return {
+      ...post,
+      id: post.id,
+      tags: Array.isArray(post.tags) ? post.tags : [],
+      readingTimeMinutes: post.readingTimeMinutes || 1,
+      noindex: Boolean(post.noindex),
+    }
+  }
+
+  return {
+    id: post.id,
+    source: "markdown",
+    slug: post.frontmatter?.slug,
+    title: post.frontmatter?.title,
+    date: post.frontmatter?.date,
+    description: post.frontmatter?.description || post.excerpt || "",
+    excerpt: post.excerpt || "",
+    tags: Array.isArray(post.frontmatter?.tags) ? post.frontmatter.tags : [],
+    readingTimeMinutes: post.timeToRead || 1,
+    contentHtml: post.html || "",
+    seoTitle: post.frontmatter?.title,
+    seoDescription: post.frontmatter?.description || post.excerpt || "",
+    canonicalUrl: null,
+    noindex: false,
+    coverImageSharp: post.frontmatter?.cover || null,
+    coverImageUrl: null,
+    coverImageAlt: post.frontmatter?.title || "",
+    ogImageUrl: null,
+  }
+}
 
 export const mergeBlogPosts = ({ cmsPosts = [], markdownPosts = [] }) => {
   const merged = new Map()

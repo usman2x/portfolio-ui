@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: usman2x/portfolio-gatsby
+  repo: usman2x/portfolio-ui
   branch: main
 
 site_url: https://www.musman.online

@@ -4,12 +4,11 @@ import SEO from "../components/seo"
 import quotePage from "../content/pages/quote.json"
 import contactData from "../content/misc/contact-data.json"
 import { resolveSitePageUrl } from "../utils/url"
+import { siteMetadata } from "../lib/site"
 
 const QuotePage = () => {
-  const formLink = process.env.GATSBY_FORM_LINK || "#"
-  const siteUrl = (
-    process.env.GATSBY_SITE_URL || "http://localhost:8000"
-  ).replace(/\/+$/, "")
+  const formLink = process.env.NEXT_PUBLIC_FORM_LINK || "#"
+  const siteUrl = siteMetadata.siteUrl
   const redirectPage = siteUrl
     ? resolveSitePageUrl(siteUrl, contactData["redirect-page"])
     : contactData["redirect-page"]

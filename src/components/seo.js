@@ -1,138 +1,54 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Helmet } from "react-helmet";
-import { useStaticQuery, graphql } from "gatsby";
+import React from "react"
+import Head from "next/head"
+import { siteMetadata } from "../lib/site"
+import { resolveSiteAssetUrl } from "../utils/url"
 
 const SEO = ({
   title,
-  description,
-  meta,
-  lang,
-  pathname,
-  image,
-  type,
-  canonicalUrl,
-  noindex,
+  description = "",
+  meta = [],
+  lang = "en",
+  pathname = "/",
+  image = "",
+  type = "website",
+  canonicalUrl = "",
+  noindex = false,
 }) => {
-  const { site } = useStaticQuery(
-    graphql`
-      query {
-        site {
-          siteMetadata {
-            title
-            description
-            siteUrl
-            author
-          }
-        }
-      }
-    `
-  );
-
-  const metaDescription = description || site.siteMetadata.description;
-  const defaultTitle = site.siteMetadata.title;
-  const baseSiteUrl = site.siteMetadata.siteUrl || "";
+  const metaDescription = description || siteMetadata.description
+  const defaultTitle = siteMetadata.title
+  const baseSiteUrl = siteMetadata.siteUrl || ""
   const resolvedCanonicalUrl =
-    canonicalUrl || (baseSiteUrl ? `${baseSiteUrl}${pathname}` : pathname);
+    canonicalUrl || (baseSiteUrl ? `${baseSiteUrl}${pathname}` : pathname)
 
-  const resolvedImage = image || "";
+  const resolvedImage = image ? resolveSiteAssetUrl(baseSiteUrl, image) : ""
+  const pageTitle = defaultTitle ? `${title} | ${defaultTitle}` : title
 
   return (
-    <Helmet
-      htmlAttributes={{
-        lang,
-      }}
-      title={title}
-      titleTemplate={defaultTitle ? `%s | ${defaultTitle}` : null}
-      meta={[
-        {
-          name: "description",
-          content: metaDescription,
-        },
-        {
-          property: "og:title",
-          content: title,
-        },
-        {
-          property: "og:description",
-          content: metaDescription,
-        },
-        {
-          property: "og:type",
-          content: type,
-        },
-        ...(noindex
-          ? [
-              {
-                name: "robots",
-                content: "noindex, nofollow",
-              },
-            ]
-          : []),
-        ...(resolvedImage
-          ? [
-              {
-                property: "og:image",
-                content: resolvedImage,
-              },
-              {
-                name: "twitter:image",
-                content: resolvedImage,
-              },
-            ]
-          : []),
-        {
-          name: "twitter:card",
-          content: resolvedImage ? "summary_large_image" : "summary",
-        },
-        {
-          name: "twitter:creator",
-          content: site.siteMetadata.author || "",
-        },
-        {
-          name: "twitter:title",
-          content: title,
-        },
-        {
-          name: "twitter:description",
-          content: metaDescription,
-        },
-      ].concat(meta)}
-      link={
-        resolvedCanonicalUrl
-          ? [
-              {
-                rel: "canonical",
-                href: resolvedCanonicalUrl,
-              },
-            ]
-          : []
-      }
-    />
-  );
-};
+    <Head>
+      <title>{pageTitle}</title>
+      <meta name="description" content={metaDescription} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={metaDescription} />
+      <meta property="og:type" content={type} />
+      {noindex ? <meta name="robots" content="noindex, nofollow" /> : null}
+      {resolvedImage ? <meta property="og:image" content={resolvedImage} /> : null}
+      {resolvedImage ? <meta name="twitter:image" content={resolvedImage} /> : null}
+      <meta
+        name="twitter:card"
+        content={resolvedImage ? "summary_large_image" : "summary"}
+      />
+      <meta name="twitter:creator" content={siteMetadata.author || ""} />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={metaDescription} />
+      {resolvedCanonicalUrl ? (
+        <link rel="canonical" href={resolvedCanonicalUrl} />
+      ) : null}
+      {meta.map((item, index) => {
+        const key = item.name || item.property || index
+        return <meta key={key} {...item} />
+      })}
+    </Head>
+  )
+}
 
-SEO.defaultProps = {
-  lang: "en",
-  meta: [],
-  description: "",
-  pathname: "/",
-  image: "",
-  type: "website",
-  canonicalUrl: "",
-  noindex: false,
-};
-
-SEO.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  lang: PropTypes.string,
-  meta: PropTypes.arrayOf(PropTypes.object),
-  pathname: PropTypes.string,
-  image: PropTypes.string,
-  type: PropTypes.string,
-  canonicalUrl: PropTypes.string,
-  noindex: PropTypes.bool,
-};
-
-export default SEO;
+export default SEO

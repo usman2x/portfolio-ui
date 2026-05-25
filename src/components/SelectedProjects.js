@@ -1,5 +1,5 @@
 import React from "react"
-import { Link } from "gatsby"
+import Link from "next/link"
 import homeContent from "../content/pages/home.json"
 import ProjectVisual from "./ProjectVisual"
 
@@ -8,7 +8,7 @@ const SelectedProjects = ({ projects }) => {
     <section id="projects" className="container landing-section">
       <div className="landing-section-header">
         <h2 className="landing-section-title">{homeContent.projects.title}</h2>
-        <Link to="/projects/" className="text-link-cta link-underline">
+        <Link href="/projects/" className="text-link-cta link-underline">
           {homeContent.projects.archiveLabel}
         </Link>
       </div>
@@ -19,7 +19,7 @@ const SelectedProjects = ({ projects }) => {
             className="preview-card project-preview-card"
           >
             <Link
-              to={`/projects/${project.slug}/`}
+              href={`/projects/${project.slug}/`}
               className="project-preview-media-link"
               aria-label={`Open ${project.title} case study`}
             >
@@ -33,7 +33,7 @@ const SelectedProjects = ({ projects }) => {
             <div className="preview-card-body">
               <h3 className="preview-card-title">
                 <Link
-                  to={`/projects/${project.slug}/`}
+                  href={`/projects/${project.slug}/`}
                   className="project-anchor-link link-underline"
                 >
                   {project.title}
@@ -43,7 +43,7 @@ const SelectedProjects = ({ projects }) => {
               <p className="preview-card-role">
                 {project.role ? `${project.role} ` : ""}
                 <Link
-                  to={`/projects/${project.slug}/`}
+                  href={`/projects/${project.slug}/`}
                   className="text-link-cta link-underline project-inline-more"
                 >
                   Read more

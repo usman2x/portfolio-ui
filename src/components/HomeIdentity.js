@@ -1,9 +1,9 @@
 import React from "react"
-import { Link } from "gatsby"
-import { StaticImage } from "gatsby-plugin-image"
+import Link from "next/link"
 import identity from "../content/misc/identity.json"
 import homeContent from "../content/pages/home.json"
 import contactData from "../content/misc/contact-data.json"
+import { withBasePath } from "../lib/site"
 
 const HomeIdentity = () => {
   const identitySection = homeContent.identity || {}
@@ -22,14 +22,11 @@ const HomeIdentity = () => {
       id="top"
     >
       <div className="identity-layout">
-        <Link to="/about/" className="identity-link-card">
+        <Link href="/about/" className="identity-link-card">
           <div className="identity-portrait">
-            <StaticImage
-              src="../images/usman.jpg"
+            <img
+              src={withBasePath("/images/usman.jpg")}
               alt={identity.portraitAlt}
-              placeholder="blurred"
-              quality={88}
-              formats={["auto", "webp", "avif"]}
               className="identity-portrait-image"
               loading="eager"
             />
@@ -61,7 +58,7 @@ const HomeIdentity = () => {
             >
               {primaryCtaLabel}
             </a>
-            <Link to="/projects/" className="theme-btn-outline theme-btn-sm">
+            <Link href="/projects/" className="theme-btn-outline theme-btn-sm">
               {secondaryCtaLabel}
             </Link>
           </div>

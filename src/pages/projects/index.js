@@ -1,18 +1,12 @@
 import React from "react"
-import { graphql, Link } from "gatsby"
-import Layout from "../components/Layout"
-import SEO from "../components/seo"
-import projectPage from "../content/pages/projects.json"
-import localProjects from "../content/misc/projects.json"
-import ProjectVisual from "../components/ProjectVisual"
-import { mergeProjects } from "../utils/projects"
+import Link from "next/link"
+import Layout from "../../components/Layout"
+import SEO from "../../components/seo"
+import projectPage from "../../content/pages/projects.json"
+import ProjectVisual from "../../components/ProjectVisual"
+import { getAllProjects } from "../../lib/content"
 
-const ProjectsPage = ({ data }) => {
-  const projects = mergeProjects({
-    cmsProjects: data.allPortfolioProject.nodes,
-    localProjects,
-  })
-
+const ProjectsPage = ({ projects }) => {
   return (
     <Layout>
       <SEO
@@ -29,7 +23,7 @@ const ProjectsPage = ({ data }) => {
           {projects.map(project => (
             <article key={project.slug} className="projects-archive-card">
               <Link
-                to={`/projects/${project.slug}/`}
+                href={`/projects/${project.slug}/`}
                 className="project-preview-media-link"
                 aria-label={`Open ${project.title} case study`}
               >
@@ -43,7 +37,7 @@ const ProjectsPage = ({ data }) => {
               <div className="projects-archive-body">
                 <h2 className="interior-section-title">
                   <Link
-                    to={`/projects/${project.slug}/`}
+                    href={`/projects/${project.slug}/`}
                     className="project-anchor-link link-underline"
                   >
                     {project.title}
@@ -62,7 +56,7 @@ const ProjectsPage = ({ data }) => {
                 </div>
               </div>
               <Link
-                to={`/projects/${project.slug}/`}
+                href={`/projects/${project.slug}/`}
                 className="text-link-cta project-preview-more"
                 aria-label={`Open ${project.title} case study`}
               >
@@ -77,30 +71,14 @@ const ProjectsPage = ({ data }) => {
   )
 }
 
-export const query = graphql`
-  query ProjectsPageQuery {
-    allPortfolioProject(sort: { date: DESC }) {
-      nodes {
-        id
-        payloadId
-        title
-        slug
-        excerpt
-        description
-        date
-        tags
-        readingTimeMinutes
-        contentHtml
-        seoTitle
-        seoDescription
-        canonicalUrl
-        noindex
-        coverImageUrl
-        coverImageAlt
-        ogImageUrl
-      }
-    }
+export const getStaticProps = async () => {
+  const projects = await getAllProjects()
+
+  return {
+    props: {
+      projects,
+    },
   }
-`
+}
 
 export default ProjectsPage

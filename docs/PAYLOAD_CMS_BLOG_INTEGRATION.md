@@ -3,7 +3,7 @@
 Status: In progress (CMS integrated, fallback explicit during migration)  
 Reviewed against the current repo on 2026-05-12.
 
-This document is the cross-repo source of truth for integrating a separate Payload CMS repository with this Gatsby site.
+This document is the cross-repo source of truth for integrating a separate Payload CMS repository with this Next.js site.
 
 ## Architecture Correction
 
@@ -12,14 +12,13 @@ The CMS will not live in a monorepo with this site.
 The target setup is:
 
 - one separate repository for Payload CMS
-- this existing repository for the Gatsby public site
+- this existing repository for the Next.js public site
 
 ## Runtime Clarification
 
 - the Payload CMS repo is `Next.js`-based because Payload runs on Next.js
-- this repository is `Gatsby` + `React` on `Node.js`
+- this repository is `Next.js` + `React` on `Node.js`
 - this repository is not `NestJS`-based
-- this repository is not `Next.js`-based
 
 ## Repo Responsibilities
 
@@ -39,7 +38,7 @@ Design document:
 
 - `docs/PAYLOAD_CMS_REPO.md`
 
-### Gatsby site repo
+### Next.js site repo
 
 Owns:
 
@@ -48,37 +47,37 @@ Owns:
 - tag filtering
 - pagination
 - SEO rendering
-- build-time fetch from Payload over REST
+- build-time fetch from Payload over REST through `src/lib/cms.js`
 
 Design document:
 
-- `docs/GATSBY_BLOG_PAYLOAD_INTEGRATION.md`
+- `docs/NEXT_BLOG_PAYLOAD_INTEGRATION.md`
 
 ## Shared Contract Between Repos
 
 ### Content Ownership
 
 - Payload CMS is the source of truth for blog content.
-- This Gatsby repo consumes published content only.
+- This Next.js repo consumes published content only.
 - Markdown blog files in this repo are temporary until content migration is complete.
 
 Current transition behavior:
 
-- Gatsby consumes published Payload posts first.
+- Next.js consumes published Payload posts first.
 - Existing Markdown posts continue to render only when CMS sourcing is intentionally disabled or explicit fallback is enabled.
 - Slug collisions resolve in favor of Payload content.
 - The public site delivery model is static generation plus rebuild on publish.
 
 ### Public URL Contract
 
-The Gatsby site must preserve:
+The Next.js site must preserve:
 
 - `/blog/`
 - `/blog/<slug>/`
 
 ### Public Data Contract
 
-The Gatsby site needs access to:
+The Next.js site needs access to:
 
 - published posts
 - tags
@@ -108,11 +107,11 @@ Recommended order:
 1. build the separate Payload CMS repo
 2. implement schema, access control, and migrations there
 3. migrate Markdown blog content into Payload
-4. update this Gatsby repo to fetch published content from Payload
-5. wire publish-triggered rebuilds for the Gatsby frontend
+4. update this Next.js repo to fetch published content from Payload
+5. wire publish-triggered rebuilds for the Next.js frontend
 6. remove Markdown as the source of truth
 
 ## Related Docs
 
 - `docs/PAYLOAD_CMS_REPO.md`
-- `docs/GATSBY_BLOG_PAYLOAD_INTEGRATION.md`
+- `docs/NEXT_BLOG_PAYLOAD_INTEGRATION.md`

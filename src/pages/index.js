@@ -1,28 +1,13 @@
 import React from "react"
-import { graphql } from "gatsby"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
 import HomeIdentity from "../components/HomeIdentity"
 import SelectedProjects from "../components/SelectedProjects"
 import LatestWritings from "../components/LatestWritings"
 import homeContent from "../content/pages/home.json"
-import localProjects from "../content/misc/projects.json"
-import { mergeBlogPosts } from "../utils/blog-posts"
-import { mergeProjects } from "../utils/projects"
+import { getAllBlogPosts, getAllProjects } from "../lib/content"
 
-const IndexPage = ({ data }) => {
-  const posts = mergeBlogPosts({
-    cmsPosts: data.allPortfolioBlogPost.nodes,
-    markdownPosts: data.allMarkdownRemark.nodes,
-  }).slice(0, 3)
-  const projects = mergeProjects({
-    cmsProjects: data.allPortfolioProject.nodes,
-    localProjects,
-  })
-  const featuredProjects = homeContent.projects.featuredSlugs
-    .map(slug => projects.find(project => project.slug === slug))
-    .filter(Boolean)
-
+const IndexPage = ({ posts, featuredProjects }) => {
   return (
     <Layout>
       <SEO
@@ -42,67 +27,22 @@ const IndexPage = ({ data }) => {
   )
 }
 
-export const query = graphql`
-  query HomePageWritingsQuery {
-    allPortfolioBlogPost {
-      nodes {
-        id
-        payloadId
-        title
-        slug
-        excerpt
-        description
-        date
-        tags
-        readingTimeMinutes
-        contentHtml
-        seoTitle
-        seoDescription
-        canonicalUrl
-        noindex
-        coverImageUrl
-        coverImageAlt
-        ogImageUrl
-      }
-    }
-    allPortfolioProject(sort: { date: DESC }) {
-      nodes {
-        id
-        payloadId
-        title
-        slug
-        excerpt
-        description
-        date
-        tags
-        readingTimeMinutes
-        contentHtml
-        seoTitle
-        seoDescription
-        canonicalUrl
-        noindex
-        coverImageUrl
-        coverImageAlt
-        ogImageUrl
-      }
-    }
-    allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/blog/" } }
-      sort: { frontmatter: { date: DESC } }
-    ) {
-      nodes {
-        id
-        excerpt(pruneLength: 140)
-        frontmatter {
-          title
-          date
-          description
-          slug
-          tags
-        }
-      }
-    }
+export const getStaticProps = async () => {
+  const [allPosts, projects] = await Promise.all([
+    getAllBlogPosts(),
+    getAllProjects(),
+  ])
+  const posts = allPosts.slice(0, homeContent.writings.limit || 3)
+  const featuredProjects = homeContent.projects.featuredSlugs
+    .map(slug => projects.find(project => project.slug === slug))
+    .filter(Boolean)
+
+  return {
+    props: {
+      posts,
+      featuredProjects,
+    },
   }
-`
+}
 
 export default IndexPage

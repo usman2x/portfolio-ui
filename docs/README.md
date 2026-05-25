@@ -39,7 +39,7 @@ Before implementing a page or layout change, use this order:
 - `docs/BLOG_UI_UX_AUDIT.md`
 - `docs/PAYLOAD_CMS_BLOG_INTEGRATION.md`
 - `docs/PAYLOAD_CMS_REPO.md`
-- `docs/GATSBY_BLOG_PAYLOAD_INTEGRATION.md`
+- `docs/NEXT_BLOG_PAYLOAD_INTEGRATION.md`
 
 ## Usage Rule
 - Treat these docs as implementation constraints, not optional notes.

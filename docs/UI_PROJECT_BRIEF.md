@@ -4,7 +4,7 @@ This document gives a short current-state overview of the UI repository.
 
 ## Purpose
 
-The project is a Gatsby-based personal site for Muhammad Usman that combines:
+The project is a Next.js-based personal site for Muhammad Usman that combines:
 
 - portfolio and case-study content
 - a writings archive with article detail pages
@@ -35,7 +35,7 @@ The project is a Gatsby-based personal site for Muhammad Usman that combines:
 
 ### Runtime Model
 
-- Gatsby 5 static site generation
+- Next.js static generation with `output: "export"`
 - React 18 component tree
 - shared page shell through `src/components/Layout.js`
 - blog content delivery follows static generation plus rebuild on publish
@@ -48,12 +48,12 @@ The project is a Gatsby-based personal site for Muhammad Usman that combines:
 - Markdown content for:
   - `src/content/blog/*.md`
   - `src/content/experience/all.md`
-- CMS content fetched during build in `gatsby-node.js`
+- CMS content fetched during build through `src/lib/cms.js`
 
 ### Page Generation
 
 - route pages live under `src/pages/`
-- project and blog detail pages are created from `gatsby-node.js`
+- project and blog detail pages use Next dynamic routes under `src/pages/projects/[slug].js` and `src/pages/blog/[slug].js`
 - blog rendering is CMS-first, with Markdown fallback only when CMS is intentionally disabled or fallback is explicitly enabled
 
 ## Key Features
@@ -61,7 +61,7 @@ The project is a Gatsby-based personal site for Muhammad Usman that combines:
 - responsive homepage, about, projects, writings, and quote flow
 - build-time blog ingestion from Payload CMS
 - hard-fail CMS fetches by default to prevent stale local blog content from masking publish issues
-- published CMS articles appear in the UI on the next successful Gatsby build or deployment
+- published CMS articles appear in the UI on the next successful Next.js build or deployment
 - tag-filtered writings archive with pagination
 - case-study project detail pages
 - share actions and SEO metadata on article pages
@@ -76,6 +76,7 @@ The project is a Gatsby-based personal site for Muhammad Usman that combines:
 - prefixed public path: `/portfolio-ui`
 - automated via `.github/workflows/deploy.yml`
 - manual fallback via `npm run deploy`
+- requires `NEXT_PUBLIC_PATH_PREFIX=/portfolio-ui` and `NEXT_PUBLIC_SITE_URL` including the prefix
 
 ### Vercel
 
@@ -86,5 +87,4 @@ The project is a Gatsby-based personal site for Muhammad Usman that combines:
 
 ## Future Consideration
 
-- runtime blog rendering through SSR or a hybrid framework is intentionally deferred unless no-rebuild publishing becomes a hard requirement
-- Gatsby-to-Next.js migration for revalidation-based publishing is a future option, not part of the current architecture
+- runtime blog rendering or on-demand revalidation remains optional if no-rebuild publishing becomes a hard requirement

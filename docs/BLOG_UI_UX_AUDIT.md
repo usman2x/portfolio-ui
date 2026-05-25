@@ -15,7 +15,7 @@ Pages and files reviewed:
 - `src/components/Footer.js`
 - `src/components/LatestWritings.js`
 - `src/styles/global.css`
-- `gatsby-node.js`
+- `src/lib/content.js`
 - `src/content/blog/*.md`
 
 Reference docs used:
@@ -169,14 +169,14 @@ The current article experience ends too abruptly for both readers and business g
   - no related posts section
   - no previous/next section
   - no post-read CTA band
-- `gatsby-node.js`
+- `src/lib/content.js`
   - blog pages are created with `slug` and `sourceType` only
 
 ### Action
 
 Update page generation and template behavior:
 
-1. In `gatsby-node.js`, pass previous and next post context for blog pages.
+1. In `src/lib/content.js`, provide previous and next post data for blog pages.
 2. In the blog template, render previous and next links after comments.
 3. Build a simple related-posts system based on shared tags, excluding the current post.
 4. Add a subtle post-read CTA band before the footer.

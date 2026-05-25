@@ -1,5 +1,5 @@
 import React from "react"
-import { Link } from "gatsby"
+import Link from "next/link"
 import { format } from "date-fns"
 import homeContent from "../content/pages/home.json"
 
@@ -11,7 +11,7 @@ const LatestWritings = ({ posts }) => {
     >
       <div className="landing-section-header">
         <h2 className="landing-section-title">{homeContent.writings.title}</h2>
-        <Link to="/blog/" className="text-link-cta link-underline">
+        <Link href="/blog/" className="text-link-cta link-underline">
           {homeContent.writings.archiveLabel}
         </Link>
       </div>
@@ -20,7 +20,7 @@ const LatestWritings = ({ posts }) => {
           <article key={post.id} className="writing-preview-item">
             <p className="preview-meta">{format(new Date(post.date), "MMMM d, yyyy")}</p>
             <h3 className="preview-card-title">
-              <Link to={`/blog/${post.slug}`} className="post-link link-underline">
+              <Link href={`/blog/${post.slug}`} className="post-link link-underline">
                 {post.title}
               </Link>
             </h3>
@@ -29,14 +29,14 @@ const LatestWritings = ({ posts }) => {
               {(post.tags || []).map(tag => (
                 <Link
                   key={tag}
-                  to={`/blog/?page=1&tag=${encodeURIComponent(tag.toLowerCase())}`}
+                  href={`/blog/?page=1&tag=${encodeURIComponent(tag.toLowerCase())}`}
                   className="tag-chip"
                 >
                   #{tag}
                 </Link>
               ))}
             </div>
-            <Link to={`/blog/${post.slug}`} className="text-link-cta link-underline">
+            <Link href={`/blog/${post.slug}`} className="text-link-cta link-underline">
               Read article
             </Link>
           </article>

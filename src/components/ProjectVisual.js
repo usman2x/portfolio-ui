@@ -1,6 +1,5 @@
 import React from "react"
-import { graphql, useStaticQuery } from "gatsby"
-import { GatsbyImage, getImage } from "gatsby-plugin-image"
+import { withBasePath } from "../lib/site"
 
 const getInitials = (title = "") =>
   title
@@ -11,26 +10,6 @@ const getInitials = (title = "") =>
     .join("")
 
 const ProjectVisual = ({ image, alt, title, className }) => {
-  const data = useStaticQuery(graphql`
-    query ProjectVisualImagesQuery {
-      allFile(filter: { sourceInstanceName: { eq: "images" } }) {
-        nodes {
-          relativePath
-          childImageSharp {
-            gatsbyImageData(
-              width: 1400
-              quality: 86
-              placeholder: BLURRED
-              formats: [AUTO, WEBP, AVIF]
-            )
-          }
-        }
-      }
-    }
-  `)
-
-  const imageNode = data.allFile.nodes.find(node => node.relativePath === image)
-  const projectImage = getImage(imageNode)
   const visualClassName = [className, "project-visual"]
     .filter(Boolean)
     .join(" ")
@@ -41,9 +20,10 @@ const ProjectVisual = ({ image, alt, title, className }) => {
     )
   }
 
-  if (projectImage) {
+  if (typeof image === "string" && image) {
+    const imageSrc = withBasePath(image.startsWith("/") ? image : `/images/${image}`)
     return (
-      <GatsbyImage image={projectImage} alt={alt} className={visualClassName} />
+      <img src={imageSrc} alt={alt} className={visualClassName} loading="lazy" />
     )
   }
 

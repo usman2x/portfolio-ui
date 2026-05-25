@@ -1,8 +1,9 @@
 import React, { useMemo } from "react";
 import { trackEvent } from "../utils/analytics";
+import { siteMetadata } from "../lib/site";
 
 const ShareActions = ({ title, pathname }) => {
-  const baseSiteUrl = (process.env.GATSBY_SITE_URL || "").replace(/\/+$/, "");
+  const baseSiteUrl = siteMetadata.siteUrl || "";
   const url = useMemo(() => {
     if (typeof window !== "undefined") {
       return window.location.href;
