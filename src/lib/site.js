@@ -24,10 +24,6 @@ export const withBasePath = value => {
 }
 
 export const siteMetadata = {
-  title: "Muhammad Usman | Engineering Journal and Selected Work",
-  description:
-    "Software engineering notes, selected delivery work, and practical ways to start a project conversation.",
-  author: "Muhammad Usman",
   siteUrl: (
     process.env.NEXT_PUBLIC_SITE_URL ||
     process.env.SITE_URL ||

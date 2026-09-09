@@ -1,6 +1,6 @@
 # Portfolio UI
 
-Next.js portfolio site for Muhammad Usman. The site is statically generated from local JSON/Markdown content with optional Payload CMS posts fetched during build.
+Next.js portfolio site for Muhammad Usman. Page copy is configured locally, while all writings and project case studies are fetched from Payload CMS during the build.
 
 ## Requirements
 
@@ -53,24 +53,14 @@ Recommended:
 ```bash
 NEXT_PUBLIC_SITE_URL=https://your-domain.example
 NEXT_PUBLIC_PATH_PREFIX=
-PAYLOAD_API_URL=https://cms.example.com
+PAYLOAD_API_URL=http://localhost:3001
+NEXT_PUBLIC_CMS_URL=http://localhost:3001
 PAYLOAD_POSTS_ENDPOINT=/api/posts
 ```
 
-Optional aliases kept for CMS compatibility:
+`PAYLOAD_API_URL` is required. Builds fail when the CMS is unavailable so stale or incomplete content cannot be deployed silently.
 
-```bash
-BLOG_CMS_API_URL=https://cms.example.com
-BLOG_CMS_POSTS_ENDPOINT=/api/posts
-```
-
-If no CMS URL is provided, the build uses local Markdown posts. If a CMS URL is provided and the fetch fails, the build fails by default. To continue intentionally with local Markdown content:
-
-```bash
-PAYLOAD_ALLOW_FALLBACK=true
-```
-
-Use `NEXT_PUBLIC_GA_TRACKING_ID` for Google Analytics and `NEXT_PUBLIC_FORM_LINK` for the quote form endpoint.
+Use `NEXT_PUBLIC_GA_TRACKING_ID` for Google Analytics. `NEXT_PUBLIC_CMS_URL` is the browser-visible CMS base URL used by quote submissions.
 
 For a GitHub Pages project site such as `https://usman2x.github.io/portfolio-ui/`, use:
 
@@ -81,10 +71,11 @@ NEXT_PUBLIC_PATH_PREFIX=/portfolio-ui
 
 ## Content Model
 
-- Page content: `src/content/pages/*.json`
-- Shared content: `src/content/misc/*.json`
-- Local writing: `src/content/blog/*.md`
-- Project fallback content: `src/content/misc/projects.json`
+- Page and shared content: Payload CMS globals and collections
+- Local development fixtures: `portfolio-cms/scripts/seed-data.mjs`
+- Writings: published Payload posts without the `case-study` tag
+- Projects: published Payload posts tagged `case-study`
+- Testimonials: published and featured Payload testimonials
 - Public assets: `public/`
 
-CMS posts tagged `case-study` become project case studies. Other published CMS posts become writings.
+The Payload API is the only source of writing and project content.

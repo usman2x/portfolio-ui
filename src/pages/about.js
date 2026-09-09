@@ -1,30 +1,37 @@
 import React from "react"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
-import aboutPage from "../content/pages/about.json"
 import WorkExperienceTimeline from "../components/WorkExperienceTimeline"
+import AboutVideo from "../components/AboutVideo"
+import { fetchAboutPage, fetchSiteSettings, fetchWorkExperience } from "../lib/cms"
 
-const AboutPage = () => {
+const AboutPage = ({ aboutPage, siteSettings, workExperience }) => {
   return (
-    <Layout>
+    <Layout siteSettings={siteSettings}>
       <SEO
-        title={aboutPage.seo.title}
-        description={aboutPage.seo.description}
+        title={aboutPage.seoTitle}
+        description={aboutPage.seoDescription}
         pathname="/about/"
+        siteSettings={siteSettings}
       />
       <section className="container interior-page about-page-shell">
-        <section className="interior-section">
-          {aboutPage.summary.map(paragraph => (
-            <p key={paragraph} className="interior-copy">
-              {paragraph}
-            </p>
-          ))}
+        <section className="about-intro-grid">
+          <div className="interior-section about-intro-copy">
+            <p className="section-eyebrow">{aboutPage.eyebrow}</p>
+            <h1 className="page-title">{aboutPage.title}</h1>
+            {aboutPage.summary.map(paragraph => (
+              <p key={paragraph} className="interior-copy">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+          <AboutVideo video={aboutPage.video} />
         </section>
 
-        <WorkExperienceTimeline />
+        <WorkExperienceTimeline entries={workExperience} title={aboutPage.experienceTitle} />
 
         <section className="interior-section">
-          <h2 className="interior-section-title">Strengths</h2>
+          <h2 className="interior-section-title">{aboutPage.strengthsTitle}</h2>
           <div className="info-grid">
             {aboutPage.strengths.map(item => (
               <article key={item.title} className="info-card">
@@ -37,6 +44,13 @@ const AboutPage = () => {
       </section>
     </Layout>
   )
+}
+
+export const getStaticProps = async () => {
+  const [aboutPage, siteSettings, workExperience] = await Promise.all([
+    fetchAboutPage(), fetchSiteSettings(), fetchWorkExperience(),
+  ])
+  return { props: { aboutPage, siteSettings, workExperience } }
 }
 
 export default AboutPage

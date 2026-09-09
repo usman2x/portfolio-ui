@@ -1,18 +1,17 @@
 import React from "react"
 import Link from "next/link"
 import { format } from "date-fns"
-import homeContent from "../content/pages/home.json"
 
-const LatestWritings = ({ posts }) => {
+const LatestWritings = ({ posts, homeContent, readArticleLabel }) => {
   return (
     <section
       id="writings"
       className="container landing-section landing-section-surface landing-section-surface-brand"
     >
       <div className="landing-section-header">
-        <h2 className="landing-section-title">{homeContent.writings.title}</h2>
+        <h2 className="landing-section-title">{homeContent.writingsTitle}</h2>
         <Link href="/blog/" className="text-link-cta link-underline">
-          {homeContent.writings.archiveLabel}
+          {homeContent.writingsArchiveLabel}
         </Link>
       </div>
       <div className="latest-writings-list">
@@ -37,7 +36,7 @@ const LatestWritings = ({ posts }) => {
               ))}
             </div>
             <Link href={`/blog/${post.slug}`} className="text-link-cta link-underline">
-              Read article
+              {readArticleLabel}
             </Link>
           </article>
         ))}

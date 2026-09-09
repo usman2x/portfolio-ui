@@ -148,9 +148,10 @@ Recommended page order:
 2. Article body
 3. Tags
 4. Share actions
-5. Comments if enabled
-6. Book a call block
-7. Footer
+5. A single previous/next discovery section
+6. Comments if enabled
+7. Book a call block
+8. Footer
 
 ### Article Header
 Required content:
@@ -199,6 +200,12 @@ Recommended options:
 
 Rule:
 - share UI should not interrupt reading.
+
+### Continued reading
+- Show previous and next article navigation when available.
+- Present each destination as a readable card with title and short description.
+- Do not add a second related-articles grid that duplicates or competes with these choices.
+- Keep discovery below the article body so it never interrupts reading.
 
 ### Book a Call Block
 Purpose:
@@ -336,6 +343,5 @@ Recommendation:
 
 ## Open Follow-Ups
 - define exact pagination behavior in implementation
-- define related-post selection logic
 - normalize current and future tag naming
 - decide whether archive cards should include cover images by default

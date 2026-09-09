@@ -10,6 +10,12 @@ It is meant to replace a generic contact form with a clearer qualification flow.
 - Make the CTA `Get a Quote` meaningful
 - Keep the experience simple and guided
 
+## Delivery and storage
+
+The form posts JSON to `NEXT_PUBLIC_CMS_URL/api/quote-requests/submit`. Successful submissions are stored in Payload's private `quote-requests` collection and are visible to active CMS administrators under **Quote Requests**. Public API users cannot list, read, update, or delete submissions.
+
+The endpoint validates every select value, normalizes and limits text fields, restricts browser origins with `UI_PUBLIC_URL` / `QUOTE_ALLOWED_ORIGINS`, and includes a honeypot plus lightweight rate limiting. Production deployments should set both origin variables explicitly.
+
 ## Recommended URL
 Preferred:
 - `/quote/`
@@ -218,7 +224,7 @@ Rule:
 For best practice, this page should be configurable.
 
 Suggested content file:
-- `src/content/pages/quote.json`
+- Payload **Quote Page** global
 
 Suggested fields:
 - page title

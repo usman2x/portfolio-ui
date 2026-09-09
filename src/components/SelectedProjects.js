@@ -1,15 +1,14 @@
 import React from "react"
 import Link from "next/link"
-import homeContent from "../content/pages/home.json"
 import ProjectVisual from "./ProjectVisual"
 
-const SelectedProjects = ({ projects }) => {
+const SelectedProjects = ({ projects, homeContent }) => {
   return (
     <section id="projects" className="container landing-section">
       <div className="landing-section-header">
-        <h2 className="landing-section-title">{homeContent.projects.title}</h2>
+        <h2 className="landing-section-title">{homeContent.projectsTitle}</h2>
         <Link href="/projects/" className="text-link-cta link-underline">
-          {homeContent.projects.archiveLabel}
+          {homeContent.projectsArchiveLabel}
         </Link>
       </div>
       <div className="preview-grid projects-preview-grid">

@@ -1,12 +1,9 @@
 import React from "react"
 import Link from "next/link"
-import identity from "../content/misc/identity.json"
-import homeContent from "../content/pages/home.json"
-import contactData from "../content/misc/contact-data.json"
 import { withBasePath } from "../lib/site"
 
-const HomeIdentity = () => {
-  const identitySection = homeContent.identity || {}
+const HomeIdentity = ({ siteSettings, homeContent }) => {
+  const identitySection = homeContent || {}
   const eyebrow = identitySection.eyebrow
   const headline = identitySection.headline
   const supportingText = identitySection.supportingText
@@ -25,15 +22,15 @@ const HomeIdentity = () => {
         <Link href="/about/" className="identity-link-card">
           <div className="identity-portrait">
             <img
-              src={withBasePath("/images/usman.jpg")}
-              alt={identity.portraitAlt}
+              src={siteSettings.portraitUrl?.startsWith("http") ? siteSettings.portraitUrl : withBasePath(siteSettings.portraitUrl)}
+              alt={siteSettings.portraitAlt}
               className="identity-portrait-image"
               loading="eager"
             />
           </div>
           <div className="identity-heading-block">
-            <p className="identity-name">{identity.name}</p>
-            <p className="identity-title">{identity.title}</p>
+            <p className="identity-name">{siteSettings.name}</p>
+            <p className="identity-title">{siteSettings.professionalTitle}</p>
           </div>
         </Link>
         <div className="identity-body">
@@ -51,7 +48,7 @@ const HomeIdentity = () => {
           ) : null}
           <div className="identity-actions">
             <a
-              href={contactData.meetingLink}
+              href={siteSettings.meetingLink}
               className="theme-btn-primary theme-btn-lg"
               target="_blank"
               rel="noopener noreferrer"

@@ -1,7 +1,7 @@
 # Payload CMS Blog Integration
 
-Status: In progress (CMS integrated, fallback explicit during migration)  
-Reviewed against the current repo on 2026-05-12.
+Status: Active (Payload is the only writing and case-study source)
+Reviewed against the current repo on 2026-09-08.
 
 This document is the cross-repo source of truth for integrating a separate Payload CMS repository with this Next.js site.
 
@@ -59,13 +59,7 @@ Design document:
 
 - Payload CMS is the source of truth for blog content.
 - This Next.js repo consumes published content only.
-- Markdown blog files in this repo are temporary until content migration is complete.
-
-Current transition behavior:
-
-- Next.js consumes published Payload posts first.
-- Existing Markdown posts continue to render only when CMS sourcing is intentionally disabled or explicit fallback is enabled.
-- Slug collisions resolve in favor of Payload content.
+- Local Markdown and project fallback data are not supported.
 - The public site delivery model is static generation plus rebuild on publish.
 
 ### Public URL Contract
@@ -106,10 +100,9 @@ Recommended order:
 
 1. build the separate Payload CMS repo
 2. implement schema, access control, and migrations there
-3. migrate Markdown blog content into Payload
-4. update this Next.js repo to fetch published content from Payload
-5. wire publish-triggered rebuilds for the Next.js frontend
-6. remove Markdown as the source of truth
+3. seed or author content in Payload
+4. fetch published content from Payload during the Next.js build
+5. trigger frontend rebuilds when published content changes
 
 ## Related Docs
 

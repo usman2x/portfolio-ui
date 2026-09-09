@@ -5,6 +5,7 @@ import { format } from "date-fns"
 import Layout from "../../components/Layout"
 import SEO from "../../components/seo"
 import { getAllBlogPosts } from "../../lib/content"
+import { fetchArchiveSettings, fetchSiteSettings } from "../../lib/cms"
 
 const formatPostDate = date => {
   const parsedDate = new Date(date)
@@ -13,9 +14,9 @@ const formatPostDate = date => {
     : format(parsedDate, "MMMM d, yyyy")
 }
 
-const BlogPage = ({ posts }) => {
+const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
   const router = useRouter()
-  const postsPerPage = 6
+  const postsPerPage = archiveSettings.postsPerPage || 6
   const selectedTag =
     typeof router.query.tag === "string" ? router.query.tag : "all-tags"
   const requestedPage = Number.parseInt(router.query.page || "1", 10)
@@ -65,24 +66,24 @@ const BlogPage = ({ posts }) => {
   }
 
   return (
-    <Layout>
+    <Layout siteSettings={siteSettings}>
       <SEO
-        title="Writings"
-        description="Notes on engineering, AI, systems thinking, and the human side of building and working."
+        title={archiveSettings.writingsTitle}
+        description={archiveSettings.writingsSeoDescription}
         pathname="/blog/"
+        siteSettings={siteSettings}
       />
       <main className="writings-page">
         <section className="container writings-page-header">
-          <h1 className="page-title">Writings</h1>
+          <h1 className="page-title">{archiveSettings.writingsTitle}</h1>
         </section>
         <section className="container">
           <div className="writings-layout">
             <aside className="writings-filter-panel">
               <div className="writings-filter-copy">
-                <h2 className="writings-filter-title">Filter by topic</h2>
+                <h2 className="writings-filter-title">{archiveSettings.filterTitle}</h2>
                 <p className="writings-filter-description">
-                  Start with one topic at a time. The archive stays focused and
-                  easy to scan.
+                  {archiveSettings.filterDescription}
                 </p>
               </div>
               <div className="writings-tag-list">
@@ -116,7 +117,7 @@ const BlogPage = ({ posts }) => {
                   {selectedTag !== "all-tags" ? ` in ${selectedTagLabel}` : ""}.
                 </p>
                 <Link href="/quote/" className="text-link-cta link-underline">
-                  Need help with similar work?
+                  {archiveSettings.writingCtaLabel}
                 </Link>
               </div>
               <div className="writings-list">
@@ -176,7 +177,7 @@ const BlogPage = ({ posts }) => {
                           href={`/blog/${slug}`}
                           className="text-link-cta link-underline writing-read-link"
                         >
-                          Read article
+                          {archiveSettings.readArticleLabel}
                         </Link>
                       </div>
                       {coverImageUrl ? (
@@ -236,11 +237,15 @@ const BlogPage = ({ posts }) => {
 }
 
 export const getStaticProps = async () => {
-  const posts = await getAllBlogPosts()
+  const [posts, archiveSettings, siteSettings] = await Promise.all([
+    getAllBlogPosts(), fetchArchiveSettings(), fetchSiteSettings(),
+  ])
 
   return {
     props: {
       posts,
+      archiveSettings,
+      siteSettings,
     },
   }
 }

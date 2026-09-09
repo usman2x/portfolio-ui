@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from "react"
-import workExperience from "../content/misc/work-experience.json"
 
-const WorkExperienceTimeline = () => {
-  const entries = useMemo(() => workExperience || [], [])
+const WorkExperienceTimeline = ({ entries: sourceEntries = [], title }) => {
+  const entries = useMemo(() => sourceEntries || [], [sourceEntries])
   const [activeId, setActiveId] = useState(entries[0]?.id || "")
   const activeEntry = entries.find((entry) => entry.id === activeId) || entries[0]
 
@@ -12,7 +11,7 @@ const WorkExperienceTimeline = () => {
 
   return (
     <section className="interior-section">
-      <h2 className="interior-section-title">Work experience</h2>
+      <h2 className="interior-section-title">{title}</h2>
       <div className="work-experience-layout">
         <div className="work-experience-nav" role="tablist" aria-label="Work experience timeline">
           {entries.map((entry) => {

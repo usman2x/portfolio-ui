@@ -13,9 +13,10 @@ const SEO = ({
   type = "website",
   canonicalUrl = "",
   noindex = false,
+  siteSettings,
 }) => {
-  const metaDescription = description || siteMetadata.description
-  const defaultTitle = siteMetadata.title
+  const metaDescription = description || siteSettings.defaultSeoDescription
+  const defaultTitle = siteSettings.defaultSeoTitle
   const baseSiteUrl = siteMetadata.siteUrl || ""
   const resolvedCanonicalUrl =
     canonicalUrl || (baseSiteUrl ? `${baseSiteUrl}${pathname}` : pathname)
@@ -37,7 +38,7 @@ const SEO = ({
         name="twitter:card"
         content={resolvedImage ? "summary_large_image" : "summary"}
       />
-      <meta name="twitter:creator" content={siteMetadata.author || ""} />
+      <meta name="twitter:creator" content={siteSettings.name || ""} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={metaDescription} />
       {resolvedCanonicalUrl ? (

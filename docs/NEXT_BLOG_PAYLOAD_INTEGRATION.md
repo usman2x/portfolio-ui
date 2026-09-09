@@ -12,26 +12,15 @@ This document describes how the UI repo consumes published Payload CMS posts.
 ## Content Sources
 
 - CMS posts are fetched in `src/lib/cms.js`.
-- Local Markdown posts are parsed in `src/lib/markdown.js`.
-- `src/lib/content.js` merges CMS and local content for pages.
+- `src/lib/content.js` exposes CMS writings and case studies to pages.
 - CMS posts tagged `case-study` become project case studies.
 - Other CMS posts become writings.
-- Local Markdown remains fallback content when CMS is disabled or explicit fallback is enabled.
+- Payload CMS is the only source of writings and project case studies.
 
 ## CMS Fetch Rules
 
-The UI reads:
-
-- `PAYLOAD_API_URL` or `BLOG_CMS_API_URL`
-- `PAYLOAD_POSTS_ENDPOINT` or `BLOG_CMS_POSTS_ENDPOINT`
-
-If no CMS API URL is configured, local Markdown is used.
-
-If a CMS API URL is configured and fetching fails, the build fails by default. To continue intentionally with local Markdown fallback:
-
-```bash
-PAYLOAD_ALLOW_FALLBACK=true
-```
+The UI reads `PAYLOAD_API_URL` and the optional `PAYLOAD_POSTS_ENDPOINT`.
+`PAYLOAD_API_URL` is required. A missing or unavailable CMS fails the build so an empty or stale portfolio cannot be deployed silently.
 
 ## URL Contract
 

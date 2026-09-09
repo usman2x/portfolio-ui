@@ -84,16 +84,17 @@ Each section should have:
 
 ## Typography
 
-- Body font: `Inter`
-- Heading font: `Merriweather`
+- Body font: local/system sans-serif stack, preferring `Inter` when installed
+- Heading font: local editorial serif stack, preferring `Georgia`
 - Base font size: `18px`
 - Base line height: `1.7`
 - Long-form content width: `680px`
 
 Typography rules:
 
-- `h1` to `h4` use `Merriweather`
-- Body copy uses `Inter`
+- `h1` to `h4` use the editorial serif stack
+- Body copy uses the system sans-serif stack
+- Do not load render-blocking font stylesheets from third-party origins
 - Prioritize readable paragraph rhythm over dense layouts
 - Prefer strong type hierarchy over heavy UI treatment
 - Keep headings clear and direct
@@ -103,6 +104,8 @@ Typography rules:
 - Headings should have more top margin than bottom margin
 - Paragraph spacing should support relaxed reading
 - Maintain consistent vertical rhythm across sections
+- Interactive targets should be at least `44px` on touch layouts.
+- Every animated transition must respect `prefers-reduced-motion`.
 
 ---
 

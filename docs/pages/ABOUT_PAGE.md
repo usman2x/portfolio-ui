@@ -11,7 +11,7 @@ It focuses on layout, section hierarchy, and content responsibilities.
 - Keep conversion clear without repeating footer-level credentials
 
 ## About Page Order
-1. Extended summary
+1. Extended summary with introduction video
 2. Chronological work experience (interactive two-column)
 3. Strengths / focus areas
 4. Book a call block
@@ -26,6 +26,10 @@ Purpose:
 
 Rule:
 - Write in clear paragraphs, not bullet overload.
+- Pair the introduction with a responsive 16:9 video; never autoplay it.
+- Video eyebrow, title, description, and URL come from the Payload **About Page** global.
+- Load the YouTube iframe only after the visitor activates the poster.
+- Provide a CMS-managed transcript beneath the video.
 
 ## 2. Chronological Work Experience
 Purpose:
@@ -72,8 +76,8 @@ Purpose:
 Should match the site-wide footer structure defined in `docs/pages/LANDING_PAGE.md`.
 
 ## Recommended Content Sources
-- `src/content/pages/about.json`
-- `src/content/misc/work-experience.json`
+- Payload **About Page** global
+- Payload **Work Experience** collection
 
 ## Implementation Notes
 - Work experience should come from structured content, not hardcoded JSX.

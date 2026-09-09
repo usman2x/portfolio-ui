@@ -4,43 +4,56 @@ import SEO from "../components/seo"
 import HomeIdentity from "../components/HomeIdentity"
 import SelectedProjects from "../components/SelectedProjects"
 import LatestWritings from "../components/LatestWritings"
-import homeContent from "../content/pages/home.json"
+import Testimonials from "../components/Testimonials"
 import { getAllBlogPosts, getAllProjects } from "../lib/content"
+import { fetchArchiveSettings, fetchHomePage, fetchPayloadTestimonials, fetchSiteSettings } from "../lib/cms"
 
-const IndexPage = ({ posts, featuredProjects }) => {
+const IndexPage = ({ posts, featuredProjects, testimonials, siteSettings, homeContent, archiveSettings }) => {
   return (
-    <Layout>
+    <Layout siteSettings={siteSettings}>
       <SEO
-        title={homeContent.seo.title}
-        description={homeContent.seo.description}
+        title={homeContent.seoTitle}
+        description={homeContent.seoDescription}
         pathname="/"
+        siteSettings={siteSettings}
       />
       <div className="home-page landing-home">
-        <HomeIdentity />
+        <HomeIdentity siteSettings={siteSettings} homeContent={homeContent} />
         <section className="container landing-post-hero-note">
-          <p>{homeContent.identity.postHeroLine}</p>
+          <p>{homeContent.postHeroLine}</p>
         </section>
-        <LatestWritings posts={posts} />
-        <SelectedProjects projects={featuredProjects} />
+        <LatestWritings posts={posts} homeContent={homeContent} readArticleLabel={archiveSettings.readArticleLabel} />
+        <SelectedProjects projects={featuredProjects} homeContent={homeContent} />
+        <Testimonials testimonials={testimonials} content={homeContent} archiveHref="/testimonials/" />
       </div>
     </Layout>
   )
 }
 
 export const getStaticProps = async () => {
-  const [allPosts, projects] = await Promise.all([
+  const [allPosts, projects, allTestimonials, siteSettings, homeContent, archiveSettings] = await Promise.all([
     getAllBlogPosts(),
     getAllProjects(),
+    fetchPayloadTestimonials(),
+    fetchSiteSettings(),
+    fetchHomePage(),
+    fetchArchiveSettings(),
   ])
-  const posts = allPosts.slice(0, homeContent.writings.limit || 3)
-  const featuredProjects = homeContent.projects.featuredSlugs
-    .map(slug => projects.find(project => project.slug === slug))
+  const posts = allPosts.slice(0, homeContent.writingsLimit || 2)
+  const featuredProjects = homeContent.featuredProjectIds
+    .map(id => projects.find(project => project.payloadId === id))
     .filter(Boolean)
+    .slice(0, 3)
+  const testimonials = allTestimonials.filter(item => item.featured).slice(0, homeContent.testimonialLimit || 1)
 
   return {
     props: {
       posts,
       featuredProjects,
+      testimonials,
+      siteSettings,
+      homeContent,
+      archiveSettings,
     },
   }
 }

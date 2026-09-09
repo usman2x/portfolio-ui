@@ -11,6 +11,7 @@ The goal is to keep routing clean, human-readable, and stable as the site grows.
 - `/projects/<slug>/`
 - `/blog/`
 - `/blog/<slug>/`
+- `/testimonials/`
 - `/quote/` or `/start-a-project/`
 
 Optional:
@@ -67,6 +68,12 @@ Rule:
 - Title pattern:
   - `Get a Quote | Muhammad Usman`
 - Description should clarify the project intake purpose
+
+### Testimonials
+- URL: `/testimonials/`
+- Title pattern:
+  - `Testimonials | Muhammad Usman`
+- Description should identify the recommendations as direct professional feedback
 
 ## Canonical Rules
 - Every index page should have a self-referencing canonical

@@ -69,8 +69,7 @@ Required content:
 
 Content source rule:
 
-- published Payload posts tagged `case-study` are the primary source for project archive entries
-- local `src/content/misc/projects.json` remains migration fallback only when CMS case studies are unavailable
+- published Payload posts tagged `case-study` are the only source for project archive entries
 
 Recommended title:
 
@@ -113,7 +112,7 @@ Purpose:
 Recommended page order:
 
 1. Case study header
-2. Tech stack
+2. Tech stack and outcome strip
 3. Context / problem
 4. Solution / approach
 5. Role and responsibilities
@@ -231,8 +230,9 @@ Examples of outcome framing:
 
 Rule:
 
-- Prefer measurable outcomes when available.
-- If exact numbers are unavailable, use clear qualitative impact.
+- Preserve the evidence and language from the source case study.
+- Do not add decorative statistics or inferred outcomes; explain the work and impact in the narrative.
+- Project images come from the CMS Media collection. Detail pages show the complete ordered gallery as thumbnails and open the original image in an in-page viewer.
 
 ## 7. Project Link / Reference
 
@@ -248,25 +248,26 @@ Rule:
 
 - Treat this as a supporting reference, not the primary proof.
 
-## 8. Related Projects
+## 8. Continue Exploring
 
 Purpose:
 
-- Keep users exploring adjacent work
+- Give users a simple route into the neighboring case studies
 
 Should include:
 
-- 2 to 3 related case studies
+- Previous and next case-study cards when available
+- Title and concise project summary
 
 Rule:
 
-- Related projects should be chosen by domain, stack, or type of problem.
+- Keep this to one navigation section; do not add a second related-project grid.
 
 ## 9. Book a Call Block
 
 Purpose:
 
-- Offer a focused conversion step after the case-study and related navigation
+- Offer a focused conversion step after the case-study navigation
 
 Required content order:
 
@@ -324,22 +325,9 @@ Homepage and archive pages should link into:
 
 ## Recommended Content Model
 
-Project preview content:
+Project and case-study content belongs in Payload. Shared page labels are maintained in the Payload **Project Template** global.
 
-- JSON is acceptable
-
-Case study detail content:
-
-- Markdown is recommended if you want flexible long-form structure
-- Structured JSON is also acceptable when each section is modeled explicitly
-
-Suggested future file model:
-
-- `src/content/misc/projects.json` for preview metadata
-- `src/content/pages/project-detail.json` for reusable project-page labels and CTA copy
-- `src/content/projects/<slug>.md` for case study pages
-
-Recommended frontmatter for case study Markdown:
+Recommended CMS fields:
 
 - `title`
 - `slug`

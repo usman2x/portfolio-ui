@@ -16,7 +16,7 @@ Pages and files reviewed:
 - `src/components/LatestWritings.js`
 - `src/styles/global.css`
 - `src/lib/content.js`
-- `src/content/blog/*.md`
+- published writing records from Payload CMS
 
 Reference docs used:
 
@@ -249,8 +249,7 @@ Structurally:
 - `src/styles/global.css`
   - `.tag-chip`
   - `.blog-tag-pill`
-- `src/content/blog/digital-paradigm-ai.md`
-- `src/content/blog/hidden-anxiety-healing.md`
+- the active Payload tag records and published posts
 
 ### Action
 

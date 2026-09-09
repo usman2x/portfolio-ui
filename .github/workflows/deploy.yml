@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  repository_dispatch:
+    types:
+      - cms-content-published
   workflow_dispatch:
 
 concurrency:
@@ -37,9 +40,7 @@ jobs:
           NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
           NEXT_PUBLIC_PATH_PREFIX: ${{ vars.NEXT_PUBLIC_PATH_PREFIX }}
           PAYLOAD_API_URL: ${{ vars.PAYLOAD_API_URL }}
-          BLOG_CMS_API_URL: ${{ vars.BLOG_CMS_API_URL }}
           PAYLOAD_POSTS_ENDPOINT: ${{ vars.PAYLOAD_POSTS_ENDPOINT }}
-          BLOG_CMS_POSTS_ENDPOINT: ${{ vars.BLOG_CMS_POSTS_ENDPOINT }}
 
       - name: Deploy to GitHub Pages with custom domain
         if: ${{ vars.GITHUB_PAGES_CNAME != '' }}

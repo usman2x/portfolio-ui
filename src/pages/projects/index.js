@@ -2,21 +2,22 @@ import React from "react"
 import Link from "next/link"
 import Layout from "../../components/Layout"
 import SEO from "../../components/seo"
-import projectPage from "../../content/pages/projects.json"
 import ProjectVisual from "../../components/ProjectVisual"
 import { getAllProjects } from "../../lib/content"
+import { fetchArchiveSettings, fetchSiteSettings } from "../../lib/cms"
 
-const ProjectsPage = ({ projects }) => {
+const ProjectsPage = ({ projects, archiveSettings, siteSettings }) => {
   return (
-    <Layout>
+    <Layout siteSettings={siteSettings}>
       <SEO
-        title={projectPage.seo.title}
-        description={projectPage.seo.description}
+        title={archiveSettings.projectsTitle}
+        description={archiveSettings.projectsSeoDescription}
         pathname="/projects/"
+        siteSettings={siteSettings}
       />
       <section className="container interior-page">
         <section className="interior-section">
-          <h1 className="page-title">{projectPage.intro.title}</h1>
+          <h1 className="page-title">{archiveSettings.projectsTitle}</h1>
         </section>
 
         <div className="projects-archive-grid">
@@ -60,8 +61,7 @@ const ProjectsPage = ({ projects }) => {
                 className="text-link-cta project-preview-more"
                 aria-label={`Open ${project.title} case study`}
               >
-                <span aria-hidden="true">...</span>
-                <span className="sr-only">Open project</span>
+                View case study <span aria-hidden="true">→</span>
               </Link>
             </article>
           ))}
@@ -72,11 +72,15 @@ const ProjectsPage = ({ projects }) => {
 }
 
 export const getStaticProps = async () => {
-  const projects = await getAllProjects()
+  const [projects, archiveSettings, siteSettings] = await Promise.all([
+    getAllProjects(), fetchArchiveSettings(), fetchSiteSettings(),
+  ])
 
   return {
     props: {
       projects,
+      archiveSettings,
+      siteSettings,
     },
   }
 }

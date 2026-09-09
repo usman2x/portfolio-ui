@@ -110,7 +110,7 @@ Section title:
 
 Required content:
 
-- 3 to 6 featured projects
+- 3 featured projects
 - Short description for each
 - Link from each project to a detailed project page or case study
 - Project preview image when available
@@ -157,7 +157,7 @@ Section title:
 
 Required content:
 
-- Latest 3 to 6 articles
+- Latest 2 articles
 - Tag visibility
 - Link to `/blog`
 

@@ -1,17 +1,23 @@
 import React from "react";
+import Link from "next/link";
 import Layout from "../components/Layout";
-import contactData from "../content/misc/contact-data.json";
+import { fetchSiteSettings, fetchSystemPages } from "../lib/cms";
 
-const ThankYouPage = () => {
+const ThankYouPage = ({ siteSettings, systemPages }) => {
   return (
-    <Layout>
+    <Layout siteSettings={siteSettings}>
       <div className="thank-you-page">
-        <h1>Thank You!</h1>
-        <p>I appreciate you reaching out. I'll get back to you as soon as possible.</p>
-        <a href={contactData["path-prefix"]} className="theme-btn-primary">Back to Home</a>
+        <h1>{systemPages.thankYouTitle}</h1>
+        <p>{systemPages.thankYouMessage}</p>
+        <Link href="/" className="theme-btn-primary">{systemPages.homeButtonLabel}</Link>
       </div>
     </Layout>
   );
+};
+
+export const getStaticProps = async () => {
+  const [siteSettings, systemPages] = await Promise.all([fetchSiteSettings(), fetchSystemPages()]);
+  return { props: { siteSettings, systemPages } };
 };
 
 export default ThankYouPage;

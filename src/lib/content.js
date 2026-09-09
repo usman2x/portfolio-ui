@@ -1,21 +1,37 @@
-import localProjects from "../content/misc/projects.json"
 import { getCmsContent } from "./cms"
-import { getMarkdownPosts } from "./markdown"
-import { mergeBlogPosts } from "../utils/blog-posts"
-import { mergeProjects } from "../utils/projects"
+
+let cmsContentPromise
+
+const loadCmsContent = () => {
+  if (!cmsContentPromise) {
+    cmsContentPromise = getCmsContent()
+  }
+
+  return cmsContentPromise
+}
 
 export const getAllBlogPosts = async () => {
-  const [{ blogPosts: cmsPosts }, markdownPosts] = await Promise.all([
-    getCmsContent(),
-    getMarkdownPosts(),
-  ])
-
-  return mergeBlogPosts({ cmsPosts, markdownPosts })
+  const { blogPosts } = await loadCmsContent()
+  return blogPosts
 }
 
 export const getAllProjects = async () => {
-  const { projects: cmsProjects } = await getCmsContent()
-  return mergeProjects({ cmsProjects, localProjects })
+  const { projects } = await loadCmsContent()
+  return projects.map((project, sortIndex) => ({
+    ...project,
+    sortIndex,
+    summary: project.excerpt || project.description || "",
+    description: project.description || project.excerpt || "",
+    role: project.projectRole || "",
+    image: project.coverImageUrl || null,
+    imageAlt: project.coverImageAlt || project.title || "",
+    tags: (project.tags || []).filter(
+      tag => String(tag).trim().toLowerCase() !== "case study"
+    ),
+    link: null,
+    linkLabel: null,
+    sections: [],
+  }))
 }
 
 export const getProjectPagination = (projects, slug) => {
@@ -27,6 +43,7 @@ export const getProjectPagination = (projects, slug) => {
         ? {
             slug: projects[index - 1].slug,
             title: projects[index - 1].title,
+            description: projects[index - 1].summary,
           }
         : null,
     nextProject:
@@ -34,6 +51,7 @@ export const getProjectPagination = (projects, slug) => {
         ? {
             slug: projects[index + 1].slug,
             title: projects[index + 1].title,
+            description: projects[index + 1].summary,
           }
         : null,
   }

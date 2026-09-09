@@ -2,9 +2,11 @@ import React from "react"
 import Link from "next/link"
 import Layout from "../../components/Layout"
 import SEO from "../../components/seo"
-import projectDetailContent from "../../content/pages/project-detail.json"
 import ProjectVisual from "../../components/ProjectVisual"
+import ContentNavigation from "../../components/ContentNavigation"
+import ProjectGallery from "../../components/ProjectGallery"
 import { getAllProjects, getProjectPagination } from "../../lib/content"
+import { fetchProjectTemplate, fetchSiteSettings } from "../../lib/cms"
 
 const renderSectionBlock = (block, projectTitle) => {
   if (block.type === "text") {
@@ -53,12 +55,11 @@ const renderSectionBlock = (block, projectTitle) => {
   return null
 }
 
-const ProjectPage = ({ project, previousProject, nextProject }) => {
-  const { navigation, meta, link: linkContent, story } = projectDetailContent
-  const projectLinkLabel = project.linkLabel || linkContent.defaultLabel
+const ProjectPage = ({ project, previousProject, nextProject, projectTemplate, siteSettings }) => {
+  const projectLinkLabel = project.linkLabel || projectTemplate.defaultLinkLabel
 
   return (
-    <Layout>
+    <Layout siteSettings={siteSettings}>
       <SEO
         title={project.seoTitle || `${project.title} | Project Case Study`}
         description={
@@ -68,6 +69,7 @@ const ProjectPage = ({ project, previousProject, nextProject }) => {
         image={project.ogImageUrl || project.image || ""}
         canonicalUrl={project.canonicalUrl || null}
         noindex={project.noindex}
+        siteSettings={siteSettings}
       />
       <section className="container interior-page project-template-shell">
         <section className="project-case-study-hero">
@@ -76,7 +78,7 @@ const ProjectPage = ({ project, previousProject, nextProject }) => {
               href="/projects/"
               className="text-link-cta link-underline project-case-study-back"
             >
-              {navigation.backLabel}
+              {projectTemplate.backLabel}
             </Link>
             <h1 className="project-case-study-title">{project.title}</h1>
             <p className="project-case-study-summary">{project.summary}</p>
@@ -84,7 +86,7 @@ const ProjectPage = ({ project, previousProject, nextProject }) => {
 
           <aside className="project-case-study-meta">
             <div className="project-case-study-meta-card">
-              <p className="project-case-study-meta-title">{meta.stack}</p>
+              <p className="project-case-study-meta-title">{projectTemplate.stackLabel}</p>
               <div className="preview-tag-list project-detail-tag-list">
                 {(project.tags || []).map(tag => (
                   <span key={tag} className="tag-chip">
@@ -96,9 +98,9 @@ const ProjectPage = ({ project, previousProject, nextProject }) => {
 
             {project.link ? (
               <div className="project-case-study-meta-card">
-                <p className="project-case-study-meta-title">{meta.link}</p>
+                <p className="project-case-study-meta-title">{projectTemplate.linkLabel}</p>
                 <p className="project-case-study-meta-copy">
-                  {linkContent.description}
+                  {projectTemplate.linkDescription}
                 </p>
                 <a
                   href={project.link}
@@ -113,7 +115,8 @@ const ProjectPage = ({ project, previousProject, nextProject }) => {
           </aside>
         </section>
 
-        {project.image ? (
+
+        {project.image && !project.projectGallery?.length ? (
           <figure className="project-story-figure project-story-cover">
             <ProjectVisual
               image={project.image}
@@ -124,10 +127,12 @@ const ProjectPage = ({ project, previousProject, nextProject }) => {
           </figure>
         ) : null}
 
+        <ProjectGallery images={project.projectGallery} title={project.title} />
+
         {project.contentHtml ? (
           <section className="project-story-section">
             <div className="project-story-heading">
-              <h2 className="project-story-title">{story.fallbackTitle}</h2>
+              <h2 className="project-story-title">{projectTemplate.storyTitle}</h2>
             </div>
             <div className="project-story-content">
               <div
@@ -156,30 +161,15 @@ const ProjectPage = ({ project, previousProject, nextProject }) => {
           </section>
         ))}
 
-        {(previousProject || nextProject) && (
-          <nav className="project-pagination" aria-label="Project pagination">
-            {previousProject ? (
-              <Link
-                href={`/projects/${previousProject.slug}/`}
-                className="project-pagination-card"
-              >
-                <span className="project-pagination-label">
-                  Previous project
-                </span>
-                <strong>{previousProject.title}</strong>
-              </Link>
-            ) : null}
-            {nextProject ? (
-              <Link
-                href={`/projects/${nextProject.slug}/`}
-                className="project-pagination-card project-pagination-card-next"
-              >
-                <span className="project-pagination-label">Next project</span>
-                <strong>{nextProject.title}</strong>
-              </Link>
-            ) : null}
-          </nav>
-        )}
+        <ContentNavigation
+          title="Explore another case study"
+          previous={previousProject}
+          next={nextProject}
+          previousHref={previousProject ? `/projects/${previousProject.slug}/` : null}
+          nextHref={nextProject ? `/projects/${nextProject.slug}/` : null}
+          previousLabel={projectTemplate.previousLabel}
+          nextLabel={projectTemplate.nextLabel}
+        />
       </section>
     </Layout>
   )
@@ -195,7 +185,9 @@ export const getStaticPaths = async () => {
 }
 
 export const getStaticProps = async ({ params }) => {
-  const projects = await getAllProjects()
+  const [projects, projectTemplate, siteSettings] = await Promise.all([
+    getAllProjects(), fetchProjectTemplate(), fetchSiteSettings(),
+  ])
   const project = projects.find(item => item.slug === params.slug) || null
 
   if (!project) {
@@ -208,6 +200,8 @@ export const getStaticProps = async ({ params }) => {
     props: {
       project,
       ...getProjectPagination(projects, project.slug),
+      projectTemplate,
+      siteSettings,
     },
   }
 }

@@ -1,20 +1,27 @@
 const DEFAULT_CMS_POSTS_ENDPOINT = "/api/posts"
 
-const getPayloadApiUrl = () =>
-  process.env.PAYLOAD_API_URL || process.env.BLOG_CMS_API_URL || ""
+const getPayloadApiUrl = () => (process.env.PAYLOAD_API_URL || "").trim()
 
 const getPayloadPostsEndpoint = () =>
-  process.env.PAYLOAD_POSTS_ENDPOINT ||
-  process.env.BLOG_CMS_POSTS_ENDPOINT ||
-  DEFAULT_CMS_POSTS_ENDPOINT
+  process.env.PAYLOAD_POSTS_ENDPOINT || DEFAULT_CMS_POSTS_ENDPOINT
 
-const shouldAllowPayloadFallback = () => {
-  const fallbackValue =
-    process.env.PAYLOAD_ALLOW_FALLBACK ||
-    process.env.BLOG_CMS_ALLOW_FALLBACK ||
-    ""
+const fetchCms = async (url, attempts = 3) => {
+  let lastError
 
-  return /^(1|true|yes)$/i.test(fallbackValue.trim())
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(url, { signal: AbortSignal.timeout(10000) })
+      if (response.ok || response.status < 500 || attempt === attempts) return response
+      lastError = new Error(`CMS responded with ${response.status}`)
+    } catch (error) {
+      lastError = error
+      if (attempt === attempts) throw error
+    }
+
+    await new Promise(resolve => setTimeout(resolve, attempt * 250))
+  }
+
+  throw lastError || new Error("CMS request failed")
 }
 
 const resolvePostsEndpointUrl = (baseUrl, endpoint) => {
@@ -45,13 +52,33 @@ const escapeHtml = (value = "") =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;")
 
+const safeLinkUrl = value => {
+  if (typeof value !== "string") return null
+  if (/^(https?:|mailto:|tel:|\/|#)/i.test(value)) return value
+  return null
+}
+
+const renderFormattedText = node => {
+  let output = escapeHtml(node.text || "")
+  const format = Number(node.format) || 0
+  if (format & 16) output = `<code>${output}</code>`
+  if (format & 1) output = `<strong>${output}</strong>`
+  if (format & 2) output = `<em>${output}</em>`
+  if (format & 8) output = `<u>${output}</u>`
+  if (format & 4) output = `<s>${output}</s>`
+  if (format & 32) output = `<sub>${output}</sub>`
+  if (format & 64) output = `<sup>${output}</sup>`
+  if (format & 128) output = `<mark>${output}</mark>`
+  return output
+}
+
 const renderRichTextNode = (node, baseUrl) => {
   if (!node || typeof node !== "object") {
     return ""
   }
 
   if (node.type === "text") {
-    return escapeHtml(node.text || "")
+    return renderFormattedText(node)
   }
 
   const childrenHtml = Array.isArray(node.children)
@@ -70,6 +97,14 @@ const renderRichTextNode = (node, baseUrl) => {
     return `<blockquote>${childrenHtml}</blockquote>`
   }
 
+  if (node.type === "link" || node.type === "autolink") {
+    const href = safeLinkUrl(node.fields?.url || node.url)
+    if (!href) return childrenHtml
+    const newWindow = node.fields?.newTab || node.fields?.newWindow
+    const target = newWindow ? ' target="_blank" rel="noopener noreferrer"' : ""
+    return `<a href="${escapeHtml(href)}"${target}>${childrenHtml}</a>`
+  }
+
   if (node.type === "heading") {
     const tag = ["h2", "h3", "h4"].includes(node.tag) ? node.tag : "h2"
     return `<${tag}>${childrenHtml}</${tag}>`
@@ -82,6 +117,15 @@ const renderRichTextNode = (node, baseUrl) => {
 
   if (node.type === "listitem") {
     return `<li>${childrenHtml}</li>`
+  }
+
+  if (node.type === "horizontalrule") return "<hr />"
+  if (node.type === "tab") return "&emsp;"
+  if (node.type === "table") return `<div class="article-table-wrap"><table>${childrenHtml}</table></div>`
+  if (node.type === "tablerow") return `<tr>${childrenHtml}</tr>`
+  if (node.type === "tablecell") {
+    const tag = node.headerState ? "th" : "td"
+    return `<${tag}>${childrenHtml}</${tag}>`
   }
 
   if (node.type === "upload") {
@@ -211,7 +255,12 @@ const normalizeTags = tags =>
   Array.isArray(tags)
     ? tags
         .map(tag => {
-          const [preferredTag = ""] = getTagCandidates(tag)
+          const preferredTag =
+            typeof tag === "string"
+              ? tag
+              : [tag?.name, tag?.label, tag?.title, tag?.slug, tag?.value].find(
+                  candidate => typeof candidate === "string" && candidate.trim()
+                ) || ""
           return preferredTag.trim()
         })
         .filter(Boolean)
@@ -228,10 +277,113 @@ const pickMediaUrl = (media, baseUrl, sizeKey) => {
   return toAbsoluteUrl(baseUrl, sizedPath || directPath)
 }
 
+const normalizeGalleryMedia = (media, baseUrl) => {
+  if (!media || typeof media !== "object") return null
+  const fullUrl = toAbsoluteUrl(baseUrl, media.url)
+  if (!fullUrl) return null
+  return {
+    id: media.id || fullUrl,
+    fullUrl,
+    thumbnailUrl:
+      pickMediaUrl(media, baseUrl, "thumbnail") ||
+      pickMediaUrl(media, baseUrl, "card") ||
+      fullUrl,
+    alt: media.alt || "",
+    caption: media.caption || "",
+    width: media.width || null,
+    height: media.height || null,
+  }
+}
+
+const textRows = rows =>
+  Array.isArray(rows) ? rows.map(row => row?.text).filter(Boolean) : []
+
+const optionRows = rows =>
+  Array.isArray(rows)
+    ? rows.map(row => ({ label: row?.label || row?.value, value: row?.value })).filter(row => row.value)
+    : []
+
+export const fetchPayloadGlobal = async slug => {
+  const payloadApiUrl = getPayloadApiUrl()
+  if (!payloadApiUrl) throw new Error("PAYLOAD_API_URL is required to load website content.")
+  const endpoint = new URL(`/api/globals/${slug}`, payloadApiUrl)
+  endpoint.searchParams.set("depth", "2")
+  const response = await fetchCms(endpoint.toString())
+  if (!response.ok) throw new Error(`CMS global ${slug} failed with ${response.status} ${response.statusText}`)
+  return response.json()
+}
+
+export const fetchSiteSettings = async () => {
+  const data = await fetchPayloadGlobal("site-settings")
+  const payloadApiUrl = getPayloadApiUrl()
+  return {
+    ...data,
+    portraitUrl: pickMediaUrl(data.portrait, payloadApiUrl, "card") || data.portraitPath,
+  }
+}
+
+export const fetchHomePage = async () => {
+  const data = await fetchPayloadGlobal("home-page")
+  return {
+    ...data,
+    trustChips: textRows(data.trustChips),
+    featuredProjectIds: (data.featuredProjects || []).map(item => typeof item === "object" ? item.id : item),
+  }
+}
+
+export const fetchAboutPage = async () => {
+  const data = await fetchPayloadGlobal("about-page")
+  return { ...data, summary: textRows(data.summary) }
+}
+
+export const fetchTestimonialsPage = () => fetchPayloadGlobal("testimonials-page")
+
+export const fetchQuotePage = async () => {
+  const data = await fetchPayloadGlobal("quote-page")
+  return {
+    ...data,
+    steps: [
+      { id: "help_type", name: "help_type", label: data.helpTypeLabel, options: optionRows(data.helpTypes) },
+      { id: "work_type", name: "work_type", label: data.workTypeLabel, options: optionRows(data.workTypes) },
+      { id: "timeline", name: "timeline", label: data.timelineLabel, options: optionRows(data.timelines) },
+      { id: "budget", name: "budget", label: data.budgetLabel, options: optionRows(data.budgets) },
+    ],
+    contactMethods: optionRows(data.contactMethods),
+    contactFields: [
+      { label: data.nameLabel, name: "name", type: "text", placeholder: data.namePlaceholder },
+      { label: data.emailLabel, name: "email", type: "email", placeholder: data.emailPlaceholder },
+      { label: data.companyLabel, name: "company", type: "text", placeholder: data.companyPlaceholder },
+    ],
+  }
+}
+
+export const fetchArchiveSettings = () => fetchPayloadGlobal("archive-settings")
+export const fetchProjectTemplate = () => fetchPayloadGlobal("project-template")
+export const fetchSystemPages = () => fetchPayloadGlobal("system-pages")
+
+export const fetchWorkExperience = async () => {
+  const payloadApiUrl = getPayloadApiUrl()
+  if (!payloadApiUrl) throw new Error("PAYLOAD_API_URL is required to load work experience.")
+  const endpoint = new URL("/api/work-experience", payloadApiUrl)
+  endpoint.searchParams.set("depth", "0")
+  endpoint.searchParams.set("limit", "100")
+  endpoint.searchParams.set("sort", "sortOrder")
+  endpoint.searchParams.set("where[status][equals]", "published")
+  const response = await fetchCms(endpoint.toString())
+  if (!response.ok) throw new Error(`CMS work experience failed with ${response.status} ${response.statusText}`)
+  const payload = await response.json()
+  return (payload.docs || []).map(item => ({
+    ...item,
+    highlights: textRows(item.highlights),
+  }))
+}
+
 export const fetchPayloadPosts = async () => {
   const payloadApiUrl = getPayloadApiUrl()
   if (!payloadApiUrl) {
-    return []
+    throw new Error(
+      "PAYLOAD_API_URL is required. Start portfolio-cms and point the UI at its base URL."
+    )
   }
 
   const endpointUrl = resolvePostsEndpointUrl(
@@ -250,7 +402,7 @@ export const fetchPayloadPosts = async () => {
     endpoint.searchParams.set("sort", "-publishedAt")
     endpoint.searchParams.set("where[_status][equals]", "published")
 
-    const response = await fetch(endpoint.toString())
+    const response = await fetchCms(endpoint.toString())
 
     if (!response.ok) {
       throw new Error(
@@ -275,25 +427,47 @@ export const fetchPayloadPosts = async () => {
   return posts
 }
 
+export const fetchPayloadTestimonials = async () => {
+  const payloadApiUrl = getPayloadApiUrl()
+  if (!payloadApiUrl) {
+    throw new Error("PAYLOAD_API_URL is required to load testimonials.")
+  }
+
+  const endpoint = new URL("/api/testimonials", payloadApiUrl)
+  endpoint.searchParams.set("depth", "0")
+  endpoint.searchParams.set("limit", "100")
+  endpoint.searchParams.set("sort", "sortOrder")
+  endpoint.searchParams.set("where[status][equals]", "published")
+  const response = await fetchCms(endpoint.toString())
+  if (!response.ok) {
+    throw new Error(`CMS testimonial fetch failed with ${response.status} ${response.statusText}`)
+  }
+
+  const payload = await response.json()
+  return Array.isArray(payload?.docs)
+    ? payload.docs.map(item => ({
+        id: item.id,
+        name: item.name,
+        role: item.role,
+        company: item.company || "",
+        quote: item.quote,
+        relationship: item.relationship,
+        sourceLabel: item.sourceLabel || "Recommendation",
+        sourceUrl: item.sourceUrl || "",
+        featured: Boolean(item.featured),
+      }))
+    : []
+}
+
 export const getCmsContent = async () => {
   const payloadApiUrl = getPayloadApiUrl()
   if (!payloadApiUrl) {
-    return { blogPosts: [], projects: [] }
+    throw new Error(
+      "PAYLOAD_API_URL is required. Start portfolio-cms and point the UI at its base URL."
+    )
   }
 
-  let posts = []
-  try {
-    posts = await fetchPayloadPosts()
-  } catch (error) {
-    if (shouldAllowPayloadFallback()) {
-      console.warn(
-        `[blog-cms] Failed to fetch CMS posts. Continuing with local content because fallback is enabled. ${error.message}`
-      )
-      return { blogPosts: [], projects: [] }
-    }
-
-    throw error
-  }
+  const posts = await fetchPayloadPosts()
 
   const normalized = posts
     .map(post => {
@@ -306,11 +480,18 @@ export const getCmsContent = async () => {
       const excerpt = buildExcerpt(post, contentHtml)
       const publishedDate = post?.publishedAt || post?.createdAt || null
       const tags = normalizeTags(post?.tags)
-      const coverImageUrl = pickMediaUrl(post?.coverImage, payloadApiUrl, "card")
+      const coverImageUrl = pickMediaUrl(
+        post?.coverImage,
+        payloadApiUrl,
+        "card"
+      )
       const ogImageUrl =
         pickMediaUrl(post?.ogImage, payloadApiUrl, "og") ||
         pickMediaUrl(post?.coverImage, payloadApiUrl, "og") ||
         coverImageUrl
+      const projectGallery = Array.isArray(post?.projectGallery)
+        ? post.projectGallery.map(media => normalizeGalleryMedia(media, payloadApiUrl)).filter(Boolean)
+        : []
 
       return {
         id: `cms-${post.id}`,
@@ -330,6 +511,8 @@ export const getCmsContent = async () => {
         coverImageUrl,
         coverImageAlt: post?.coverImage?.alt || post.title || "",
         ogImageUrl,
+        projectRole: post.projectRole || "",
+        projectGallery,
         isCaseStudy: hasTag(post?.tags, "case-study"),
       }
     })

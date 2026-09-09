@@ -23,7 +23,7 @@ The project is a Next.js-based personal site for Muhammad Usman that combines:
 - `/blog/`
   - writings archive with pagination and tag filtering
 - `/blog/:slug/`
-  - article detail pages sourced from Markdown or CMS
+  - article detail pages sourced from Payload CMS
 - `/quote/`
   - structured project-intake form
 - `/thank-you/`
@@ -42,25 +42,21 @@ The project is a Next.js-based personal site for Muhammad Usman that combines:
 
 ### Content Sources
 
-- JSON content for page copy and reusable site data:
-  - `src/content/pages/*.json`
-  - `src/content/misc/*.json`
-- Markdown content for:
-  - `src/content/blog/*.md`
-  - `src/content/experience/all.md`
-- CMS content fetched during build through `src/lib/cms.js`
+- Payload CMS globals provide page copy and reusable site data.
+- Payload collections provide writings, projects, work experience, testimonials, media, and quote requests.
+- all writing and project content is fetched during build through `src/lib/cms.js`
 
 ### Page Generation
 
 - route pages live under `src/pages/`
 - project and blog detail pages use Next dynamic routes under `src/pages/projects/[slug].js` and `src/pages/blog/[slug].js`
-- blog rendering is CMS-first, with Markdown fallback only when CMS is intentionally disabled or fallback is explicitly enabled
+- blog and project rendering require the CMS API
 
 ## Key Features
 
 - responsive homepage, about, projects, writings, and quote flow
 - build-time blog ingestion from Payload CMS
-- hard-fail CMS fetches by default to prevent stale local blog content from masking publish issues
+- hard-fail CMS fetches to prevent incomplete deployments
 - published CMS articles appear in the UI on the next successful Next.js build or deployment
 - tag-filtered writings archive with pagination
 - case-study project detail pages

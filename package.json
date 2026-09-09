@@ -13,15 +13,11 @@
     "@tailwindcss/typography": "^0.5.19",
     "autoprefixer": "^10.4.20",
     "date-fns": "^2.30.0",
-    "gray-matter": "^4.0.3",
     "lucide-react": "^0.488.0",
-    "next": "^15.3.0",
-    "postcss": "^8.5.1",
+    "next": "16.3.4",
+    "postcss": "8.5.28",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "remark": "^15.0.1",
-    "remark-gfm": "^4.0.1",
-    "remark-html": "^16.0.1",
     "tailwindcss": "^4.0.3"
   },
   "devDependencies": {
@@ -38,10 +34,15 @@
     "web development"
   ],
   "license": "0BSD",
+  "overrides": {
+    "browserslist": "latest",
+    "js-yaml": "latest"
+  },
   "scripts": {
     "build": "next build",
+    "postbuild": "node scripts/generate-sitemap.mjs",
     "develop": "next dev",
-    "deploy": "next build && gh-pages -d out",
+    "deploy": "npm run build && gh-pages -d out",
     "deploy:vercel": "vercel --prod",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
     "start": "next dev",

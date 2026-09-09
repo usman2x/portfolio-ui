@@ -14,7 +14,7 @@ This document records the working standards for the UI repository and a short ba
 
 ## Current Quality Baseline
 
-- Next.js static export with shared layout and page-level JSON content
+- Next.js static export with shared layout and Payload-managed content
 - Blog sourced from Markdown plus CMS build-time ingestion
 - Blog publishing model is static generation plus rebuild on publish
 - GitHub Pages deployment workflow already present
