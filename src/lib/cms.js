@@ -318,7 +318,8 @@ export const fetchSiteSettings = async () => {
   const payloadApiUrl = getPayloadApiUrl()
   return {
     ...data,
-    portraitUrl: pickMediaUrl(data.portrait, payloadApiUrl, "card") || data.portraitPath,
+    portraitUrl:
+      pickMediaUrl(data.portrait, payloadApiUrl, "card") || data.portraitPath || null,
   }
 }
 
