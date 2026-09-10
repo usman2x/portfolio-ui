@@ -198,6 +198,22 @@ curl http://127.0.0.1:9010/health
 
 The listener binds only to `127.0.0.1`; do not add port `9010` to OCI, UFW, iptables, or Caddy. Logs are available with `sudo journalctl -u portfolio-ui-deploy-webhook -f`.
 
+### Deferred TODO: automatic build testing
+
+The implementation is retained, but production activation and end-to-end testing are intentionally deferred.
+
+- [ ] Install and enable `portfolio-ui-deploy-webhook.service` on the VM.
+- [ ] Configure the shared webhook URL and token, then restart the CMS.
+- [ ] Verify the loopback health endpoint and confirm port `9010` is not public.
+- [ ] Publish a CMS global and confirm exactly one successful UI build.
+- [ ] Publish several records rapidly and confirm the debounce produces one build.
+- [ ] Change content during a build and confirm one follow-up build is queued.
+- [ ] Confirm an invalid bearer token returns `401` without starting a build.
+- [ ] Confirm updated content is visible through Caddy after a successful build.
+- [ ] Confirm both services recover after a VM reboot.
+- [ ] Measure CPU, memory, and UI availability during a build.
+- [ ] Add atomic release switching before treating rebuilds as zero-downtime.
+
 ## FAQ
 
 **Why does the CMS need to run during the build?** `getStaticProps` fetches Payload content while generating HTML.
