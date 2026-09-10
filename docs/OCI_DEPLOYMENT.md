@@ -152,6 +152,52 @@ test -f out/index.html && echo "UI BUILD OK" || echo "UI BUILD MISSING"
 
 Caddy serves `out` directly, so it does not need restarting after a successful UI rebuild.
 
+## Automatic rebuild after CMS changes
+
+The CMS publish hooks can notify a loopback-only rebuild listener. The listener validates a bearer token, debounces bursts of edits, runs one build at a time, and queues one follow-up build when content changes during an active build.
+
+Add the same random token to `/srv/portfolio/portfolio-cms/.env`:
+
+```dotenv
+UI_DEPLOY_WEBHOOK_URL=http://127.0.0.1:9010/deploy
+UI_DEPLOY_WEBHOOK_TOKEN=<openssl-rand-hex-32-output>
+```
+
+Create `/etc/systemd/system/portfolio-ui-deploy-webhook.service`:
+
+```ini
+[Unit]
+Description=Portfolio UI deployment webhook
+After=network-online.target portfolio-cms.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/srv/portfolio/portfolio-ui
+Environment=NODE_ENV=production
+Environment=NVM_DIR=/home/ubuntu/.nvm
+EnvironmentFile=/srv/portfolio/portfolio-cms/.env
+ExecStart=/bin/bash -lc 'source /home/ubuntu/.nvm/nvm.sh && exec npm run deploy:webhook'
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable it and restart the CMS so both processes load the token:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now portfolio-ui-deploy-webhook
+sudo systemctl restart portfolio-cms
+curl http://127.0.0.1:9010/health
+```
+
+The listener binds only to `127.0.0.1`; do not add port `9010` to OCI, UFW, iptables, or Caddy. Logs are available with `sudo journalctl -u portfolio-ui-deploy-webhook -f`.
+
 ## FAQ
 
 **Why does the CMS need to run during the build?** `getStaticProps` fetches Payload content while generating HTML.
