@@ -344,16 +344,16 @@ export const fetchQuotePage = async () => {
   return {
     ...data,
     steps: [
-      { id: "help_type", name: "help_type", label: data.helpTypeLabel, options: optionRows(data.helpTypes) },
-      { id: "work_type", name: "work_type", label: data.workTypeLabel, options: optionRows(data.workTypes) },
-      { id: "timeline", name: "timeline", label: data.timelineLabel, options: optionRows(data.timelines) },
-      { id: "budget", name: "budget", label: data.budgetLabel, options: optionRows(data.budgets) },
+      { id: "help_type", name: "help_type", label: data.helpTypeLabel || "", options: optionRows(data.helpTypes) },
+      { id: "work_type", name: "work_type", label: data.workTypeLabel || "", options: optionRows(data.workTypes) },
+      { id: "timeline", name: "timeline", label: data.timelineLabel || "", options: optionRows(data.timelines) },
+      { id: "budget", name: "budget", label: data.budgetLabel || "", options: optionRows(data.budgets) },
     ],
     contactMethods: optionRows(data.contactMethods),
     contactFields: [
-      { label: data.nameLabel, name: "name", type: "text", placeholder: data.namePlaceholder },
-      { label: data.emailLabel, name: "email", type: "email", placeholder: data.emailPlaceholder },
-      { label: data.companyLabel, name: "company", type: "text", placeholder: data.companyPlaceholder },
+      { label: data.nameLabel || "", name: "name", type: "text", placeholder: data.namePlaceholder || "" },
+      { label: data.emailLabel || "", name: "email", type: "email", placeholder: data.emailPlaceholder || "" },
+      { label: data.companyLabel || "", name: "company", type: "text", placeholder: data.companyPlaceholder || "" },
     ],
   }
 }
