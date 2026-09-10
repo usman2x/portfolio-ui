@@ -2,6 +2,9 @@ const DEFAULT_CMS_POSTS_ENDPOINT = "/api/posts"
 
 const getPayloadApiUrl = () => (process.env.PAYLOAD_API_URL || "").trim()
 
+const getPublicCmsUrl = () =>
+  (process.env.NEXT_PUBLIC_CMS_URL || getPayloadApiUrl()).trim()
+
 const getPayloadPostsEndpoint = () =>
   process.env.PAYLOAD_POSTS_ENDPOINT || DEFAULT_CMS_POSTS_ENDPOINT
 
@@ -315,11 +318,11 @@ export const fetchPayloadGlobal = async slug => {
 
 export const fetchSiteSettings = async () => {
   const data = await fetchPayloadGlobal("site-settings")
-  const payloadApiUrl = getPayloadApiUrl()
+  const publicCmsUrl = getPublicCmsUrl()
   return {
     ...data,
     portraitUrl:
-      pickMediaUrl(data.portrait, payloadApiUrl, "card") || data.portraitPath || null,
+      pickMediaUrl(data.portrait, publicCmsUrl, "card") || data.portraitPath || null,
   }
 }
 
@@ -462,6 +465,7 @@ export const fetchPayloadTestimonials = async () => {
 
 export const getCmsContent = async () => {
   const payloadApiUrl = getPayloadApiUrl()
+  const publicCmsUrl = getPublicCmsUrl()
   if (!payloadApiUrl) {
     throw new Error(
       "PAYLOAD_API_URL is required. Start portfolio-cms and point the UI at its base URL."
@@ -477,21 +481,21 @@ export const getCmsContent = async () => {
         return null
       }
 
-      const contentHtml = buildContentHtml(post?.content, payloadApiUrl)
+      const contentHtml = buildContentHtml(post?.content, publicCmsUrl)
       const excerpt = buildExcerpt(post, contentHtml)
       const publishedDate = post?.publishedAt || post?.createdAt || null
       const tags = normalizeTags(post?.tags)
       const coverImageUrl = pickMediaUrl(
         post?.coverImage,
-        payloadApiUrl,
+        publicCmsUrl,
         "card"
       )
       const ogImageUrl =
-        pickMediaUrl(post?.ogImage, payloadApiUrl, "og") ||
-        pickMediaUrl(post?.coverImage, payloadApiUrl, "og") ||
+        pickMediaUrl(post?.ogImage, publicCmsUrl, "og") ||
+        pickMediaUrl(post?.coverImage, publicCmsUrl, "og") ||
         coverImageUrl
       const projectGallery = Array.isArray(post?.projectGallery)
-        ? post.projectGallery.map(media => normalizeGalleryMedia(media, payloadApiUrl)).filter(Boolean)
+        ? post.projectGallery.map(media => normalizeGalleryMedia(media, publicCmsUrl)).filter(Boolean)
         : []
 
       return {
