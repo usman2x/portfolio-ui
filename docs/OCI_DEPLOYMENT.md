@@ -85,6 +85,60 @@ sudo ufw allow 80/tcp
 sudo ufw allow 8080/tcp
 ```
 
+UFW rules persist automatically. Confirm both activation and startup:
+
+```bash
+sudo ufw status numbered
+sudo systemctl is-enabled ufw
+```
+
+Some OCI Ubuntu images contain a catch-all `REJECT` rule before the UFW chains. Inspect the actual order:
+
+```bash
+sudo iptables -L INPUT -n -v --line-numbers
+```
+
+If that reject appears before the UFW rules, insert explicit accepts immediately before it. In the deployed VM the reject was originally rule 5, so the applied rules were:
+
+```bash
+sudo iptables -I INPUT 5 -p tcp --dport 80 -m conntrack --ctstate NEW -j ACCEPT
+sudo iptables -I INPUT 6 -p tcp --dport 8080 -m conntrack --ctstate NEW -j ACCEPT
+sudo apt install -y iptables-persistent
+sudo netfilter-persistent save
+sudo systemctl enable netfilter-persistent
+```
+
+Always inspect rule numbers first; never flush the OCI image's ruleset. Keep port `3001` closed publicly.
+
+## External verification
+
+Run these from a machine outside OCI, not from the VM itself. Public-IP hairpin requests made from the same OCI VM are not a reliable test.
+
+```bash
+curl -I --connect-timeout 10 http://<PUBLIC_IP>
+curl -I --connect-timeout 10 http://<PUBLIC_IP>:8080/admin
+```
+
+Expected result: both return an HTTP response from Caddy. Verify the deployed processes and automatic startup:
+
+```bash
+sudo systemctl is-enabled caddy portfolio-cms
+sudo systemctl is-active caddy portfolio-cms
+sudo ss -ltnp | grep -E ':(80|8080|3001)'
+```
+
+## Remaining production steps
+
+1. Complete external checks for the UI on `80` and CMS on `8080`.
+2. Leave content seeding paused until explicitly approved.
+3. Populate required Payload globals before treating the generated UI as final content.
+4. Rebuild the UI after any CMS content initialization or publication.
+5. Acquire/configure a domain and switch Caddy to HTTPS.
+6. Move the CMS to a dedicated HTTPS hostname, or validate a same-origin routing design that accounts for both applications' `/_next/*` assets.
+7. Remove temporary port `8080` from Caddy, UFW, persistent iptables, and OCI ingress only after its replacement is verified.
+
+The current supported layout remains port `80` for UI and port `8080` for CMS. A previous static-admin deployment could safely use `/admin`; Payload Admin is dynamic Next.js and shares `/_next/*` with this UI, so path consolidation requires additional routing tests.
+
 ## Updates
 
 ```bash
@@ -119,5 +173,7 @@ Caddy serves `out` directly, so it does not need restarting after a successful U
 - CMS fetch failure: confirm `PAYLOAD_API_URL=http://127.0.0.1:3001` and verify the CMS service.
 - `undefined cannot be serialized`: normalize optional values to `null` or omit them before returning `getStaticProps`.
 - Public timeout with successful local curls: check both OCI ingress rules and the VM firewall.
+- If an iptables rule's packet counter remains zero during an external request, OCI is blocking traffic before it reaches the VM.
+- If port `80` works but `8080` does not, verify `8080` is entered as the OCI destination port, not the source port, and that the NSG is attached to the primary VNIC.
 - Old content after editing Payload: rebuild the UI because it is statically generated.
 - Permission denied from Caddy: ensure directories are traversable and files under `out` are readable by the `caddy` user.
