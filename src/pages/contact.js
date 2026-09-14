@@ -166,7 +166,7 @@ const ContactPage = ({ quotePage, siteSettings }) => {
           help_type: values.intent,
           wants_reply: needsReply,
           source_url: window.location.href,
-          website: event.currentTarget.elements.website.value,
+          fax_number: event.currentTarget.elements.fax_number.value,
         }),
       })
       const result = await response.json().catch(() => ({}))
@@ -283,10 +283,12 @@ const ContactPage = ({ quotePage, siteSettings }) => {
               <form className="quote-form" onSubmit={submitContact}>
                 <div className="quote-honeypot" aria-hidden="true">
                   <input
-                    name="website"
+                    name="fax_number"
                     type="text"
                     tabIndex="-1"
                     autoComplete="off"
+                    data-lpignore="true"
+                    data-1p-ignore="true"
                   />
                 </div>
                 <div className="wizard-progress-mobile" aria-hidden="true">
