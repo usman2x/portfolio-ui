@@ -321,6 +321,11 @@ export const fetchSiteSettings = async () => {
   const publicCmsUrl = getPublicCmsUrl()
   return {
     ...data,
+    navigation: (data.navigation || []).map(item =>
+      item.url === "/quote/" || item.label === "Get a Quote"
+        ? { ...item, label: "Contact Me", url: "/contact/" }
+        : item
+    ),
     portraitUrl:
       pickMediaUrl(data.portrait, publicCmsUrl, "card") || data.portraitPath || null,
   }
@@ -340,23 +345,111 @@ export const fetchAboutPage = async () => {
   return { ...data, summary: textRows(data.summary) }
 }
 
-export const fetchTestimonialsPage = () => fetchPayloadGlobal("testimonials-page")
+export const fetchTestimonialsPage = () =>
+  fetchPayloadGlobal("testimonials-page")
 
 export const fetchQuotePage = async () => {
   const data = await fetchPayloadGlobal("quote-page")
+  const intendedContactOptions = [
+    "Feedback",
+    "Project or services",
+    "Consultancy",
+    "General message",
+  ]
+  const configuredIntents = optionRows(data.helpTypes)
+  const hasGeneralizedIntents = intendedContactOptions.every(value =>
+    configuredIntents.some(option => option.value === value)
+  )
   return {
     ...data,
+    seoTitle: data.seoTitle === "Get a Quote" ? "Contact Me" : data.seoTitle,
+    seoDescription:
+      data.seoTitle === "Get a Quote"
+        ? "Share feedback, discuss engineering services, request consultancy, or send a general message."
+        : data.seoDescription,
+    title: data.title === "Get a Quote" ? "Contact Me" : data.title,
+    eyebrow: data.eyebrow === "Project intake" ? "Contact" : data.eyebrow,
+    description:
+      data.title === "Get a Quote"
+        ? "Whether you have feedback, a project in mind, or need focused consultancy, choose what brings you here and I’ll guide you through the right next steps."
+        : data.description,
+    responseNote: data.responseNote?.includes("Typical response time")
+      ? "Replies usually arrive within 1–2 business days."
+      : data.responseNote,
+    privacyNote: data.privacyNote?.includes("this request")
+      ? "Your details are used only to respond to this message."
+      : data.privacyNote,
+    helpTypes: hasGeneralizedIntents
+      ? configuredIntents
+      : intendedContactOptions.map(value => ({ label: value, value })),
+    submitLabel:
+      data.submitLabel === "Submit Quote Request"
+        ? "Send message"
+        : data.submitLabel,
+    successMessage: data.successMessage?.includes("quote request")
+      ? "Thanks — your message has been received. I’ll reply if you requested a response."
+      : data.successMessage,
+    successEyebrow:
+      data.successEyebrow === "Request received"
+        ? "Message received"
+        : data.successEyebrow,
+    successTitle:
+      data.successTitle === "Thanks for the context."
+        ? "Thanks for reaching out."
+        : data.successTitle,
+    errorMessage: data.errorMessage?.includes("request could not")
+      ? "Your message could not be sent. Please try again or use the email link below."
+      : data.errorMessage,
+    sendAnotherLabel:
+      data.sendAnotherLabel === "Send another request"
+        ? "Send another message"
+        : data.sendAnotherLabel,
     steps: [
-      { id: "help_type", name: "help_type", label: data.helpTypeLabel || "", options: optionRows(data.helpTypes) },
-      { id: "work_type", name: "work_type", label: data.workTypeLabel || "", options: optionRows(data.workTypes) },
-      { id: "timeline", name: "timeline", label: data.timelineLabel || "", options: optionRows(data.timelines) },
-      { id: "budget", name: "budget", label: data.budgetLabel || "", options: optionRows(data.budgets) },
+      {
+        id: "help_type",
+        name: "help_type",
+        label: data.helpTypeLabel || "",
+        options: optionRows(data.helpTypes),
+      },
+      {
+        id: "work_type",
+        name: "work_type",
+        label: data.workTypeLabel || "",
+        options: optionRows(data.workTypes),
+      },
+      {
+        id: "timeline",
+        name: "timeline",
+        label: data.timelineLabel || "",
+        options: optionRows(data.timelines),
+      },
+      {
+        id: "budget",
+        name: "budget",
+        label: data.budgetLabel || "",
+        options: optionRows(data.budgets),
+      },
     ],
     contactMethods: optionRows(data.contactMethods),
     contactFields: [
-      { label: data.nameLabel || "", name: "name", type: "text", placeholder: data.namePlaceholder || "" },
-      { label: data.emailLabel || "", name: "email", type: "email", placeholder: data.emailPlaceholder || "" },
-      { label: data.companyLabel || "", name: "company", type: "text", placeholder: data.companyPlaceholder || "" },
+      {
+        label: data.nameLabel || "",
+        name: "name",
+        type: "text",
+        placeholder: data.namePlaceholder || "",
+      },
+      {
+        label: data.emailLabel || "",
+        name: "email",
+        type: "email",
+        placeholder: data.emailPlaceholder || "",
+      },
+      {
+        label: data.companyLabel || "",
+        name: "company",
+        type: "text",
+        placeholder: data.companyPlaceholder || "",
+      },
     ],
   }
 }

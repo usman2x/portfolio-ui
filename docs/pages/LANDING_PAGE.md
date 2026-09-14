@@ -32,7 +32,7 @@ Recommended links:
 - About
 - Projects
 - Writings
-- Get a Quote
+- Contact Me
 - Book a Call
 
 Rule:
@@ -288,7 +288,7 @@ Recommended nav:
 - About
 - Projects
 - Writings
-- Get a Quote
+- Contact Me
 - Book a Call
 
 Right-side utility links may include:
@@ -469,7 +469,7 @@ Recommended footer structure:
 - About
 - Projects
 - Writings
-- Get a Quote
+- Contact Me
 
 Credentials placement:
 

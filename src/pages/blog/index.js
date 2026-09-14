@@ -116,7 +116,7 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
                   {filteredPosts.length === 1 ? "" : "s"}
                   {selectedTag !== "all-tags" ? ` in ${selectedTagLabel}` : ""}.
                 </p>
-                <Link href="/quote/" className="text-link-cta link-underline">
+                <Link href="/contact/" className="text-link-cta link-underline">
                   {archiveSettings.writingCtaLabel}
                 </Link>
               </div>

@@ -10,7 +10,7 @@ The UI owns layout, interaction, routes, and presentation. Payload CMS owns all 
 - **Home Page** — hero, trust chips, section labels, featured projects, and testimonial preview settings.
 - **About Page** — introduction, summary, introduction video URL/copy, strengths, and experience section label.
 - **Testimonials Page** — testimonial archive SEO and introduction copy.
-- **Quote Page** — page copy, process, form labels/placeholders, selectable options, and submission messages.
+- **Contact Page** (stored in the legacy `quote-page` global) — page copy, process, form labels/placeholders, intent and engagement options, and submission messages.
 - **Archive Settings** — writing/project archive metadata, filters, pagination size, and CTA labels.
 - **Project Template** — shared case-study labels and navigation copy.
 - **System Pages** — not-found and thank-you copy.
@@ -21,7 +21,7 @@ The UI owns layout, interaction, routes, and presentation. Payload CMS owns all 
 - **Work Experience** — chronological roles, summaries, links, and highlights. `sortOrder` controls display order.
 - **Testimonials** — recommendation copy, attribution, source, featured state, and display order.
 - **Media** — reusable CMS images and files.
-- **Quote Requests** — private form submissions visible only to administrators.
+- **Contact Requests** (stored in the legacy `quote-requests` collection) — private feedback, service, consultancy, and general-message submissions visible only to administrators.
 
 ## Editorial workflow
 

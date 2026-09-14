@@ -8,7 +8,7 @@ The project is a Next.js-based personal site for Muhammad Usman that combines:
 
 - portfolio and case-study content
 - a writings archive with article detail pages
-- a quote/contact conversion flow
+- an intent-led contact flow for feedback, services, consultancy, and general messages
 
 ## Route Structure
 
@@ -24,8 +24,10 @@ The project is a Next.js-based personal site for Muhammad Usman that combines:
   - writings archive with pagination and tag filtering
 - `/blog/:slug/`
   - article detail pages sourced from Payload CMS
+- `/contact/`
+  - adaptive contact wizard beginning with intent
 - `/quote/`
-  - structured project-intake form
+  - legacy redirect to `/contact/`
 - `/thank-you/`
   - form completion page
 - `/experience/`
@@ -54,7 +56,7 @@ The project is a Next.js-based personal site for Muhammad Usman that combines:
 
 ## Key Features
 
-- responsive homepage, about, projects, writings, and quote flow
+- responsive homepage, about, projects, writings, and contact flow
 - build-time blog ingestion from Payload CMS
 - hard-fail CMS fetches to prevent incomplete deployments
 - published CMS articles appear in the UI on the next successful Next.js build or deployment

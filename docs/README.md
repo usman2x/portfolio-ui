@@ -3,7 +3,9 @@
 This folder contains the active planning and implementation reference docs for site structure, style, SEO, and content modeling.
 
 ## Reading Order
+
 Before implementing a page or layout change, use this order:
+
 1. `docs/style/STYLEGUIDE.md`
 2. `docs/structure/STRUCTURE.md`
 3. page-specific doc in `docs/pages/`
@@ -11,12 +13,13 @@ Before implementing a page or layout change, use this order:
 5. `docs/content/CONTENT_CONFIGURATION.md`
 
 ## Folder Map
+
 - `docs/style/`
   - visual language and minimal design rules
 - `docs/structure/`
   - overall site architecture and section hierarchy
 - `docs/pages/`
-  - page-level blueprints for Home, About, Projects, Writings, and Quote
+  - page-level blueprints for Home, About, Projects, Writings, and Contact
 - `docs/seo/`
   - route, slug, canonical, and page SEO conventions
 - `docs/content/`
@@ -25,6 +28,7 @@ Before implementing a page or layout change, use this order:
   - implementation audits, integration notes, architecture briefs, and engineering standards
 
 ## Active Docs
+
 - `docs/style/STYLEGUIDE.md`
 - `docs/structure/STRUCTURE.md`
 - `docs/pages/LANDING_PAGE.md`
@@ -42,6 +46,7 @@ Before implementing a page or layout change, use this order:
 - `docs/NEXT_BLOG_PAYLOAD_INTEGRATION.md`
 
 ## Usage Rule
+
 - Treat these docs as implementation constraints, not optional notes.
 - If code changes conflict with these docs, update the relevant doc in the same change.
 - Keep content configurable when `docs/content/CONTENT_CONFIGURATION.md` says it should live in content files.

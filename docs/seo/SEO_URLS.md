@@ -12,12 +12,11 @@ The goal is to keep routing clean, human-readable, and stable as the site grows.
 - `/blog/`
 - `/blog/<slug>/`
 - `/testimonials/`
-- `/quote/` or `/start-a-project/`
-
-Optional:
-- `/contact/` only if a dedicated contact page is needed
+- `/contact/`
+- `/quote/` as a legacy redirect only
 
 ## General Slug Rules
+
 - lowercase only
 - hyphen-separated words
 - no spaces
@@ -63,11 +62,12 @@ Rule:
 - Title should begin with article title
 - Description should come from post frontmatter
 
-### Quote Page
-- URL: `/quote/` or `/start-a-project/`
+### Contact Page
+
+- URL: `/contact/`
 - Title pattern:
-  - `Get a Quote | Muhammad Usman`
-- Description should clarify the project intake purpose
+  - `Contact Me | Muhammad Usman`
+- Description should mention feedback, services, consultancy, and general messages
 
 ### Testimonials
 - URL: `/testimonials/`
@@ -107,7 +107,7 @@ Examples:
 - `/about/`
 - `/projects/unified-data-platform/`
 - `/blog/digital-paradigm-ai/`
-- `/quote/`
+- `/contact/`
 
 Avoid:
 - `/about-me-now/`

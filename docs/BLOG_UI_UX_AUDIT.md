@@ -183,7 +183,7 @@ Update page generation and template behavior:
 
 Recommended CTA hierarchy:
 
-- expertise/business posts: `Get a Quote`
+- expertise/business posts: `Contact Me`
 - credibility/relationship CTA: `Book a Call`
 - reflective/personal posts: lighter CTA, or route back to archive/about
 
@@ -319,7 +319,7 @@ Add one restrained conversion line in the footer:
 
 Recommended pair:
 
-- `Get a Quote`
+- `Contact Me`
 - `Book a Call`
 
 Keep this quiet and lightweight. Do not turn the footer into a card block.
@@ -341,7 +341,7 @@ That copy assumes service alignment for all content. Some blog posts are reflect
 ### Code signals
 
 - `src/pages/blog.js`
-  - results bar CTA to `/quote/`
+  - results bar CTA to `/contact/`
 
 ### Action
 
@@ -349,7 +349,7 @@ Use a more neutral archive CTA or make it content-aware:
 
 - neutral archive-level CTA: `Start a project conversation`
 - alternative trust CTA: `See projects`
-- keep `Get a Quote` for explicitly expertise-led sections or article CTAs
+- use `Contact Me` for expertise-led sections or article CTAs
 
 ### Expected outcome
 

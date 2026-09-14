@@ -1,273 +1,53 @@
-# Quote Page Blueprint
+# Contact Page Blueprint
 
-This document defines the structure for the quote / project intake page.
-
-It is meant to replace a generic contact form with a clearer qualification flow.
+This document defines the generalized contact experience. The filename remains unchanged to preserve existing documentation links; `/contact/` is the canonical public route and `/quote/` is a legacy redirect.
 
 ## Goal
-- Help visitors describe a concrete ask
-- Capture better inbound leads
-- Make the CTA `Get a Quote` meaningful
-- Keep the experience simple and guided
+
+- Give readers, prospective clients, and consultancy leads an equally clear starting point.
+- Ask only questions that match the visitor’s intent.
+- Keep progress and the upcoming path visible throughout.
+- Allow anonymous feedback without weakening service-enquiry qualification.
 
 ## Delivery and storage
 
-The form posts JSON to `NEXT_PUBLIC_CMS_URL/api/quote-requests/submit`. Successful submissions are stored in Payload's private `quote-requests` collection and are visible to active CMS administrators under **Quote Requests**. Public API users cannot list, read, update, or delete submissions.
+The form posts JSON to `NEXT_PUBLIC_CMS_URL/api/quote-requests/submit`. The endpoint and Payload slugs remain stable for compatibility, while the CMS labels the records **Contact Requests**. Public users cannot list, read, update, or delete submissions.
 
-The endpoint validates every select value, normalizes and limits text fields, restricts browser origins with `UI_PUBLIC_URL` / `QUOTE_ALLOWED_ORIGINS`, and includes a honeypot plus lightweight rate limiting. Production deployments should set both origin variables explicitly.
+The endpoint validates intent and all branch-specific fields, normalizes and limits text, restricts browser origins, and retains the honeypot and rate limit.
 
-## Recommended URL
-Preferred:
-- `/quote/`
+## Route and SEO
 
-Alternative:
-- `/start-a-project/`
+- Canonical route: `/contact/`
+- Legacy route: `/quote/`, which redirects in the statically exported site and is excluded from the sitemap
+- Title: `Contact Me | Muhammad Usman`
+- Description: mention feedback, services, consultancy, and general messages
 
-Recommendation:
-- Use `/quote/` if you want the shortest and clearest CTA destination.
-- Use `/start-a-project/` if you want a more consultative tone.
+## Wizard flow
 
-## SEO Direction
-Recommended title:
-- `Get a Quote | Muhammad Usman`
+The first step asks, “What brings you here?” with four choices:
 
-Recommended description direction:
-- `Share your project scope, timeline, and goals to get a clearer estimate for engineering, data, or AI-related work.`
+- Feedback
+- Project or services
+- Consultancy
+- General message
 
-Canonical:
-- self-referencing canonical for the chosen route
+Project and consultancy branches continue through engagement type, timeline, and budget. All branches then collect a message, contact preference, and review confirmation. Feedback and general messages may be sent anonymously; selecting “I’d like a reply” reveals and requires name, email, and preferred contact method.
 
-## Page Purpose
-This page should answer:
-- What kind of help do you need?
-- What are you trying to build or improve?
-- How urgent is it?
-- What level of engagement are you expecting?
-- How should I respond?
+The visible progress trail adapts from four to five steps after intent selection. It marks completed, current, and upcoming steps. Mobile layouts use a compact progress bar and retain explicit “Step X of Y” text.
 
-## Page Structure
-1. Intro block
-2. Quote wizard or guided intake form
-3. Alternative actions
-4. Trust / credentials strip
-5. Footer
+## Interaction rules
 
-## 1. Intro Block
-Purpose:
-- Frame the page clearly before asking for input
+- Show one conceptual group at a time.
+- Preserve answers when moving Back and Continue.
+- Validate before advancing and place errors in an announced status region.
+- Move keyboard focus to the new step heading.
+- Keep controls at least 44px tall and respect reduced-motion preferences.
+- End with a plain-language review before submission.
 
-Required content:
-- Page title
-- 2 to 3 line explanation
+## Content ownership
 
-Recommended title:
-- `Get a Quote`
+Payload’s legacy `quote-page` global remains the source for page copy, engagement options, contact methods, submission labels, and success/error messages. Its `helpTypes` array now represents the four top-level intents. The UI includes compatibility copy so an older published global does not prevent the generalized form from rendering.
 
-Recommended supporting copy:
-- `Tell me what you need help with and I’ll respond with the best next step, whether that’s a quote, a call, or a clarification request.`
+## Alternative actions
 
-Optional supporting line:
-- `Best for product engineering, platform work, data systems, and practical AI implementation.`
-
-Rule:
-- Keep this section brief.
-- It should reduce ambiguity, not sell aggressively.
-
-## 2. Quote Wizard / Guided Intake
-Purpose:
-- Replace a blank message box with structured input
-
-Recommended flow:
-1. What do you need help with?
-2. What type of work is this?
-3. What is your timeline?
-4. What is your budget or engagement range?
-5. What should I know before replying?
-6. How should I contact you?
-
-## Step 1: What do you need help with?
-Goal:
-- Identify the core request
-
-Recommended options:
-- Build a new product or feature
-- Improve or modernize an existing system
-- Data platform / ETL / analytics work
-- AI integration or workflow automation
-- Architecture review or technical consulting
-- Something else
-
-Rule:
-- One primary choice should be enough to route the rest of the intake.
-
-## Step 2: What type of work is this?
-Goal:
-- Clarify scope shape
-
-Recommended options:
-- Short consultation
-- Fixed-scope project
-- Ongoing engineering support
-- Audit / review / assessment
-
-Rule:
-- This helps distinguish between quoting, consulting, and advisory work.
-
-## Step 3: What is your timeline?
-Goal:
-- Understand urgency and planning horizon
-
-Recommended options:
-- ASAP
-- Within 2 weeks
-- Within 1 month
-- Within 1 to 3 months
-- Flexible / exploring
-
-Rule:
-- Keep the options simple and business-readable.
-
-## Step 4: Budget or Engagement Range
-Goal:
-- Help qualify seriousness without forcing precision
-
-Recommended options:
-- Under $2k
-- $2k to $5k
-- $5k to $10k
-- $10k+
-- Prefer to discuss first
-
-Rule:
-- Use ranges, not a raw numeric field only.
-- This should qualify gently, not feel hostile.
-
-## Step 5: Additional Context
-Goal:
-- Let the user explain the ask in plain language
-
-Recommended field:
-- one open text area
-
-Suggested prompt:
-- `What are you trying to build, improve, or fix? Include any useful context.`
-
-Rule:
-- This is the only free-form section.
-- Everything before it should reduce ambiguity.
-
-## Step 6: Contact Details
-Goal:
-- Make follow-up easy and structured
-
-Recommended fields:
-- Name
-- Email
-- Company or project name
-- Preferred contact method
-
-Preferred contact method options:
-- Email
-- WhatsApp
-- Schedule a call
-
-Optional:
-- LinkedIn profile
-
-Rule:
-- Ask only for what is needed to continue the conversation.
-
-## 3. Alternative Actions
-Purpose:
-- Support users who are not ready for the full quote flow
-
-Recommended alternatives:
-- `Book a Call`
-- `Email Me`
-- `Connect on WhatsApp`
-
-Rule:
-- These should be secondary to the quote flow, not competing primary actions.
-
-## 4. Trust / Credentials Strip
-Purpose:
-- Reassure the user before submission
-
-Recommended contents:
-- LinkedIn
-- GitHub
-- Resume
-- Short trust line
-
-Example trust line:
-- `8+ years across full-stack engineering, data systems, cloud delivery, and AI-enabled product work.`
-
-Rule:
-- Keep this compact.
-- It should support confidence, not distract from completion.
-
-## 5. Footer
-Purpose:
-- Keep site-wide consistency
-
-Footer should match the global footer structure used on the rest of the site.
-
-## CTA Hierarchy on This Page
-- Primary: `Submit Quote Request`
-- Secondary: `Book a Call`
-- Utility: `Email` / `WhatsApp`
-
-Rule:
-- Do not add multiple primary buttons.
-
-## Recommended Content Model
-For best practice, this page should be configurable.
-
-Suggested content file:
-- Payload **Quote Page** global
-
-Suggested fields:
-- page title
-- intro copy
-- step labels
-- option lists
-- field labels
-- success message
-- alternative CTA labels
-
-Rule:
-- The wizard structure can live in components.
-- The step labels and option sets should live in content files.
-
-## Suggested Success State
-After submission, user should see:
-- confirmation message
-- expected response window
-- optional backup contact methods
-
-Recommended message direction:
-- `Thanks. I’ve received your request and will review it before replying with the best next step.`
-
-Optional supporting line:
-- `If your request is urgent, you can also reach out by email or WhatsApp.`
-
-## Internal Linking Rules
-This page should be linked from:
-- homepage primary CTA
-- About page CTA
-- project detail page CTA
-- footer CTA
-
-This page should link out to:
-- Book a Call
-- Email
-- WhatsApp
-- credentials if needed
-
-## What to Avoid
-- Generic `Message` as the only input
-- Long multi-paragraph intros
-- Too many required fields
-- Forcing exact budgets
-- Mixing quote flow with unrelated newsletter/contact behavior
-- Hiding backup contact options
+“Book a short call” and “Send an email” remain secondary options beside the wizard. They should never compete visually with the active Continue or Send action.

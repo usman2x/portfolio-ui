@@ -129,7 +129,8 @@ Purpose:
 - turn engaged readers into leads when appropriate
 
 Recommended CTA:
-- `Get a Quote`
+
+- `Contact Me`
 - `Book a Call`
 
 Rule:
