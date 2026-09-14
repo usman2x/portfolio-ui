@@ -17,7 +17,7 @@ The UI owns layout, interaction, routes, and presentation. Payload CMS owns all 
 
 ### Collections
 
-- **Posts** — writings and project case studies. A published post tagged `case-study` is a project; its optional role and ordered Media gallery enrich the preview and detail page while the rich-text body holds the full narrative.
+- **Posts** — writings and project case studies. A writing can be native or an external Medium, LinkedIn, or other article. External entries retain their title, excerpt, date, tags, and optional image in the shared archive but link to the original publication instead of generating a local detail page. A published post tagged `case-study` is a project; its optional role and ordered Media gallery enrich the preview and detail page while the rich-text body holds the full narrative.
 - **Work Experience** — chronological roles, summaries, links, and highlights. `sortOrder` controls display order.
 - **Testimonials** — recommendation copy, attribution, source, featured state, and display order.
 - **Media** — reusable CMS images and files.

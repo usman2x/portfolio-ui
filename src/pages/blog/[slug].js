@@ -134,14 +134,20 @@ export const getStaticPaths = async () => {
   const posts = await getAllBlogPosts()
 
   return {
-    paths: posts.map(post => ({ params: { slug: post.slug } })),
+    paths: posts
+      .filter(post => post.publicationType !== "external")
+      .map(post => ({ params: { slug: post.slug } })),
     fallback: false,
   }
 }
 
 export const getStaticProps = async ({ params }) => {
-  const [posts, siteSettings] = await Promise.all([getAllBlogPosts(), fetchSiteSettings()])
-  const post = posts.find(item => item.slug === params.slug) || null
+  const [posts, siteSettings] = await Promise.all([
+    getAllBlogPosts(),
+    fetchSiteSettings(),
+  ])
+  const nativePosts = posts.filter(item => item.publicationType !== "external")
+  const post = nativePosts.find(item => item.slug === params.slug) || null
 
   if (!post) {
     return {
@@ -149,13 +155,27 @@ export const getStaticProps = async ({ params }) => {
     }
   }
 
-  const index = posts.findIndex(item => item.slug === post.slug)
+  const index = nativePosts.findIndex(item => item.slug === post.slug)
   return {
     props: {
       post,
       siteSettings,
-      previousPost: index > 0 ? { slug: posts[index - 1].slug, title: posts[index - 1].title, description: posts[index - 1].description } : null,
-      nextPost: index < posts.length - 1 ? { slug: posts[index + 1].slug, title: posts[index + 1].title, description: posts[index + 1].description } : null,
+      previousPost:
+        index > 0
+          ? {
+              slug: nativePosts[index - 1].slug,
+              title: nativePosts[index - 1].title,
+              description: nativePosts[index - 1].description,
+            }
+          : null,
+      nextPost:
+        index < nativePosts.length - 1
+          ? {
+              slug: nativePosts[index + 1].slug,
+              title: nativePosts[index + 1].title,
+              description: nativePosts[index + 1].description,
+            }
+          : null,
     },
   }
 }

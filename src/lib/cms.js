@@ -14,7 +14,8 @@ const fetchCms = async (url, attempts = 3) => {
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
       const response = await fetch(url, { signal: AbortSignal.timeout(10000) })
-      if (response.ok || response.status < 500 || attempt === attempts) return response
+      if (response.ok || response.status < 500 || attempt === attempts)
+        return response
       lastError = new Error(`CMS responded with ${response.status}`)
     } catch (error) {
       lastError = error
@@ -124,7 +125,8 @@ const renderRichTextNode = (node, baseUrl) => {
 
   if (node.type === "horizontalrule") return "<hr />"
   if (node.type === "tab") return "&emsp;"
-  if (node.type === "table") return `<div class="article-table-wrap"><table>${childrenHtml}</table></div>`
+  if (node.type === "table")
+    return `<div class="article-table-wrap"><table>${childrenHtml}</table></div>`
   if (node.type === "tablerow") return `<tr>${childrenHtml}</tr>`
   if (node.type === "tablecell") {
     const tag = node.headerState ? "th" : "td"
@@ -303,16 +305,22 @@ const textRows = rows =>
 
 const optionRows = rows =>
   Array.isArray(rows)
-    ? rows.map(row => ({ label: row?.label || row?.value, value: row?.value })).filter(row => row.value)
+    ? rows
+        .map(row => ({ label: row?.label || row?.value, value: row?.value }))
+        .filter(row => row.value)
     : []
 
 export const fetchPayloadGlobal = async slug => {
   const payloadApiUrl = getPayloadApiUrl()
-  if (!payloadApiUrl) throw new Error("PAYLOAD_API_URL is required to load website content.")
+  if (!payloadApiUrl)
+    throw new Error("PAYLOAD_API_URL is required to load website content.")
   const endpoint = new URL(`/api/globals/${slug}`, payloadApiUrl)
   endpoint.searchParams.set("depth", "2")
   const response = await fetchCms(endpoint.toString())
-  if (!response.ok) throw new Error(`CMS global ${slug} failed with ${response.status} ${response.statusText}`)
+  if (!response.ok)
+    throw new Error(
+      `CMS global ${slug} failed with ${response.status} ${response.statusText}`
+    )
   return response.json()
 }
 
@@ -327,7 +335,9 @@ export const fetchSiteSettings = async () => {
         : item
     ),
     portraitUrl:
-      pickMediaUrl(data.portrait, publicCmsUrl, "card") || data.portraitPath || null,
+      pickMediaUrl(data.portrait, publicCmsUrl, "card") ||
+      data.portraitPath ||
+      null,
   }
 }
 
@@ -336,7 +346,9 @@ export const fetchHomePage = async () => {
   return {
     ...data,
     trustChips: textRows(data.trustChips),
-    featuredProjectIds: (data.featuredProjects || []).map(item => typeof item === "object" ? item.id : item),
+    featuredProjectIds: (data.featuredProjects || []).map(item =>
+      typeof item === "object" ? item.id : item
+    ),
   }
 }
 
@@ -460,14 +472,18 @@ export const fetchSystemPages = () => fetchPayloadGlobal("system-pages")
 
 export const fetchWorkExperience = async () => {
   const payloadApiUrl = getPayloadApiUrl()
-  if (!payloadApiUrl) throw new Error("PAYLOAD_API_URL is required to load work experience.")
+  if (!payloadApiUrl)
+    throw new Error("PAYLOAD_API_URL is required to load work experience.")
   const endpoint = new URL("/api/work-experience", payloadApiUrl)
   endpoint.searchParams.set("depth", "0")
   endpoint.searchParams.set("limit", "100")
   endpoint.searchParams.set("sort", "sortOrder")
   endpoint.searchParams.set("where[status][equals]", "published")
   const response = await fetchCms(endpoint.toString())
-  if (!response.ok) throw new Error(`CMS work experience failed with ${response.status} ${response.statusText}`)
+  if (!response.ok)
+    throw new Error(
+      `CMS work experience failed with ${response.status} ${response.statusText}`
+    )
   const payload = await response.json()
   return (payload.docs || []).map(item => ({
     ...item,
@@ -537,7 +553,9 @@ export const fetchPayloadTestimonials = async () => {
   endpoint.searchParams.set("where[status][equals]", "published")
   const response = await fetchCms(endpoint.toString())
   if (!response.ok) {
-    throw new Error(`CMS testimonial fetch failed with ${response.status} ${response.statusText}`)
+    throw new Error(
+      `CMS testimonial fetch failed with ${response.status} ${response.statusText}`
+    )
   }
 
   const payload = await response.json()
@@ -578,17 +596,15 @@ export const getCmsContent = async () => {
       const excerpt = buildExcerpt(post, contentHtml)
       const publishedDate = post?.publishedAt || post?.createdAt || null
       const tags = normalizeTags(post?.tags)
-      const coverImageUrl = pickMediaUrl(
-        post?.coverImage,
-        publicCmsUrl,
-        "card"
-      )
+      const coverImageUrl = pickMediaUrl(post?.coverImage, publicCmsUrl, "card")
       const ogImageUrl =
         pickMediaUrl(post?.ogImage, publicCmsUrl, "og") ||
         pickMediaUrl(post?.coverImage, publicCmsUrl, "og") ||
         coverImageUrl
       const projectGallery = Array.isArray(post?.projectGallery)
-        ? post.projectGallery.map(media => normalizeGalleryMedia(media, publicCmsUrl)).filter(Boolean)
+        ? post.projectGallery
+            .map(media => normalizeGalleryMedia(media, publicCmsUrl))
+            .filter(Boolean)
         : []
 
       return {
@@ -612,6 +628,10 @@ export const getCmsContent = async () => {
         projectRole: post.projectRole || "",
         projectGallery,
         isCaseStudy: hasTag(post?.tags, "case-study"),
+        publicationType: post.publicationType || "native",
+        externalPlatform: post.externalPlatform || null,
+        externalUrl: post.externalUrl || null,
+        externalCtaLabel: post.externalCtaLabel || "",
       }
     })
     .filter(Boolean)

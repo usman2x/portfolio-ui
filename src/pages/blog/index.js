@@ -6,6 +6,12 @@ import Layout from "../../components/Layout"
 import SEO from "../../components/seo"
 import { getAllBlogPosts } from "../../lib/content"
 import { fetchArchiveSettings, fetchSiteSettings } from "../../lib/cms"
+import WritingLink from "../../components/WritingLink"
+import {
+  getWritingCtaLabel,
+  getWritingSourceLabel,
+  isExternalWriting,
+} from "../../lib/writings"
 
 const formatPostDate = date => {
   const parsedDate = new Date(date)
@@ -81,7 +87,9 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
           <div className="writings-layout">
             <aside className="writings-filter-panel">
               <div className="writings-filter-copy">
-                <h2 className="writings-filter-title">{archiveSettings.filterTitle}</h2>
+                <h2 className="writings-filter-title">
+                  {archiveSettings.filterTitle}
+                </h2>
                 <p className="writings-filter-description">
                   {archiveSettings.filterDescription}
                 </p>
@@ -125,7 +133,6 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
                   const {
                     id,
                     title,
-                    slug,
                     date,
                     description,
                     excerpt,
@@ -145,17 +152,21 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
                     >
                       <div className="writing-list-body">
                         <p className="writing-list-meta">
-                          <span>{formatPostDate(date)}</span>
+                          <span>{getWritingSourceLabel(post)}</span>
                           <span>•</span>
-                          <span>{readingTimeMinutes} min read</span>
+                          <span>{formatPostDate(date)}</span>
+                          {!isExternalWriting(post) ? <span>•</span> : null}
+                          {!isExternalWriting(post) ? (
+                            <span>{readingTimeMinutes} min read</span>
+                          ) : null}
                         </p>
                         <h2 className="writing-list-title">
-                          <Link
-                            href={`/blog/${slug}`}
+                          <WritingLink
+                            post={post}
                             className="writing-list-title-link link-underline"
                           >
                             {title}
-                          </Link>
+                          </WritingLink>
                         </h2>
                         <p className="writing-list-description">
                           {description || excerpt}
@@ -173,22 +184,28 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
                             ))}
                           </div>
                         ) : null}
-                        <Link
-                          href={`/blog/${slug}`}
+                        <WritingLink
+                          post={post}
                           className="text-link-cta link-underline writing-read-link"
                         >
-                          {archiveSettings.readArticleLabel}
-                        </Link>
+                          {getWritingCtaLabel(
+                            post,
+                            archiveSettings.readArticleLabel
+                          )}
+                          {isExternalWriting(post) ? (
+                            <span aria-hidden="true"> ↗</span>
+                          ) : null}
+                        </WritingLink>
                       </div>
                       {coverImageUrl ? (
-                        <Link href={`/blog/${slug}`} className="writing-list-media">
+                        <WritingLink post={post} className="writing-list-media">
                           <img
                             src={coverImageUrl}
                             alt={coverImageAlt || title}
                             className="writing-list-image"
                             loading="lazy"
                           />
-                        </Link>
+                        </WritingLink>
                       ) : null}
                     </article>
                   )
@@ -238,7 +255,9 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
 
 export const getStaticProps = async () => {
   const [posts, archiveSettings, siteSettings] = await Promise.all([
-    getAllBlogPosts(), fetchArchiveSettings(), fetchSiteSettings(),
+    getAllBlogPosts(),
+    fetchArchiveSettings(),
+    fetchSiteSettings(),
   ])
 
   return {
