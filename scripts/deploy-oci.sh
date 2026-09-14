@@ -114,7 +114,7 @@ main() {
     npm run clean
     npm run build
     test -f out/index.html
-    test -n "$(find out/_next/static/css -type f -name '*.css' -print -quit)"
+    test -n "$(find out/_next/static -type f -name '*.css' -print -quit)"
   )
 
   log "Verifying services through Caddy"
