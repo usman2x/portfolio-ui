@@ -381,11 +381,11 @@ Workflow:
 - local Payload app
 - seeded admin user
 
-### Staging
+### Production
 
-- Railway PostgreSQL
-- Railway app deployment for CMS
-- migration run before app rollout completes
+- Payload CMS runs on the OCI VM under systemd.
+- PostgreSQL remains an external service.
+- migrations run before the CMS service restarts.
 
 Required environment values:
 
@@ -431,5 +431,5 @@ Required environment values:
 ### Delivery
 
 - add migrations workflow
-- deploy to Railway staging
+- deploy directly to the OCI VM
 - document API contract for the Next.js site

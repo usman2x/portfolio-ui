@@ -64,24 +64,15 @@ The project is a Next.js-based personal site for Muhammad Usman that combines:
 - case-study project detail pages
 - share actions and SEO metadata on article pages
 - theme persistence through `src/utils/theme.js`
-- GitHub Pages deployment support
-- Vercel root-path deployment support
+- direct OCI VM deployment through the repository deployment script
 
-## Deployment Modes
+## Deployment
 
-### GitHub Pages
-
-- prefixed public path: `/portfolio-ui`
-- automated via `.github/workflows/deploy.yml`
-- manual fallback via `npm run deploy`
-- requires `NEXT_PUBLIC_PATH_PREFIX=/portfolio-ui` and `NEXT_PUBLIC_SITE_URL` including the prefix
-
-### Vercel
-
-- root-path hosting
-- configured by `vercel.json`
-- local production deploy via `npm run deploy:vercel`
-- automatic deployment available when the repo is linked in Vercel and `main` is set as the production branch
+- OCI VM is the only supported production target.
+- Caddy serves the static export from `/srv/portfolio/portfolio-ui/out`.
+- `npm run deploy:oci` updates and deploys both the CMS and UI repositories.
+- CMS publication hooks may invoke the VM's loopback-only UI rebuild listener.
+- Full provisioning and troubleshooting instructions live in `docs/OCI_DEPLOYMENT.md`.
 
 ## Future Consideration
 

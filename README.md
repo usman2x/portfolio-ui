@@ -28,23 +28,18 @@ The project uses `output: "export"` in [next.config.js](/Users/user/projects/por
 
 ## Deployment
 
-### Vercel
+Production is deployed directly to the OCI VM. There are no provider-hosted deployment pipelines
+in this repository.
 
-The repository includes [vercel.json](/Users/user/projects/portfolio-ui/vercel.json:1):
-
-- install: `npm ci`
-- build: `npm run build`
-- output: `out/`
-
-### GitHub Pages
-
-Manual static deployment remains available:
+After the initial checkout on the VM, deploy both CMS and UI in the required order with:
 
 ```bash
-npm run deploy
+cd /srv/portfolio/portfolio-ui
+npm run deploy:oci
 ```
 
-That builds the static export and publishes `out/` to `gh-pages`.
+See `docs/OCI_DEPLOYMENT.md` for initial provisioning, environment configuration, service setup,
+deployment behavior, and troubleshooting.
 
 ## Environment Variables
 
@@ -61,13 +56,6 @@ PAYLOAD_POSTS_ENDPOINT=/api/posts
 `PAYLOAD_API_URL` is required. Builds fail when the CMS is unavailable so stale or incomplete content cannot be deployed silently.
 
 Use `NEXT_PUBLIC_GA_TRACKING_ID` for Google Analytics. `NEXT_PUBLIC_CMS_URL` is the browser-visible CMS base URL used by quote submissions.
-
-For a GitHub Pages project site such as `https://usman2x.github.io/portfolio-ui/`, use:
-
-```bash
-NEXT_PUBLIC_SITE_URL=https://usman2x.github.io/portfolio-ui
-NEXT_PUBLIC_PATH_PREFIX=/portfolio-ui
-```
 
 ## Content Model
 

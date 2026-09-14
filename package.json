@@ -21,7 +21,6 @@
     "tailwindcss": "^4.0.3"
   },
   "devDependencies": {
-    "gh-pages": "^6.3.0",
     "prettier": "^2.8.8"
   },
   "keywords": [
@@ -42,10 +41,8 @@
     "build": "next build",
     "postbuild": "node scripts/generate-sitemap.mjs",
     "develop": "next dev",
-    "deploy": "npm run build && gh-pages -d out",
     "deploy:oci": "bash scripts/deploy-oci.sh",
     "deploy:webhook": "node scripts/deploy-webhook.mjs",
-    "deploy:vercel": "vercel --prod",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
     "start": "next dev",
     "serve": "next start",
