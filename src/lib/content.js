@@ -24,6 +24,7 @@ export const getAllProjects = async () => {
     description: project.description || project.excerpt || "",
     role: project.projectRole || "",
     image: project.coverImageUrl || null,
+    thumbnailImage: project.coverThumbnailUrl || project.coverImageUrl || null,
     imageAlt: project.coverImageAlt || project.title || "",
     tags: (project.tags || []).filter(
       tag => String(tag).trim().toLowerCase() !== "case study"

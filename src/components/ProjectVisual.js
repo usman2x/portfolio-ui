@@ -16,14 +16,28 @@ const ProjectVisual = ({ image, alt, title, className }) => {
 
   if (typeof image === "string" && /^https?:\/\//i.test(image)) {
     return (
-      <img src={image} alt={alt} className={visualClassName} loading="lazy" />
+      <img
+        src={image}
+        alt={alt}
+        className={visualClassName}
+        loading="lazy"
+        decoding="async"
+      />
     )
   }
 
   if (typeof image === "string" && image) {
-    const imageSrc = withBasePath(image.startsWith("/") ? image : `/images/${image}`)
+    const imageSrc = withBasePath(
+      image.startsWith("/") ? image : `/images/${image}`
+    )
     return (
-      <img src={imageSrc} alt={alt} className={visualClassName} loading="lazy" />
+      <img
+        src={imageSrc}
+        alt={alt}
+        className={visualClassName}
+        loading="lazy"
+        decoding="async"
+      />
     )
   }
 

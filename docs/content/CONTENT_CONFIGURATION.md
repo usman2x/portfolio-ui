@@ -6,12 +6,12 @@ The UI owns layout, interaction, routes, and presentation. Payload CMS owns all 
 
 ### Globals
 
-- **Site Settings** — identity, portrait, contact details, social links, navigation, footer, and book-call CTA.
+- **Site Settings** — identity, navigation logo, portrait, contact details, social links, navigation, footer, and book-call CTA.
 - **Home Page** — hero, trust chips, section labels, featured projects, and testimonial preview settings.
 - **About Page** — introduction, summary, introduction video URL/copy, strengths, and experience section label.
 - **Testimonials Page** — testimonial archive SEO and introduction copy.
 - **Contact Page** (stored in the legacy `quote-page` global) — page copy, process, form labels/placeholders, intent and engagement options, and submission messages.
-- **Archive Settings** — writing/project archive metadata, filters, pagination size, and CTA labels.
+- **Archive Settings** — writing/project archive titles, centered introductions, SEO metadata, filters, pagination size, and CTA labels.
 - **Project Template** — shared case-study labels and navigation copy.
 - **System Pages** — not-found and thank-you copy.
 

@@ -1,7 +1,12 @@
 import React, { useEffect } from "react"
 import Script from "next/script"
 import "../styles/global.css"
-import { applyStoredTheme, setTheme } from "../utils/theme"
+import {
+  applyStoredTheme,
+  getSystemTheme,
+  setTheme,
+  THEME_KEY,
+} from "../utils/theme"
 
 const App = ({ Component, pageProps }) => {
   const gaTrackingId =
@@ -10,6 +15,15 @@ const App = ({ Component, pageProps }) => {
   useEffect(() => {
     applyStoredTheme()
     window.setTheme = setTheme
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const followSystemTheme = () => {
+      if (!localStorage.getItem(THEME_KEY)) {
+        setTheme(getSystemTheme(), { persist: false })
+      }
+    }
+    mediaQuery.addEventListener("change", followSystemTheme)
+    return () => mediaQuery.removeEventListener("change", followSystemTheme)
   }, [])
 
   return (

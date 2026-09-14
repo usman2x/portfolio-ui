@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import ThemeToggle from "./ThemeToggle"
+import { withBasePath } from "../lib/site"
 
 const Header = ({ siteSettings }) => {
   const router = useRouter()
@@ -55,10 +57,31 @@ const Header = ({ siteSettings }) => {
     <header className="header">
       <div className="container header-shell">
         <Link href="/" className="logo-link" onClick={closeMenu}>
-          <span className="logo">{siteSettings.name}</span>
-          <span className="logo-meta">{siteSettings.shortLabel}</span>
+          {siteSettings.logoUrl ? (
+            <img
+              className="site-logo-image"
+              src={
+                siteSettings.logoUrl.startsWith("http")
+                  ? siteSettings.logoUrl
+                  : withBasePath(siteSettings.logoUrl)
+              }
+              alt={siteSettings.logoAlt || siteSettings.name}
+              width="44"
+              height="44"
+              decoding="async"
+            />
+          ) : null}
+          <span className="logo-copy">
+            <span className="logo">{siteSettings.name}</span>
+            <span className="logo-meta">{siteSettings.shortLabel}</span>
+          </span>
         </Link>
-        <nav className="site-nav" ref={navigationRef} aria-label="Primary navigation">
+        <nav
+          className="site-nav"
+          ref={navigationRef}
+          aria-label="Primary navigation"
+        >
+          <ThemeToggle />
           <button
             ref={toggleRef}
             className="menu-toggle"
@@ -76,19 +99,37 @@ const Header = ({ siteSettings }) => {
             className={`nav-links ${isMenuOpen ? "active" : ""}`}
           >
             {(siteSettings.navigation || []).map(item => {
-              const itemUrl = item.isPrimary && siteSettings.meetingLink
-                ? siteSettings.meetingLink
-                : item.url
+              const itemUrl =
+                item.isPrimary && siteSettings.meetingLink
+                  ? siteSettings.meetingLink
+                  : item.url
               const external = /^https?:/i.test(itemUrl)
               const className = item.isPrimary
                 ? "theme-btn-primary theme-btn-sm header-nav-cta"
                 : getNavClassName(item.url)
               const content = external ? (
-                <a className={className} href={itemUrl} target="_blank" rel="noopener noreferrer" onClick={closeMenu}>{item.label}</a>
+                <a
+                  className={className}
+                  href={itemUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={closeMenu}
+                >
+                  {item.label}
+                </a>
               ) : (
-                <Link className={className} href={itemUrl} onClick={closeMenu}>{item.label}</Link>
+                <Link className={className} href={itemUrl} onClick={closeMenu}>
+                  {item.label}
+                </Link>
               )
-              return <li key={`${item.label}-${itemUrl}`} className={item.isPrimary ? "nav-cta-item" : undefined}>{content}</li>
+              return (
+                <li
+                  key={`${item.label}-${itemUrl}`}
+                  className={item.isPrimary ? "nav-cta-item" : undefined}
+                >
+                  {content}
+                </li>
+              )
             })}
           </ul>
         </nav>

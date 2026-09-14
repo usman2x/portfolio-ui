@@ -1,27 +1,30 @@
-const THEME_KEY = "site-theme";
-const DEFAULT_THEME = "sunset";
+export const THEME_KEY = "site-theme"
 
-export const setTheme = (theme) => {
-  if (typeof document === "undefined") {
-    return;
-  }
+export const getSystemTheme = () => {
+  if (typeof window === "undefined") return "sunset"
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "sunset"
+}
 
-  document.documentElement.setAttribute("data-theme", theme);
-  localStorage.setItem(THEME_KEY, theme);
-};
+export const setTheme = (theme, { persist = true } = {}) => {
+  if (typeof document === "undefined") return
+
+  document.documentElement.setAttribute("data-theme", theme)
+  document.documentElement.style.colorScheme =
+    theme === "dark" ? "dark" : "light"
+  if (persist) localStorage.setItem(THEME_KEY, theme)
+  window.dispatchEvent(new CustomEvent("themechange", { detail: theme }))
+}
 
 export const getStoredTheme = () => {
-  if (typeof window === "undefined") {
-    return DEFAULT_THEME;
-  }
+  if (typeof window === "undefined") return "sunset"
 
-  return localStorage.getItem(THEME_KEY) || DEFAULT_THEME;
-};
+  return localStorage.getItem(THEME_KEY) || getSystemTheme()
+}
 
 export const applyStoredTheme = () => {
-  if (typeof document === "undefined") {
-    return;
-  }
+  if (typeof document === "undefined") return
 
-  setTheme(getStoredTheme());
-};
+  setTheme(getStoredTheme(), { persist: false })
+}

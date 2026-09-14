@@ -1034,12 +1034,32 @@ footer,
 
 .site-nav {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
 }
 
 .logo-link {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--text-main);
+}
+
+.site-logo-image {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-default);
+}
+
+.logo-copy {
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
-  color: var(--text-main);
+  line-height: 1.25;
 }
 
 .logo-link:hover,
@@ -1081,6 +1101,32 @@ footer,
 
 .header-nav-cta {
   white-space: nowrap;
+}
+
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--text-main);
+  background: transparent;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  color: var(--brand-primary);
+  border-color: var(--brand-primary);
+  background: var(--bg-brand-soft);
+}
+
+.theme-toggle svg {
+  width: 19px;
+  height: 19px;
 }
 
 .menu-toggle {
@@ -1596,6 +1642,22 @@ footer,
 .interior-page {
   display: grid;
   gap: 1.75rem;
+}
+
+.archive-page-header,
+.writings-page-header {
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  max-width: 760px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.archive-page-header .page-description,
+.writings-page-header .page-description {
+  max-width: 62ch;
+  margin-bottom: 0;
 }
 
 .interior-section {
@@ -2891,6 +2953,21 @@ footer,
 
   .container {
     padding: 0 0.95rem;
+  }
+
+  .logo-meta {
+    display: none;
+  }
+
+  .site-logo-image {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+
+  .logo-link,
+  .site-nav {
+    gap: 0.5rem;
   }
 
   .quote-layout,

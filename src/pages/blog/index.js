@@ -82,14 +82,18 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
       <main className="writings-page">
         <section className="container writings-page-header">
           <h1 className="page-title">{archiveSettings.writingsTitle}</h1>
+          <p className="page-description">
+            {archiveSettings.writingsDescription ||
+              "Practical notes on building reliable software, data platforms, and useful AI systems."}
+          </p>
         </section>
         <section className="container">
           <div className="writings-layout">
             <aside className="writings-filter-panel">
               <div className="writings-filter-copy">
-                <h2 className="writings-filter-title">
+                <p className="writings-filter-title">
                   {archiveSettings.filterTitle}
-                </h2>
+                </p>
                 <p className="writings-filter-description">
                   {archiveSettings.filterDescription}
                 </p>
@@ -200,10 +204,11 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
                       {coverImageUrl ? (
                         <WritingLink post={post} className="writing-list-media">
                           <img
-                            src={coverImageUrl}
+                            src={post.coverThumbnailUrl || coverImageUrl}
                             alt={coverImageAlt || title}
                             className="writing-list-image"
                             loading="lazy"
+                            decoding="async"
                           />
                         </WritingLink>
                       ) : null}

@@ -16,9 +16,13 @@ const ProjectsPage = ({ projects, archiveSettings, siteSettings }) => {
         siteSettings={siteSettings}
       />
       <section className="container interior-page">
-        <section className="interior-section">
+        <header className="archive-page-header">
           <h1 className="page-title">{archiveSettings.projectsTitle}</h1>
-        </section>
+          <p className="page-description">
+            {archiveSettings.projectsDescription ||
+              "A focused selection of systems and products shaped around real delivery constraints and measurable outcomes."}
+          </p>
+        </header>
 
         <div className="projects-archive-grid">
           {projects.map(project => (
@@ -29,7 +33,7 @@ const ProjectsPage = ({ projects, archiveSettings, siteSettings }) => {
                 aria-label={`Open ${project.title} case study`}
               >
                 <ProjectVisual
-                  image={project.image}
+                  image={project.thumbnailImage || project.image}
                   alt={project.imageAlt || `${project.title} project preview`}
                   title={project.title}
                   className="project-preview-media"
@@ -73,7 +77,9 @@ const ProjectsPage = ({ projects, archiveSettings, siteSettings }) => {
 
 export const getStaticProps = async () => {
   const [projects, archiveSettings, siteSettings] = await Promise.all([
-    getAllProjects(), fetchArchiveSettings(), fetchSiteSettings(),
+    getAllProjects(),
+    fetchArchiveSettings(),
+    fetchSiteSettings(),
   ])
 
   return {

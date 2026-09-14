@@ -100,6 +100,7 @@ Recommended supporting copy:
 Rule:
 
 - Keep the intro brief.
+- Center the archive title and supporting copy, and keep the title as the only heading in the archive intro/filter region.
 
 ### Tag Filter Area
 

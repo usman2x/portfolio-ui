@@ -23,7 +23,7 @@ const SelectedProjects = ({ projects, homeContent }) => {
               aria-label={`Open ${project.title} case study`}
             >
               <ProjectVisual
-                image={project.image}
+                image={project.thumbnailImage || project.image}
                 alt={project.imageAlt || `${project.title} project preview`}
                 title={project.title}
                 className="project-preview-media"

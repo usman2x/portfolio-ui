@@ -338,6 +338,11 @@ export const fetchSiteSettings = async () => {
       pickMediaUrl(data.portrait, publicCmsUrl, "card") ||
       data.portraitPath ||
       null,
+    logoUrl:
+      pickMediaUrl(data.logo, publicCmsUrl, "thumbnail") ||
+      data.logoPath ||
+      "/images/usman.png",
+    logoAlt: data.logoAlt || data.name || "Site logo",
   }
 }
 
@@ -597,6 +602,9 @@ export const getCmsContent = async () => {
       const publishedDate = post?.publishedAt || post?.createdAt || null
       const tags = normalizeTags(post?.tags)
       const coverImageUrl = pickMediaUrl(post?.coverImage, publicCmsUrl, "card")
+      const coverThumbnailUrl =
+        pickMediaUrl(post?.coverImage, publicCmsUrl, "thumbnail") ||
+        coverImageUrl
       const ogImageUrl =
         pickMediaUrl(post?.ogImage, publicCmsUrl, "og") ||
         pickMediaUrl(post?.coverImage, publicCmsUrl, "og") ||
@@ -623,6 +631,7 @@ export const getCmsContent = async () => {
         canonicalUrl: post.canonicalUrl || null,
         noindex: Boolean(post.noindex),
         coverImageUrl,
+        coverThumbnailUrl,
         coverImageAlt: post?.coverImage?.alt || post.title || "",
         ogImageUrl,
         projectRole: post.projectRole || "",

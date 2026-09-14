@@ -64,6 +64,7 @@ Purpose:
 Required content:
 
 - Page title
+- A concise, centered introduction that frames the work below
 - Project list
 - Optional filtering by category or tag
 
@@ -99,6 +100,7 @@ Recommended optional filters:
 Rule:
 
 - Keep the archive intro to one visible heading.
+- Center the archive heading and its supporting description.
 - Archive cards should summarize.
 - Detail pages should carry the full proof.
 

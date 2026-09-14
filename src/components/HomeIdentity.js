@@ -22,10 +22,16 @@ const HomeIdentity = ({ siteSettings, homeContent }) => {
         <Link href="/about/" className="identity-link-card">
           <div className="identity-portrait">
             <img
-              src={siteSettings.portraitUrl?.startsWith("http") ? siteSettings.portraitUrl : withBasePath(siteSettings.portraitUrl)}
+              src={
+                siteSettings.portraitUrl?.startsWith("http")
+                  ? siteSettings.portraitUrl
+                  : withBasePath(siteSettings.portraitUrl)
+              }
               alt={siteSettings.portraitAlt}
               className="identity-portrait-image"
               loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
           </div>
           <div className="identity-heading-block">
@@ -39,7 +45,7 @@ const HomeIdentity = ({ siteSettings, homeContent }) => {
           <p className="identity-supporting">{supportingText}</p>
           {trustChips.length ? (
             <ul className="identity-trust-chips">
-              {trustChips.map((item) => (
+              {trustChips.map(item => (
                 <li key={item} className="identity-trust-chip">
                   {item}
                 </li>

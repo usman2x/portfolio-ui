@@ -20,8 +20,10 @@ This is the minimal visual reference for the current site.
 - Use semantic tokens, not raw hex values, in component styling.
 - Active themes:
 
-  - `sunset` (default)
+  - `sunset` (light)
   - `dark` (alternate)
+
+- The initial theme follows the visitor's operating-system preference. A navigation-bar toggle lets the visitor override it, and that choice is remembered locally.
 
 ---
 
@@ -159,6 +161,7 @@ Typography rules:
   - `--bg-brand-soft`
 
 - Keep navigation and footer visually quiet
+- Show the CMS-configured site logo and the light/dark theme control in the top navigation.
 - Header and footer may use a subtle full-width structural divider line to read as site chrome rather than page content
 - Footer should read as a restrained full-width closing section through spacing and soft tone, not through heavy card treatment
 - Favor rhythm and scanning over density
