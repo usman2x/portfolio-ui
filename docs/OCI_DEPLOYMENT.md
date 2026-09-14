@@ -70,10 +70,10 @@ curl -I http://127.0.0.1:8080/admin
 
 Add stateful ingress rules to the NSG attached to the VM, or to the subnet security list:
 
-| Source | Protocol | Destination port | Purpose |
-| --- | --- | ---: | --- |
-| `0.0.0.0/0` | TCP | `80` | Public UI |
-| `0.0.0.0/0` | TCP | `8080` | Temporary public CMS |
+| Source      | Protocol | Destination port | Purpose              |
+| ----------- | -------- | ---------------: | -------------------- |
+| `0.0.0.0/0` | TCP      |             `80` | Public UI            |
+| `0.0.0.0/0` | TCP      |           `8080` | Temporary public CMS |
 
 Keep port 3001 closed. Port 8080 should be replaced by HTTPS on a CMS subdomain when a domain is available.
 
@@ -246,6 +246,21 @@ curl http://127.0.0.1:9010/health
 ```
 
 The listener binds only to `127.0.0.1`; do not add port `9010` to OCI, UFW, iptables, or Caddy. Logs are available with `sudo journalctl -u portfolio-ui-deploy-webhook -f`.
+
+### Step-by-step rebuild test
+
+1. Check both services:
+   `sudo systemctl is-active portfolio-cms portfolio-ui-deploy-webhook`.
+2. Check listener health:
+   `curl http://127.0.0.1:9010/health`.
+3. In a second terminal, follow rebuild output:
+   `sudo journalctl -u portfolio-ui-deploy-webhook -f`.
+4. In Payload Admin, edit and save a small **Site Settings** value. All website globals trigger the same rebuild hook as published posts.
+5. Wait for the five-second debounce, then confirm the log shows `Starting static UI rebuild` followed by exit code `0`.
+6. Refresh the public page and verify the change. Caddy serves the new `out` files immediately; it does not need restarting.
+7. Repeat using the **Rebuild UI** button on the Payload dashboard. A successful click means the listener accepted the request; monitor the logs until the build finishes.
+
+If the button reports that the webhook is not configured, set `UI_DEPLOY_WEBHOOK_URL` and `UI_DEPLOY_WEBHOOK_TOKEN` in the CMS environment and restart the CMS. If it reports an HTTP error, compare the token used by both services and inspect the listener logs.
 
 ### Deferred TODO: automatic build testing
 
