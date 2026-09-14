@@ -67,7 +67,6 @@ main() {
   log "Preflight checks"
   [[ -f "${CMS_DIR}/.env" ]] || fail "Missing ${CMS_DIR}/.env"
   [[ -f "${UI_DIR}/.env.production" ]] || fail "Missing ${UI_DIR}/.env.production"
-  sudo -v
   printf 'Node: %s | npm: %s | branch: %s\n' "$(node --version)" "$(npm --version)" "$BRANCH"
 
   pull_repo "$CMS_DIR" "CMS"
@@ -98,8 +97,9 @@ main() {
   )
 
   log "Restarting CMS"
-  sudo systemctl restart "$CMS_SERVICE"
-  sudo systemctl is-active --quiet "$CMS_SERVICE"
+  sudo -n systemctl restart "$CMS_SERVICE" || fail \
+    "Cannot restart ${CMS_SERVICE} without a sudo password; see docs/OCI_DEPLOYMENT.md"
+  systemctl is-active --quiet "$CMS_SERVICE"
   curl --fail --silent --show-error --head --retry 10 --retry-all-errors \
     --retry-delay 2 http://127.0.0.1:3001/admin >/dev/null
 
@@ -118,7 +118,7 @@ main() {
   )
 
   log "Verifying services through Caddy"
-  sudo systemctl is-active --quiet caddy
+  systemctl is-active --quiet caddy
   curl --fail --silent --show-error --head http://127.0.0.1/ >/dev/null
   curl --fail --silent --show-error --head http://127.0.0.1:8080/admin >/dev/null
 

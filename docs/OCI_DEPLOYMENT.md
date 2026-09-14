@@ -160,7 +160,25 @@ The script stops on the first failure and performs these checks automatically:
 
 It preserves `.env` and `.env.production` and does not seed content. The UI may have a short
 maintenance window while its clean static export is being generated. Run the command as the
-`ubuntu` deployment user; it will ask for `sudo` access for service checks and restart.
+`ubuntu` deployment user. SSH key authentication and sudo authorization are separate; allow this
+user to restart only the CMS service without a password so unattended deployment does not stall.
+
+Create the rule with `sudo visudo -f /etc/sudoers.d/portfolio-deploy`:
+
+```sudoers
+ubuntu ALL=(root) NOPASSWD: /usr/bin/systemctl restart portfolio-cms
+```
+
+Then validate it:
+
+```bash
+sudo chmod 440 /etc/sudoers.d/portfolio-deploy
+sudo visudo -cf /etc/sudoers.d/portfolio-deploy
+sudo -n systemctl restart portfolio-cms
+```
+
+The deployment uses non-interactive sudo and exits with a clear error if this narrow permission
+has not been configured.
 
 Optional environment overrides are available for a non-standard installation:
 
