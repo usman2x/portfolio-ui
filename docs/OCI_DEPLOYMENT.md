@@ -141,6 +141,37 @@ The current supported layout remains port `80` for UI and port `8080` for CMS. A
 
 ## Updates
 
+Use the deployment script to update both the CMS and UI in the required order:
+
+```bash
+cd /srv/portfolio/portfolio-ui
+npm run deploy:oci
+```
+
+The script stops on the first failure and performs these checks automatically:
+
+- refuses to deploy over tracked or staged repository changes;
+- fast-forwards both repositories from `origin/main`;
+- installs locked dependencies with `npm ci`;
+- checks the database, runs migrations, and builds and restarts the CMS;
+- waits for the local CMS health check before building the UI;
+- removes stale Next.js/static output, builds the UI, and verifies its HTML and CSS output;
+- verifies the CMS, UI, and Caddy after deployment.
+
+It preserves `.env` and `.env.production` and does not seed content. The UI may have a short
+maintenance window while its clean static export is being generated. Run the command as the
+`ubuntu` deployment user; it will ask for `sudo` access for service checks and restart.
+
+Optional environment overrides are available for a non-standard installation:
+
+```bash
+PORTFOLIO_DEPLOY_ROOT=/srv/portfolio \
+PORTFOLIO_DEPLOY_BRANCH=main \
+npm run deploy:oci
+```
+
+The equivalent manual UI-only update is retained below for troubleshooting:
+
 ```bash
 cd /srv/portfolio/portfolio-ui
 git pull --ff-only origin main
