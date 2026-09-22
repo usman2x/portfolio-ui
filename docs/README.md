@@ -29,6 +29,7 @@ Before implementing a page or layout change, use this order:
 
 ## Active Docs
 
+- `docs/LOCAL_DEVELOPMENT.md`
 - `docs/style/STYLEGUIDE.md`
 - `docs/structure/STRUCTURE.md`
 - `docs/pages/LANDING_PAGE.md`

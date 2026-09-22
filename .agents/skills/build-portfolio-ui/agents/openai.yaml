@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Portfolio UI"
+  short_description: "Implement polished Next.js portfolio experiences"
+  default_prompt: "Use $build-portfolio-ui to design and implement a polished portfolio UI change."

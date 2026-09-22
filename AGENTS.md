@@ -1,5 +1,11 @@
 # Repo Guidance
 
+## Start Here
+- Read `README.md` and `docs/LOCAL_DEVELOPMENT.md` before running the project for the first time.
+- Use `.agents/skills/build-portfolio-ui/SKILL.md` for page, component, layout, navigation, styling, accessibility, responsive, SEO, CMS-rendering, or other Next.js UI work.
+- When a UI change requires a Payload field or API contract change, also use `../portfolio-cms/.agents/skills/develop-portfolio-cms/SKILL.md` and update both repositories together.
+- Run the CMS on port `3001` before starting or building CMS-backed UI routes.
+
 ## Planning Docs
 - Keep planning, architecture, and page blueprint docs under `docs/`, not the repo root.
 - Before implementing page, layout, or navigation changes, read the relevant docs in this order:
@@ -13,6 +19,11 @@
 - Treat the docs in `docs/` as the active source of truth for structure, style, SEO, and content modeling.
 - If implementation changes the intended behavior or layout, update the corresponding doc in the same change.
 - Keep copy, labels, and repeated page content configurable where practical; do not hardcode content in components when a shared content file is more appropriate.
+- Preserve the static-export model in `next.config.js` unless the user explicitly requests an architecture change.
+- Keep raw Payload response handling in `src/lib/cms.js`; components should consume normalized data.
+- Verify meaningful UI changes at mobile and desktop widths, with keyboard navigation and visible focus states.
+- Use semantic HTML, accessible labels, descriptive alternative text, and reduced-motion-safe interactions.
+- Run `npm run build` with a reachable, seeded CMS for changes affecting rendering, routes, data, or configuration.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
