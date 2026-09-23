@@ -351,6 +351,13 @@ export const fetchHomePage = async () => {
   return {
     ...data,
     trustChips: textRows(data.trustChips),
+    proofTitle: data.proofTitle || null,
+    proofCompanies: textRows(data.proofCompanies),
+    proofStats: Array.isArray(data.proofStats)
+      ? data.proofStats
+          .map(row => ({ value: row?.value, label: row?.label }))
+          .filter(row => row.value && row.label)
+      : [],
     featuredProjectIds: (data.featuredProjects || []).map(item =>
       typeof item === "object" ? item.id : item
     ),

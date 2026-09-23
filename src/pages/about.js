@@ -15,10 +15,12 @@ const AboutPage = ({ aboutPage, siteSettings, workExperience }) => {
         siteSettings={siteSettings}
       />
       <section className="container interior-page about-page-shell">
+        <header className="about-intro-header">
+          <p className="section-eyebrow">{aboutPage.eyebrow}</p>
+          <h1 className="page-title">{aboutPage.title}</h1>
+        </header>
         <section className="about-intro-grid">
           <div className="interior-section about-intro-copy">
-            <p className="section-eyebrow">{aboutPage.eyebrow}</p>
-            <h1 className="page-title">{aboutPage.title}</h1>
             {aboutPage.summary.map(paragraph => (
               <p key={paragraph} className="interior-copy">
                 {paragraph}

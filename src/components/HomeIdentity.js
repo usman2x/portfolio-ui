@@ -14,11 +14,36 @@ const HomeIdentity = ({ siteSettings, homeContent }) => {
   const secondaryCtaLabel = identitySection.secondaryCtaLabel
 
   return (
-    <section
-      className="container landing-section landing-section-surface landing-section-surface-brand identity-section"
-      id="top"
-    >
+    <section className="container identity-section" id="top">
       <div className="identity-layout">
+        <div className="identity-body">
+          <p className="identity-eyebrow">{eyebrow}</p>
+          <h1 className="identity-headline">{headline}</h1>
+          <p className="identity-supporting">{supportingText}</p>
+          {trustChips.length ? (
+            <ul className="identity-specialties">
+              {trustChips.map(item => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          ) : null}
+          <div className="identity-actions">
+            <a
+              href={siteSettings.meetingLink}
+              className="theme-btn-primary identity-action"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {primaryCtaLabel}
+            </a>
+            <Link
+              href="/projects/"
+              className="theme-btn-outline identity-action"
+            >
+              {secondaryCtaLabel}
+            </Link>
+          </div>
+        </div>
         <Link href="/about/" className="identity-link-card">
           <div className="identity-portrait">
             <img
@@ -30,7 +55,7 @@ const HomeIdentity = ({ siteSettings, homeContent }) => {
               alt={siteSettings.portraitAlt}
               className="identity-portrait-image"
               loading="eager"
-              fetchPriority="high"
+              fetchpriority="high"
               decoding="async"
             />
           </div>
@@ -39,33 +64,6 @@ const HomeIdentity = ({ siteSettings, homeContent }) => {
             <p className="identity-title">{siteSettings.professionalTitle}</p>
           </div>
         </Link>
-        <div className="identity-body">
-          <p className="identity-eyebrow">{eyebrow}</p>
-          <h1 className="identity-headline">{headline}</h1>
-          <p className="identity-supporting">{supportingText}</p>
-          {trustChips.length ? (
-            <ul className="identity-trust-chips">
-              {trustChips.map(item => (
-                <li key={item} className="identity-trust-chip">
-                  {item}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-          <div className="identity-actions">
-            <a
-              href={siteSettings.meetingLink}
-              className="theme-btn-primary theme-btn-lg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {primaryCtaLabel}
-            </a>
-            <Link href="/projects/" className="theme-btn-outline theme-btn-sm">
-              {secondaryCtaLabel}
-            </Link>
-          </div>
-        </div>
       </div>
     </section>
   )

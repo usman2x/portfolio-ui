@@ -13,7 +13,7 @@ export const getWritingCtaLabel = (post, nativeLabel = "Read article") => {
 }
 
 export const getWritingSourceLabel = post => {
-  if (!isExternalWriting(post)) return "Original"
+  if (!isExternalWriting(post)) return null
   if (post.externalPlatform === "medium") return "Medium"
   if (post.externalPlatform === "linkedin") return "LinkedIn"
   return "External"

@@ -15,10 +15,12 @@ It translates `docs/structure/STRUCTURE.md` into a concrete landing page plan.
 
 1. Header
 2. Identity block
-3. Latest writings
-4. Selected projects
-5. Book a call block
-6. Footer
+3. Proof strip
+4. Latest writings
+5. Selected projects
+6. Testimonial preview
+7. Book a call block
+8. Footer
 
 ## 1. Header
 
@@ -96,6 +98,25 @@ Rule:
 
 - Keep this block compact.
 - Let typography and spacing do the work.
+- Do not add a filler sentence between the identity block and the next section; the proof strip follows directly.
+
+## 2a. Proof Strip
+
+Purpose:
+
+- Give concrete evidence within the first screen
+- Replace vague trust chips with numbers and named teams
+
+Required content (CMS **Home Page → Proof**):
+
+- `proofStats`: up to four `value` + `label` pairs, each backed by a case study or experience entry
+- `proofTitle`: short label for the company row, e.g. `Trusted by teams at`
+- `proofCompanies`: company or client names
+
+Rule:
+
+- Hide the strip entirely when both lists are empty.
+- Stats use a two-column grid on mobile and four columns on desktop.
 
 ## 3. Selected Projects
 

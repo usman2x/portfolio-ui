@@ -11,6 +11,7 @@ This is the minimal visual reference for the current site.
 - Let typography, spacing, and hierarchy carry most of the design.
 - Use color intentionally to create **focus and identity**, not decoration.
 - Aim for a quiet interface with **one moment of emphasis per section**.
+- Quiet does not mean flat: the homepage opening and proof points should feel confident, with large display type and concrete evidence before any content lists.
 
 ---
 
@@ -75,6 +76,18 @@ These should be used for:
 - Avoid large areas of fully saturated brand color.
 - Borders should remain subtle and structural.
 
+### Contrast (Required)
+
+The palette is fixed. Contrast is met through how each color is used, never by changing palette values.
+
+- Every text/background pair meets WCAG 2.2 AA: `4.5:1` for body and small text, `3:1` for large text (24px, or 19px bold), UI boundaries, and focus indicators.
+- Sunset primary `#E97A3C` measures 2.6:1 on the page background, so in the light theme it is used for fills, underlines, borders, active indicators, and tints, not for text. Text that should carry brand emphasis uses `--brand-text` (main text in light, primary in dark, where it measures 8.3:1).
+- Filled primary buttons use `--on-brand`: main text `#2F2F2F` on `#E97A3C` (4.66:1) in light; page background on primary in dark (8.3:1). Hover blends the primary toward the secondary so the label keeps contrast.
+- Muted text `#6B6B6B` passes on the page and cards but not on the 8% brand tint (4.48:1); copy inside tinted containers uses main text.
+- Accent `#6F8798` is for tag and structural accents, not small text (3.4:1).
+- Focus rings use `--brand-text` at 3px.
+- Verify new color pairs with a contrast calculation before merging, in both themes.
+
 ### Emphasis Rule (Core Principle)
 
 Each section should have:
@@ -86,16 +99,42 @@ Each section should have:
 
 ## Typography
 
-- Body font: local/system sans-serif stack, preferring `Inter` when installed
-- Heading font: local editorial serif stack, preferring `Georgia`
+Three typefaces, each with one job. All are self-hosted by `next/font` in `src/pages/_app.js` (downloaded at build time, served from the site's own origin, no third-party requests at runtime) and exposed as `--font-heading`, `--font-body`, and `--font-mono`.
+
+| Role | Face | Weight | Used for |
+| --- | --- | --- | --- |
+| Display | Newsreader (serif, optical sizes) | 600 | homepage headline, page titles, case-study titles |
+| Section | Newsreader | 500 | section titles, article `h2`/`h3`, proof numbers |
+| Quote | Newsreader italic | 400 | testimonials |
+| Item | Inter | 600 | card, list, and option titles |
+| Body | Inter | 400 | running text, summaries, navigation, buttons |
+| Meta | IBM Plex Mono | 400–500 | dates, reading time, tags, eyebrows, labels |
+
+- Card and list titles use the sans, not the serif, so they read as items rather than sections.
+- Monospace is for metadata only; never set sentences or headings in it.
+- Uppercase is limited to short mono labels (eyebrows, dates).
 - Base font size: `18px`
 - Base line height: `1.7`
-- Long-form content width: `680px`
+- Long-form content width: `680px` (case-study body `760px`)
+
+Type scale (tokens in `global.css`, 1.25 ratio from the 16px root):
+
+| Token | Size | Use |
+| --- | --- | --- |
+| hero | `clamp(2.1rem, 3.8vw, 3.2rem)` | homepage headline only |
+| `--fs-h1` | `clamp(2.1rem, 3.8vw, 3rem)` | page titles |
+| `--fs-h2` | `clamp(1.65rem, 2.6vw, 2.25rem)` | section titles |
+| `--fs-h3` | `1.3rem` | card and list titles |
+| `--fs-lead` | `clamp(1.1rem, 1.4vw, 1.25rem)` | page intros and summaries |
+| body | `1.125rem` | running text |
+| `--fs-small` | `0.9375rem` | meta lines, labels |
+| `--fs-meta` | `0.8125rem` | tags, eyebrows; the minimum text size |
+
+- Headings use `text-wrap: balance`; long titles are capped near `20–24ch`.
 
 Typography rules:
 
-- `h1` to `h4` use the editorial serif stack
-- Body copy uses the system sans-serif stack
+- `h1` to `h4` default to the serif; item-level headings override to the sans
 - Do not load render-blocking font stylesheets from third-party origins
 - Prioritize readable paragraph rhythm over dense layouts
 - Prefer strong type hierarchy over heavy UI treatment
@@ -106,7 +145,7 @@ Typography rules:
 - Headings should have more top margin than bottom margin
 - Paragraph spacing should support relaxed reading
 - Maintain consistent vertical rhythm across sections
-- Interactive targets should be at least `44px` on touch layouts.
+- Interactive targets should be at least `44px` on touch layouts. Primary homepage actions use a `48px` minimum height.
 - Every animated transition must respect `prefers-reduced-motion`.
 
 ---
@@ -119,6 +158,7 @@ Typography rules:
 
   - `.theme-btn-outline` as default
   - `.theme-btn-primary` only for key actions (hero, main CTA)
+- Minimum height `40px`, and `44px` on touch (`pointer: coarse`)
 
 - Buttons should feel functional, not promotional
 - Avoid multiple competing button styles in one section
@@ -134,10 +174,9 @@ Typography rules:
 
 ### Links
 
-- Default: `--brand-primary`
+- Inline and navigation links: `--brand-primary` or text color, underline revealed on hover/focus
+- Call-to-action text links (`.text-link-cta`: "Read more", "All writings", "View case study"): `--text-main` with a persistent 2px `--brand-primary` underline, so they are identifiable without relying on color (WCAG 1.4.1)
 - Keep visually understated but clearly identifiable
-- Keep links unadorned by default
-- Only reveal underlines on hover/focus
 - Use a left-to-right underline transition in the primary color
 - Keep hover underlines aligned to the link text itself, not the full row or container width
 
@@ -179,10 +218,20 @@ Typography rules:
 
 ### Hero Section
 
-- May use `--bg-brand-soft`
-- Highlight one keyword or phrase using `--brand-primary`
-- Avoid heavy UI or large colored blocks
-- Maintain strong typographic focus
+- Sit directly on `--bg-page`; do not wrap the hero in a bordered, shadowed card
+- Lead with the headline: display serif at `clamp(2.1rem, 3.8vw, 3.2rem)`, tight line height, balanced wrapping
+- The eyebrow uses a darkened `--brand-accent` (not `--brand-primary`) so the primary color stays reserved for the main action
+- Show specialties as a quiet inline list separated by middots, not as pill chips
+- The portrait sits beside the copy on desktop with one offset `--bg-brand-soft-strong` block behind it; this is the section's single decorative moment
+- On mobile the portrait, name, and title collapse into a compact row above the headline
+- Avoid gradients and large saturated color blocks
+
+### Proof Strip
+
+- Follows the hero on the homepage, separated by a single structural rule aligned to the content edge
+- Up to four stats: large serif value in `--text-main`, short muted label beneath
+- Company names render as quiet text wordmarks with a small uppercase label; no logos unless licensed and consistent
+- Every stat must be backed by a case study or work-experience entry
 
 ### Content Sections
 

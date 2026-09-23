@@ -156,8 +156,12 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
                     >
                       <div className="writing-list-body">
                         <p className="writing-list-meta">
-                          <span>{getWritingSourceLabel(post)}</span>
-                          <span>•</span>
+                          {getWritingSourceLabel(post) ? (
+                            <>
+                              <span>{getWritingSourceLabel(post)}</span>
+                              <span aria-hidden="true">•</span>
+                            </>
+                          ) : null}
                           <span>{formatPostDate(date)}</span>
                           {!isExternalWriting(post) ? <span>•</span> : null}
                           {!isExternalWriting(post) ? (

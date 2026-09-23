@@ -2,6 +2,7 @@ import React from "react"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
 import HomeIdentity from "../components/HomeIdentity"
+import HomeProof from "../components/HomeProof"
 import SelectedProjects from "../components/SelectedProjects"
 import LatestWritings from "../components/LatestWritings"
 import Testimonials from "../components/Testimonials"
@@ -19,9 +20,7 @@ const IndexPage = ({ posts, featuredProjects, testimonials, siteSettings, homeCo
       />
       <div className="home-page landing-home">
         <HomeIdentity siteSettings={siteSettings} homeContent={homeContent} />
-        <section className="container landing-post-hero-note">
-          <p>{homeContent.postHeroLine}</p>
-        </section>
+        <HomeProof homeContent={homeContent} />
         <LatestWritings posts={posts} homeContent={homeContent} readArticleLabel={archiveSettings.readArticleLabel} />
         <SelectedProjects projects={featuredProjects} homeContent={homeContent} />
         <Testimonials testimonials={testimonials} content={homeContent} archiveHref="/testimonials/" />

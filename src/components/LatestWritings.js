@@ -24,8 +24,12 @@ const LatestWritings = ({ posts, homeContent, readArticleLabel }) => {
         {posts.map(post => (
           <article key={post.id} className="writing-preview-item">
             <p className="preview-meta">
-              <span>{getWritingSourceLabel(post)}</span>
-              <span aria-hidden="true"> · </span>
+              {getWritingSourceLabel(post) ? (
+                <>
+                  <span>{getWritingSourceLabel(post)}</span>
+                  <span aria-hidden="true"> · </span>
+                </>
+              ) : null}
               <span>{format(new Date(post.date), "MMMM d, yyyy")}</span>
             </p>
             <h3 className="preview-card-title">
