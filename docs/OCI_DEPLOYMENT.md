@@ -10,8 +10,17 @@ This runbook deploys the statically exported Next.js UI directly on Ubuntu 22.04
 - Public CMS: `https://cms.themuhammadusman.com` (see the CMS repository's runbook)
 - Build-time CMS: `http://127.0.0.1:3001`
 - TLS: certificates issued and renewed automatically by Caddy (Let's Encrypt)
+- Bare IP: `http://<PUBLIC_IP>` redirects to the UI domain; no content is served on the IP
 
 The hostnames are configuration, not code. They appear only in DNS, `/etc/caddy/Caddyfile`, the UI `.env.production`, and the CMS `.env`. To move to another domain, change those four places and rebuild both applications.
+
+### Shared VM
+
+The production VM (`portfolio-prod`, OCI `us-ashburn-1`) also hosts rem-labs (`remlabs-ui` on `127.0.0.1:3100`, `remlabs-cms` on `127.0.0.1:3101`, code in `/srv/rem-labs`). rem-labs is served through the `:8080` block of the same Caddyfile. When changing this deployment:
+
+- edit only the portfolio blocks of `/etc/caddy/Caddyfile`; never replace the whole file;
+- keep TCP `8080` open in Caddy, iptables, UFW, and OCI, because rem-labs depends on it;
+- verify rem-labs after every Caddy reload (see [External verification](#external-verification)).
 
 ## First deployment
 
@@ -69,37 +78,83 @@ All three must return the VM's public IP.
 
 ## Caddy
 
-Use `/etc/caddy/Caddyfile` to serve this UI and proxy the CMS. Caddy obtains and renews certificates for each site address automatically and redirects HTTP to HTTPS.
+`/etc/caddy/Caddyfile` serves this UI and proxies the CMS. Caddy obtains and renews certificates for each site address automatically. These are the portfolio parts of the production file; the `:8080` block belongs to rem-labs apart from its final catch-all (see [Shared VM](#shared-vm)).
 
 ```caddyfile
-{
-	email <certificate-contact-email>
+# Security headers for the portfolio HTTPS sites. Raise HSTS max-age once stable.
+(portfolio_security) {
+	header {
+		Strict-Transport-Security "max-age=86400"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-X-Powered-By
+		-Server
+	}
+}
+
+# Bare-IP HTTP is not served; send visitors to the canonical HTTPS site.
+:80 {
+	redir https://www.themuhammadusman.com{uri} permanent
+}
+
+:8080 {
+	# ... rem-labs routes (/remlabs*, /remlabs-admin*) ...
+
+	# Portfolio CMS is served only on https://cms.themuhammadusman.com.
+	handle {
+		respond 404
+	}
+}
+
+# Portfolio over HTTPS. Caddy manages certificates for these hostnames.
+http://themuhammadusman.com, http://www.themuhammadusman.com, http://cms.themuhammadusman.com {
+	redir https://{host}{uri} permanent
 }
 
 themuhammadusman.com {
+	import portfolio_security
 	redir https://www.themuhammadusman.com{uri} permanent
 }
 
 www.themuhammadusman.com {
+	import portfolio_security
 	root * /srv/portfolio/portfolio-ui/out
+
 	encode zstd gzip
 	file_server
 }
 
 cms.themuhammadusman.com {
+	import portfolio_security
 	encode zstd gzip
 	reverse_proxy 127.0.0.1:3001
 }
 ```
 
-The global `email` is optional and is used by Let's Encrypt for expiry notices.
+Notes:
+
+- The explicit `http://` block is required. Without it, the `:80` catch-all would answer plain-HTTP requests for the domain instead of Caddy's automatic HTTPS redirect.
+- Caddy still answers ACME HTTP challenges on port `80` before any of these routes.
+- `X-Frame-Options: DENY` is safe because nothing frames the UI or the CMS. Revisit it if Payload live preview is enabled.
+- A global `{ email <address> }` block can be added for Let's Encrypt expiry notices; renewal is automatic without it.
+
+### Changing the Caddyfile
+
+Back up first, using a descriptive dated suffix, then validate before reloading. A reload is graceful and keeps the previous configuration if the new one fails.
 
 ```bash
+sudo cp -p /etc/caddy/Caddyfile /etc/caddy/Caddyfile.pre-<change>-<yyyymmdd>
+sudo nano /etc/caddy/Caddyfile
 sudo caddy fmt --overwrite /etc/caddy/Caddyfile
 sudo caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl reload caddy
-sudo journalctl -u caddy -f   # wait for "certificate obtained successfully" per hostname
+sudo journalctl -u caddy -f   # after adding a hostname, wait for "certificate obtained successfully"
 ```
+
+### HSTS
+
+HSTS starts at one day (`max-age=86400`) so a mistake can be reverted quickly. After a week of stable HTTPS on every portfolio hostname, raise it to `max-age=31536000` in the `portfolio_security` snippet and reload Caddy. Do not add `includeSubDomains` or `preload` while any `themuhammadusman.com` subdomain might be served over plain HTTP.
 
 Local checks must send the real hostname, because Caddy routes by host and SNI. `--resolve` pins each name to loopback:
 
@@ -118,8 +173,9 @@ Add stateful ingress rules to the NSG attached to the VM, or to the subnet secur
 | ----------- | -------- | ---------------: | ------------------------------------------ |
 | `0.0.0.0/0` | TCP      |             `80` | ACME HTTP challenge and redirect to HTTPS  |
 | `0.0.0.0/0` | TCP      |            `443` | Public UI and CMS over HTTPS               |
+| `0.0.0.0/0` | TCP      |           `8080` | rem-labs only (not part of the portfolio)  |
 
-Keep port `80` open: Caddy needs it to issue and renew certificates. Keep ports `3001` (CMS) and `9010` (rebuild webhook) closed.
+Keep port `80` open: Caddy needs it to issue and renew certificates. Keep ports `3001` (CMS) and `9010` (rebuild webhook) closed; both also listen on `127.0.0.1` only.
 
 If UFW is active:
 
@@ -154,6 +210,21 @@ sudo systemctl enable netfilter-persistent
 
 Always inspect rule numbers first; never flush the OCI image's ruleset.
 
+On the production VM the reject rule precedes the UFW chains, so the iptables accepts are what actually admit traffic; the UFW rules are kept for consistency only. The current order is:
+
+| # | Rule |
+| -: | ---- |
+| 1 | `RELATED,ESTABLISHED` accept |
+| 2 | ICMP accept |
+| 3 | loopback accept |
+| 4 | TCP `22` |
+| 5 | TCP `80` |
+| 6 | TCP `8080` (rem-labs) |
+| 7 | TCP `443` |
+| 8 | `REJECT` (everything else) |
+
+The rules are persisted in `/etc/iptables/rules.v4` by `netfilter-persistent`.
+
 ## External verification
 
 Run these from a machine outside OCI, not from the VM itself. Public-IP hairpin requests made from the same OCI VM are not a reliable test.
@@ -164,42 +235,69 @@ curl -I --connect-timeout 10 https://themuhammadusman.com       # 301 to https:/
 curl -I --connect-timeout 10 https://www.themuhammadusman.com   # 200
 curl -I --connect-timeout 10 https://cms.themuhammadusman.com/admin
 curl -s https://www.themuhammadusman.com/robots.txt             # Sitemap uses the domain
+curl -sI https://www.themuhammadusman.com | grep -i strict      # HSTS header present
+curl -I --connect-timeout 10 http://<PUBLIC_IP>/                # 301 to https://www.
+curl -I --connect-timeout 10 http://<PUBLIC_IP>:8080/admin      # 404: portfolio CMS not on the IP
+curl -I --connect-timeout 5 http://<PUBLIC_IP>:3001/            # must time out
+```
+
+After any Caddy change, confirm rem-labs is unaffected:
+
+```bash
+curl -I http://<PUBLIC_IP>:8080/remlabs                         # 200
+curl -I http://<PUBLIC_IP>:8080/remlabs-admin/admin             # 200
 ```
 
 In a browser, confirm that CMS media loads on the UI and that the contact form submits without CORS errors. Verify the deployed processes and automatic startup:
 
 ```bash
-sudo systemctl is-enabled caddy portfolio-cms
-sudo systemctl is-active caddy portfolio-cms
-sudo ss -ltnp | grep -E ':(80|443|3001)'
+sudo systemctl is-enabled caddy portfolio-cms portfolio-ui-deploy-webhook
+sudo systemctl is-active caddy portfolio-cms portfolio-ui-deploy-webhook
+sudo ss -ltnp | grep -E ':(80|443|3001|9010)'   # 3001 and 9010 on 127.0.0.1 only
 ```
 
 ## Moving an existing IP deployment to the domain
 
-Use this once on a VM that still serves the UI on `http://<PUBLIC_IP>` and the CMS on `:8080`. Keep the old `:8080` block until step 6 passes.
+Production completed this cutover on 2026-09-29. Use these steps for a VM that still serves the UI on `http://<PUBLIC_IP>` and the CMS on `:8080`.
 
 1. Deploy the current `main` with `npm run deploy:oci` while still on the IP layout.
 2. Create the [DNS](#dns) records and wait until `dig` returns the public IP.
 3. Open TCP `443` in OCI, UFW, and iptables as described in [OCI networking](#oci-networking).
-4. Add the three site blocks from [Caddy](#caddy) above the existing `:8080` block, remove the old `:80` block, validate, and reload Caddy. Confirm certificates were issued.
-5. Update the CMS `.env` (see the CMS runbook), then rebuild and restart the CMS. Update the UI `.env.production` as shown in [First deployment](#first-deployment), then run `npm run clean && npm run build`.
+4. Back up the Caddyfile and append the `http://` redirect block and the three HTTPS site blocks from [Caddy](#caddy). Leave the existing `:80` and `:8080` blocks unchanged for now. Validate, reload, and confirm certificates were issued.
+5. Back up both env files, then update the URL values: the CMS `.env` (see the CMS runbook) and the UI `.env.production` as shown in [First deployment](#first-deployment). Run `npm run deploy:oci`; its post-deployment checks now use the domain URLs.
 6. Complete [External verification](#external-verification), including an admin login on `https://cms.themuhammadusman.com/admin`.
-7. Remove the temporary CMS port:
-   - delete the `:8080` block from the Caddyfile and reload Caddy;
-   - `sudo ufw delete allow 8080/tcp`;
-   - find the port `8080` rule with `sudo iptables -L INPUT -n --line-numbers`, delete it with `sudo iptables -D INPUT <num>`, then `sudo netfilter-persistent save`;
-   - delete the TCP `8080` ingress rule in OCI;
-   - from outside OCI, confirm `curl -I --connect-timeout 5 http://<PUBLIC_IP>:8080` times out.
-8. Run `npm run deploy:oci` once more; its post-deployment checks now use the domain URLs.
+7. Retire the IP entry points:
+   - change the `:80` block to the bare-IP redirect shown in [Caddy](#caddy);
+   - remove `http://<PUBLIC_IP>` from the CMS `QUOTE_ALLOWED_ORIGINS` and restart `portfolio-cms`;
+   - **on a VM without other tenants**, delete the `:8080` block and close `8080` in UFW, iptables (`sudo iptables -D INPUT <num>`, then `sudo netfilter-persistent save`), and OCI;
+   - **on the shared production VM**, keep `:8080` for rem-labs and replace only its final `reverse_proxy 127.0.0.1:3001` catch-all with `respond 404`.
+8. Add the `portfolio_security` headers snippet and reload Caddy.
 
 ## Remaining production steps
 
-1. Leave content seeding paused until explicitly approved.
-2. Populate required Payload globals before treating the generated UI as final content.
-3. Rebuild the UI after any CMS content initialization or publication.
-4. Activate and test the automatic rebuild listener (see the deferred TODO below).
+1. Populate the Home Page proof points and any other empty Payload globals in the admin. Do not run `seed:core` against production after manual edits: it overwrites globals and matching records.
+2. Complete the end-to-end rebuild tests (see the TODO below).
+3. Raise HSTS to one year after a week of stable HTTPS (see [HSTS](#hsts)).
+4. Give rem-labs its own HTTPS hostname so `:8080` can be closed on the VM.
+5. Add atomic release switching so rebuilds do not briefly empty `out`.
 
 The CMS uses its own hostname rather than a path such as `/admin` on the UI hostname: Payload Admin is a dynamic Next.js application and shares `/_next/*` with this UI, so path consolidation would need additional routing work.
+
+## Backups and rollback
+
+Configuration backups on the production VM, each taken immediately before the change it names:
+
+| Backup | Restores |
+| ------ | -------- |
+| `/etc/caddy/Caddyfile.pre-portfolio-domain-20260929` | IP-only layout, before the HTTPS site blocks |
+| `/etc/caddy/Caddyfile.pre-portfolio-ip-lockdown-20260929` | HTTPS blocks, with UI still on the bare IP and CMS on `:8080` |
+| `/etc/caddy/Caddyfile.pre-portfolio-headers-20260929` | Current layout without security headers |
+| `/srv/portfolio/portfolio-cms/.env.pre-domain-20260929` | CMS environment with IP URLs |
+| `/srv/portfolio/portfolio-ui/.env.production.pre-domain-20260929` | UI environment with IP URLs |
+
+Earlier `Caddyfile.pre-remlabs-*` files belong to the rem-labs deployment.
+
+To roll back a Caddy change, copy the chosen backup over `/etc/caddy/Caddyfile`, validate, and reload. To roll back the environment, restore both env files together, rebuild and restart the CMS, then rebuild the UI (or run `npm run deploy:oci`). Restoring the IP environment also requires a Caddyfile that serves the IP.
 
 ## Updates
 
@@ -240,7 +338,8 @@ sudo -n systemctl restart portfolio-cms
 ```
 
 The deployment uses non-interactive sudo and exits with a clear error if this narrow permission
-has not been configured.
+has not been configured. On the current VM the default OCI `ubuntu` user already has passwordless
+sudo, so this file has not been created; add it if that broad permission is ever removed.
 
 Optional environment overrides are available for a non-standard installation:
 
@@ -326,13 +425,13 @@ The listener binds only to `127.0.0.1`; do not add port `9010` to OCI, UFW, ipta
 
 If the button reports that the webhook is not configured, set `UI_DEPLOY_WEBHOOK_URL` and `UI_DEPLOY_WEBHOOK_TOKEN` in the CMS environment and restart the CMS. If it reports an HTTP error, compare the token used by both services and inspect the listener logs.
 
-### Deferred TODO: automatic build testing
+### TODO: automatic build testing
 
-The implementation is retained, but production activation and end-to-end testing are intentionally deferred.
+The listener is installed, enabled, and running on the production VM. End-to-end testing is still pending.
 
-- [ ] Install and enable `portfolio-ui-deploy-webhook.service` on the VM.
-- [ ] Configure the shared webhook URL and token, then restart the CMS.
-- [ ] Verify the loopback health endpoint and confirm port `9010` is not public.
+- [x] Install and enable `portfolio-ui-deploy-webhook.service` on the VM.
+- [x] Configure the shared webhook URL and token, then restart the CMS.
+- [x] Verify the loopback health endpoint and confirm port `9010` is not public.
 - [ ] Publish a CMS global and confirm exactly one successful UI build.
 - [ ] Publish several records rapidly and confirm the debounce produces one build.
 - [ ] Change content during a build and confirm one follow-up build is queued.
@@ -354,6 +453,8 @@ The implementation is retained, but production activation and end-to-end testing
 
 **Why is the CMS on a subdomain?** It gives Payload Admin its own origin, avoiding `/_next/*` collisions with the UI, and lets CORS allow exactly the UI origin.
 
+**Why does the bare IP redirect instead of serving the site?** An IP cannot carry a publicly trusted certificate, so anything served there is plain HTTP and open to tampering. Redirecting keeps one canonical HTTPS origin and avoids duplicate indexing.
+
 ## Troubleshooting
 
 - Caddy logs: `sudo journalctl -u caddy -n 100 --no-pager`
@@ -370,5 +471,8 @@ The implementation is retained, but production activation and end-to-end testing
 - If port `80` works but `443` does not, verify `443` is entered as the OCI destination port, not the source port, and that the NSG is attached to the primary VNIC.
 - `robots.txt` or the sitemap shows the wrong host: `NEXT_PUBLIC_SITE_URL` in `.env.production` is wrong; fix it and rebuild.
 - Deployment check fails after moving hostnames: `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_CMS_URL` must match site addresses in the Caddyfile.
+- `deploy:oci` stops with "CMS has uncommitted tracked changes": inspect `git -C /srv/portfolio/portfolio-cms status`. Next.js rewrites `next-env.d.ts` on every build, so it is ignored rather than tracked; if a generated file shows as modified, it was committed by mistake and should be untracked in the repository.
+- Plain `http://` on a domain serves content instead of redirecting: the explicit `http://` redirect block is missing or placed so the `:80` catch-all wins.
+- rem-labs broken after a Caddy reload: restore the latest `Caddyfile.pre-*` backup, reload, and compare the `:8080` block.
 - Old content after editing Payload: rebuild the UI because it is statically generated.
 - Permission denied from Caddy: ensure directories are traversable and files under `out` are readable by the `caddy` user.
