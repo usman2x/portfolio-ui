@@ -6,9 +6,12 @@ This runbook deploys the statically exported Next.js UI directly on Ubuntu 22.04
 
 - Repository: `/srv/portfolio/portfolio-ui`
 - Static output: `/srv/portfolio/portfolio-ui/out`
-- Temporary public UI address: `http://<PUBLIC_IP>`
+- Public UI: `https://www.themuhammadusman.com` (the apex `themuhammadusman.com` redirects to it)
+- Public CMS: `https://cms.themuhammadusman.com` (see the CMS repository's runbook)
 - Build-time CMS: `http://127.0.0.1:3001`
-- Browser-visible CMS: `http://<PUBLIC_IP>:8080`
+- TLS: certificates issued and renewed automatically by Caddy (Let's Encrypt)
+
+The hostnames are configuration, not code. They appear only in DNS, `/etc/caddy/Caddyfile`, the UI `.env.production`, and the CMS `.env`. To move to another domain, change those four places and rebuild both applications.
 
 ## First deployment
 
@@ -30,10 +33,10 @@ test -f out/index.html && echo "UI BUILD OK" || echo "UI BUILD MISSING"
 Production environment:
 
 ```dotenv
-NEXT_PUBLIC_SITE_URL=http://<PUBLIC_IP>
+NEXT_PUBLIC_SITE_URL=https://www.themuhammadusman.com
 NEXT_PUBLIC_PATH_PREFIX=
 PAYLOAD_API_URL=http://127.0.0.1:3001
-NEXT_PUBLIC_CMS_URL=http://<PUBLIC_IP>:8080
+NEXT_PUBLIC_CMS_URL=https://cms.themuhammadusman.com
 PAYLOAD_POSTS_ENDPOINT=/api/posts
 NEXT_PUBLIC_FORM_LINK=
 NEXT_PUBLIC_GA_TRACKING_ID=
@@ -41,48 +44,89 @@ NEXT_PUBLIC_GA_TRACKING_ID=
 
 Do not commit `.env.production`. Values prefixed with `NEXT_PUBLIC_` are compiled into the generated browser files.
 
+`NEXT_PUBLIC_SITE_URL` is required: it drives canonical URLs, and the `postbuild` step uses it to write `out/sitemap.xml` and `out/robots.txt`. The build fails if it is missing. `PAYLOAD_API_URL` stays on loopback so the build never depends on public DNS or TLS.
+
+## DNS
+
+Create these records at the domain's DNS provider:
+
+| Type | Name  | Value         | Purpose                     |
+| ---- | ----- | ------------- | --------------------------- |
+| `A`  | `@`   | `<PUBLIC_IP>` | Apex, redirects to `www`    |
+| `A`  | `www` | `<PUBLIC_IP>` | Public UI                   |
+| `A`  | `cms` | `<PUBLIC_IP>` | Payload CMS and admin       |
+
+- Do not publish `AAAA` records unless the VM has working IPv6; Let's Encrypt prefers IPv6 and a stale record breaks issuance.
+- If the zone is on Cloudflare, keep these records **DNS only** so Caddy terminates TLS itself.
+
+Confirm propagation from a machine outside OCI before configuring Caddy:
+
+```bash
+dig +short themuhammadusman.com www.themuhammadusman.com cms.themuhammadusman.com
+```
+
+All three must return the VM's public IP.
+
 ## Caddy
 
-Use `/etc/caddy/Caddyfile` to serve this UI and proxy the CMS:
+Use `/etc/caddy/Caddyfile` to serve this UI and proxy the CMS. Caddy obtains and renews certificates for each site address automatically and redirects HTTP to HTTPS.
 
 ```caddyfile
-:80 {
+{
+	email <certificate-contact-email>
+}
+
+themuhammadusman.com {
+	redir https://www.themuhammadusman.com{uri} permanent
+}
+
+www.themuhammadusman.com {
 	root * /srv/portfolio/portfolio-ui/out
 	encode zstd gzip
 	file_server
 }
 
-:8080 {
+cms.themuhammadusman.com {
 	encode zstd gzip
 	reverse_proxy 127.0.0.1:3001
 }
 ```
 
+The global `email` is optional and is used by Let's Encrypt for expiry notices.
+
 ```bash
 sudo caddy fmt --overwrite /etc/caddy/Caddyfile
 sudo caddy validate --config /etc/caddy/Caddyfile
-sudo systemctl restart caddy
-curl -I http://127.0.0.1/
-curl -I http://127.0.0.1:8080/admin
+sudo systemctl reload caddy
+sudo journalctl -u caddy -f   # wait for "certificate obtained successfully" per hostname
 ```
+
+Local checks must send the real hostname, because Caddy routes by host and SNI. `--resolve` pins each name to loopback:
+
+```bash
+curl -I --resolve www.themuhammadusman.com:443:127.0.0.1 https://www.themuhammadusman.com/
+curl -I --resolve cms.themuhammadusman.com:443:127.0.0.1 https://cms.themuhammadusman.com/admin
+```
+
+A plain `curl http://127.0.0.1/` no longer matches a site and is not a valid check.
 
 ## OCI networking
 
 Add stateful ingress rules to the NSG attached to the VM, or to the subnet security list:
 
-| Source      | Protocol | Destination port | Purpose              |
-| ----------- | -------- | ---------------: | -------------------- |
-| `0.0.0.0/0` | TCP      |             `80` | Public UI            |
-| `0.0.0.0/0` | TCP      |           `8080` | Temporary public CMS |
+| Source      | Protocol | Destination port | Purpose                                    |
+| ----------- | -------- | ---------------: | ------------------------------------------ |
+| `0.0.0.0/0` | TCP      |             `80` | ACME HTTP challenge and redirect to HTTPS  |
+| `0.0.0.0/0` | TCP      |            `443` | Public UI and CMS over HTTPS               |
 
-Keep port 3001 closed. Port 8080 should be replaced by HTTPS on a CMS subdomain when a domain is available.
+Keep port `80` open: Caddy needs it to issue and renew certificates. Keep ports `3001` (CMS) and `9010` (rebuild webhook) closed.
 
 If UFW is active:
 
 ```bash
 sudo ufw status
 sudo ufw allow 80/tcp
-sudo ufw allow 8080/tcp
+sudo ufw allow 443/tcp
 ```
 
 UFW rules persist automatically. Confirm both activation and startup:
@@ -98,46 +142,64 @@ Some OCI Ubuntu images contain a catch-all `REJECT` rule before the UFW chains. 
 sudo iptables -L INPUT -n -v --line-numbers
 ```
 
-If that reject appears before the UFW rules, insert explicit accepts immediately before it. In the deployed VM the reject was originally rule 5, so the applied rules were:
+If that reject appears before the UFW rules, insert explicit accepts immediately before it. Replace `<N>` with the reject's current rule number:
 
 ```bash
-sudo iptables -I INPUT 5 -p tcp --dport 80 -m conntrack --ctstate NEW -j ACCEPT
-sudo iptables -I INPUT 6 -p tcp --dport 8080 -m conntrack --ctstate NEW -j ACCEPT
+sudo iptables -I INPUT <N> -p tcp --dport 80 -m conntrack --ctstate NEW -j ACCEPT
+sudo iptables -I INPUT <N> -p tcp --dport 443 -m conntrack --ctstate NEW -j ACCEPT
 sudo apt install -y iptables-persistent
 sudo netfilter-persistent save
 sudo systemctl enable netfilter-persistent
 ```
 
-Always inspect rule numbers first; never flush the OCI image's ruleset. Keep port `3001` closed publicly.
+Always inspect rule numbers first; never flush the OCI image's ruleset.
 
 ## External verification
 
 Run these from a machine outside OCI, not from the VM itself. Public-IP hairpin requests made from the same OCI VM are not a reliable test.
 
 ```bash
-curl -I --connect-timeout 10 http://<PUBLIC_IP>
-curl -I --connect-timeout 10 http://<PUBLIC_IP>:8080/admin
+curl -I --connect-timeout 10 http://themuhammadusman.com        # 308 to https
+curl -I --connect-timeout 10 https://themuhammadusman.com       # 301 to https://www.
+curl -I --connect-timeout 10 https://www.themuhammadusman.com   # 200
+curl -I --connect-timeout 10 https://cms.themuhammadusman.com/admin
+curl -s https://www.themuhammadusman.com/robots.txt             # Sitemap uses the domain
 ```
 
-Expected result: both return an HTTP response from Caddy. Verify the deployed processes and automatic startup:
+In a browser, confirm that CMS media loads on the UI and that the contact form submits without CORS errors. Verify the deployed processes and automatic startup:
 
 ```bash
 sudo systemctl is-enabled caddy portfolio-cms
 sudo systemctl is-active caddy portfolio-cms
-sudo ss -ltnp | grep -E ':(80|8080|3001)'
+sudo ss -ltnp | grep -E ':(80|443|3001)'
 ```
+
+## Moving an existing IP deployment to the domain
+
+Use this once on a VM that still serves the UI on `http://<PUBLIC_IP>` and the CMS on `:8080`. Keep the old `:8080` block until step 6 passes.
+
+1. Deploy the current `main` with `npm run deploy:oci` while still on the IP layout.
+2. Create the [DNS](#dns) records and wait until `dig` returns the public IP.
+3. Open TCP `443` in OCI, UFW, and iptables as described in [OCI networking](#oci-networking).
+4. Add the three site blocks from [Caddy](#caddy) above the existing `:8080` block, remove the old `:80` block, validate, and reload Caddy. Confirm certificates were issued.
+5. Update the CMS `.env` (see the CMS runbook), then rebuild and restart the CMS. Update the UI `.env.production` as shown in [First deployment](#first-deployment), then run `npm run clean && npm run build`.
+6. Complete [External verification](#external-verification), including an admin login on `https://cms.themuhammadusman.com/admin`.
+7. Remove the temporary CMS port:
+   - delete the `:8080` block from the Caddyfile and reload Caddy;
+   - `sudo ufw delete allow 8080/tcp`;
+   - find the port `8080` rule with `sudo iptables -L INPUT -n --line-numbers`, delete it with `sudo iptables -D INPUT <num>`, then `sudo netfilter-persistent save`;
+   - delete the TCP `8080` ingress rule in OCI;
+   - from outside OCI, confirm `curl -I --connect-timeout 5 http://<PUBLIC_IP>:8080` times out.
+8. Run `npm run deploy:oci` once more; its post-deployment checks now use the domain URLs.
 
 ## Remaining production steps
 
-1. Complete external checks for the UI on `80` and CMS on `8080`.
-2. Leave content seeding paused until explicitly approved.
-3. Populate required Payload globals before treating the generated UI as final content.
-4. Rebuild the UI after any CMS content initialization or publication.
-5. Acquire/configure a domain and switch Caddy to HTTPS.
-6. Move the CMS to a dedicated HTTPS hostname, or validate a same-origin routing design that accounts for both applications' `/_next/*` assets.
-7. Remove temporary port `8080` from Caddy, UFW, persistent iptables, and OCI ingress only after its replacement is verified.
+1. Leave content seeding paused until explicitly approved.
+2. Populate required Payload globals before treating the generated UI as final content.
+3. Rebuild the UI after any CMS content initialization or publication.
+4. Activate and test the automatic rebuild listener (see the deferred TODO below).
 
-The current supported layout remains port `80` for UI and port `8080` for CMS. A previous static-admin deployment could safely use `/admin`; Payload Admin is dynamic Next.js and shares `/_next/*` with this UI, so path consolidation requires additional routing tests.
+The CMS uses its own hostname rather than a path such as `/admin` on the UI hostname: Payload Admin is a dynamic Next.js application and shares `/_next/*` with this UI, so path consolidation would need additional routing work.
 
 ## Updates
 
@@ -156,7 +218,7 @@ The script stops on the first failure and performs these checks automatically:
 - checks the database, runs migrations, and builds and restarts the CMS;
 - waits for the local CMS health check before building the UI;
 - removes stale Next.js/static output, builds the UI, and verifies its HTML and CSS output;
-- verifies the CMS, UI, and Caddy after deployment.
+- verifies the CMS, UI, and Caddy after deployment by requesting `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_CMS_URL/admin` from the UI `.env.production` through the local Caddy (pinned to `127.0.0.1` with `curl --resolve`, so public DNS is not involved).
 
 It preserves `.env` and `.env.production` and does not seed content. The UI may have a short
 maintenance window while its clean static export is being generated. Run the command as the
@@ -185,6 +247,8 @@ Optional environment overrides are available for a non-standard installation:
 ```bash
 PORTFOLIO_DEPLOY_ROOT=/srv/portfolio \
 PORTFOLIO_DEPLOY_BRANCH=main \
+PORTFOLIO_UI_URL=https://www.themuhammadusman.com \
+PORTFOLIO_CMS_URL=https://cms.themuhammadusman.com \
 npm run deploy:oci
 ```
 
@@ -286,20 +350,25 @@ The implementation is retained, but production activation and end-to-end testing
 
 **Why use `.env.production`?** It clearly scopes values to production builds. `.env.local` has higher precedence and can accidentally override them.
 
-**Why is the site HTTP-only?** Publicly trusted HTTPS needs a domain in the normal deployment. Caddy can automate certificates after DNS is configured.
+**Who manages TLS certificates?** Caddy obtains them from Let's Encrypt for every hostname in the Caddyfile and renews them automatically. No cron job or certbot is required; port `80` must stay reachable.
+
+**Why is the CMS on a subdomain?** It gives Payload Admin its own origin, avoiding `/_next/*` collisions with the UI, and lets CORS allow exactly the UI origin.
 
 ## Troubleshooting
 
 - Caddy logs: `sudo journalctl -u caddy -n 100 --no-pager`
 - Validate config: `sudo caddy validate --config /etc/caddy/Caddyfile`
-- List listeners: `sudo ss -ltnp | grep -E ':(80|8080|3001)'`
-- Local UI check: `curl -I http://127.0.0.1/`
-- Local CMS proxy check: `curl -I http://127.0.0.1:8080/admin`
+- List listeners: `sudo ss -ltnp | grep -E ':(80|443|3001)'`
+- Local UI check: `curl -I --resolve www.themuhammadusman.com:443:127.0.0.1 https://www.themuhammadusman.com/`
+- Local CMS proxy check: `curl -I --resolve cms.themuhammadusman.com:443:127.0.0.1 https://cms.themuhammadusman.com/admin`
 - `UI BUILD MISSING`: inspect the preceding `npm run build` error; never deploy a partial `out` directory.
 - CMS fetch failure: confirm `PAYLOAD_API_URL=http://127.0.0.1:3001` and verify the CMS service.
 - `undefined cannot be serialized`: normalize optional values to `null` or omit them before returning `getStaticProps`.
 - Public timeout with successful local curls: check both OCI ingress rules and the VM firewall.
 - If an iptables rule's packet counter remains zero during an external request, OCI is blocking traffic before it reaches the VM.
-- If port `80` works but `8080` does not, verify `8080` is entered as the OCI destination port, not the source port, and that the NSG is attached to the primary VNIC.
+- Certificate not issued: check `sudo journalctl -u caddy -n 100 --no-pager`. Usual causes are DNS not yet pointing at the VM, port `80` or `443` blocked in OCI or iptables, a stale `AAAA` record, or a Cloudflare proxy in front of the VM. Fix the cause and wait; repeated failures hit Let's Encrypt rate limits.
+- If port `80` works but `443` does not, verify `443` is entered as the OCI destination port, not the source port, and that the NSG is attached to the primary VNIC.
+- `robots.txt` or the sitemap shows the wrong host: `NEXT_PUBLIC_SITE_URL` in `.env.production` is wrong; fix it and rebuild.
+- Deployment check fails after moving hostnames: `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_CMS_URL` must match site addresses in the Caddyfile.
 - Old content after editing Payload: rebuild the UI because it is statically generated.
 - Permission denied from Caddy: ensure directories are traversable and files under `out` are readable by the `caddy` user.
