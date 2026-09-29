@@ -12,7 +12,7 @@ It focuses on layout, section hierarchy, and content responsibilities.
 
 ## About Page Order
 1. Extended summary with introduction video
-2. Chronological work experience (interactive two-column)
+2. Chronological work experience (scroll-drawn timeline)
 3. Strengths / focus areas
 4. Book a call block
 5. Footer
@@ -30,16 +30,20 @@ Rule:
 - Video eyebrow, title, description, and URL come from the Payload **About Page** global.
 - Load the YouTube iframe only after the visitor activates the poster.
 - Provide a CMS-managed transcript beneath the video.
+- The first summary paragraph reads as a lead. Header, copy, and video enter in
+  one short cascade on load (opacity only under reduced motion).
 
 ## 2. Chronological Work Experience
 Purpose:
 - Visualize career progression in a familiar and scannable format
 
 Layout:
-- left column: interactive timeline/list of roles in reverse chronology
-- right column: details panel for selected role
+- single column, reverse chronology, with a vertical rail on the left
+- one node per role on the rail and one card per role beside it
+- the rail fills with scroll progress; a node lights when the fill reaches it
+  and its card slides in once (highlights follow in a short stagger)
 
-Required detail panel fields:
+Required card fields:
 - period
 - role and company
 - location
@@ -48,14 +52,23 @@ Required detail panel fields:
 - optional company link
 
 Rule:
-- Keep interactions lightweight and keyboard accessible.
+- Every role is readable without JS and under reduced motion: the rail renders
+  fully drawn and all cards are visible.
+- Reaching the page bottom counts as reaching every remaining role.
+- The same component renders `/experience/`.
 
 ## 3. Strengths / Focus Areas
 Purpose:
 - Help visitors scan your strongest areas quickly
 
+Layout:
+- numbered cards (01, 02, ...) in an auto-fitting grid with a short brand
+  accent bar that extends on hover
+
 Rule:
 - Keep this section scannable.
+- Cards cascade in once when the grid scrolls into view; no motion under
+  reduced motion.
 
 ## 4. Book a Call Block
 Purpose:

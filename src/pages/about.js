@@ -1,11 +1,15 @@
-import React from "react"
+import React, { useRef } from "react"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
 import WorkExperienceTimeline from "../components/WorkExperienceTimeline"
 import AboutVideo from "../components/AboutVideo"
+import useRevealOnce from "../lib/useRevealOnce"
 import { fetchAboutPage, fetchSiteSettings, fetchWorkExperience } from "../lib/cms"
 
 const AboutPage = ({ aboutPage, siteSettings, workExperience }) => {
+  const strengthsRef = useRef(null)
+  useRevealOnce(strengthsRef)
+
   return (
     <Layout siteSettings={siteSettings}>
       <SEO
@@ -32,16 +36,23 @@ const AboutPage = ({ aboutPage, siteSettings, workExperience }) => {
 
         <WorkExperienceTimeline entries={workExperience} title={aboutPage.experienceTitle} />
 
-        <section className="interior-section">
+        <section className="interior-section strengths-section">
           <h2 className="interior-section-title">{aboutPage.strengthsTitle}</h2>
-          <div className="info-grid">
-            {aboutPage.strengths.map(item => (
-              <article key={item.title} className="info-card">
+          <ol className="strengths-grid" ref={strengthsRef}>
+            {aboutPage.strengths.map((item, index) => (
+              <li
+                key={item.title}
+                className="info-card strength-card"
+                style={{ animationDelay: `${index * 70}ms` }}
+              >
+                <span className="strength-index" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
-              </article>
+              </li>
             ))}
-          </div>
+          </ol>
         </section>
       </section>
     </Layout>

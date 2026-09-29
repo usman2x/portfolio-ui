@@ -20,6 +20,25 @@ Create deliberate, accessible interfaces that follow the repository's design and
 4. Inspect the CMS adapter in `src/lib/cms.js` before changing CMS-backed page data.
 5. Preserve unrelated working-tree changes.
 
+## Resolve conflicts with other design skills
+
+This skill and the documents under `docs/` are the project contract. The installed craft skills (`emil-design-eng`, `apple-design`, `animate`, `review-animations`, `improve-animations`, `find-animation-opportunities`, `animation-vocabulary`, `mobile-native`, `pick-ui-library`, `prototype`) are advisors for motion craft and mobile behavior only. When they disagree with this project, the project wins:
+
+- **Palette:** never change palette values in `global.css`. Meet contrast through usage tokens (`--brand-text`, `--on-brand`) as described in `docs/style/STYLEGUIDE.md`.
+- **Typography:** keep the self-hosted Newsreader, Inter, and IBM Plex Mono roles. Ignore advice to default to the system font.
+- **Surfaces:** no translucent or `backdrop-filter` chrome, no deeper or heavier shadows, and no scroll-edge blur masks in place of the header and footer divider lines. The site stays calm and content-led.
+- **Dependencies:** do not add Motion, Sonner, cva, or other libraries recommended by `pick-ui-library` or `apple-design` without explicit user approval. Prefer CSS transitions and the Web Animations API.
+- **Gestures:** springs, momentum, drag, and sheet guidance applies only if such interactions are deliberately introduced; the site currently has none.
+- **Prototypes:** any `prototype` surface must be removed before a commit, because the static export would publish it.
+
+Apply these craft rules, which fit the project:
+
+- Animate only `transform` and `opacity` for motion; keep durations at or below `300ms`; use the easing tokens in `global.css`; never use `ease-in` for UI.
+- Give pressable elements `:active` feedback (`scale(0.97)`).
+- Gate hover-only movement behind `@media (hover: hover) and (pointer: fine)`.
+- Under `prefers-reduced-motion: reduce`, remove movement but keep short color and opacity transitions.
+- Use `dvh` instead of `vh` for viewport heights, suppress the tap highlight flash, and keep form inputs at `16px` or larger.
+
 ## Make UI/UX decisions
 
 - Start from the user's goal, the page's primary action, and the intended reading order.

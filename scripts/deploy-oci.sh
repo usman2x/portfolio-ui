@@ -45,6 +45,37 @@ pull_repo() {
   printf '%s commit: %s\n' "$name" "$(git -C "$directory" rev-parse --short HEAD)"
 }
 
+read_env_value() {
+  local file="$1"
+  local key="$2"
+
+  [[ -f "$file" ]] || return 0
+  sed -n "s/^${key}=//p" "$file" | tail -n 1 | sed -e 's/^["'\'']//' -e 's/["'\'']$//'
+}
+
+# Request a public URL through the local Caddy, keeping its Host/SNI, so the
+# check does not depend on public DNS or OCI hairpin routing.
+check_public_url() {
+  local url="$1"
+  local scheme="${url%%://*}"
+  local authority="${url#*://}"
+  local host port
+
+  authority="${authority%%/*}"
+  host="${authority%%:*}"
+  if [[ "$authority" == *:* ]]; then
+    port="${authority##*:}"
+  elif [[ "$scheme" == "https" ]]; then
+    port=443
+  else
+    port=80
+  fi
+
+  curl --fail --silent --show-error --head \
+    --resolve "${host}:${port}:127.0.0.1" "$url" >/dev/null ||
+    fail "Public check failed: ${url}"
+}
+
 main() {
   local nvm_dir="${NVM_DIR:-${HOME}/.nvm}"
   local elapsed
@@ -118,9 +149,13 @@ main() {
   )
 
   log "Verifying services through Caddy"
+  local ui_url="${PORTFOLIO_UI_URL:-$(read_env_value "${UI_DIR}/.env.production" NEXT_PUBLIC_SITE_URL)}"
+  local cms_url="${PORTFOLIO_CMS_URL:-$(read_env_value "${UI_DIR}/.env.production" NEXT_PUBLIC_CMS_URL)}"
+  [[ -n "$ui_url" ]] || fail "NEXT_PUBLIC_SITE_URL is not set in ${UI_DIR}/.env.production"
+  [[ -n "$cms_url" ]] || fail "NEXT_PUBLIC_CMS_URL is not set in ${UI_DIR}/.env.production"
   systemctl is-active --quiet caddy
-  curl --fail --silent --show-error --head http://127.0.0.1/ >/dev/null
-  curl --fail --silent --show-error --head http://127.0.0.1:8080/admin >/dev/null
+  check_public_url "${ui_url%/}/"
+  check_public_url "${cms_url%/}/admin"
 
   elapsed="$(( $(date +%s) - STARTED_AT ))"
   log "Deployment completed successfully in ${elapsed}s"

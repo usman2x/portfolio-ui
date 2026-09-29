@@ -1,10 +1,21 @@
 import { readdir, writeFile } from "node:fs/promises"
 import path from "node:path"
+import nextEnv from "@next/env"
+
+// postbuild runs outside Next.js, so load the same .env files `next build` used.
+nextEnv.loadEnvConfig(process.cwd(), false)
 
 const outputDir = path.resolve("out")
 const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://www.musman.online"
-).replace(/\/$/, "")
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  process.env.SITE_URL ||
+  ""
+).replace(/\/+$/, "")
+
+if (!siteUrl) {
+  console.error("NEXT_PUBLIC_SITE_URL is required to generate sitemap.xml")
+  process.exit(1)
+}
 
 const walk = async directory => {
   const entries = await readdir(directory, { withFileTypes: true })

@@ -306,6 +306,7 @@ html[data-theme="dark"] {
 
 .layout {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
@@ -1897,12 +1898,6 @@ footer,
   margin: 0.65rem 0 0;
 }
 
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.9rem;
-}
-
 .info-card {
   border: 1px solid var(--border-default);
   border-radius: 16px;
@@ -1913,104 +1908,6 @@ footer,
 .info-card h3 {
   font-size: 1rem;
   margin-bottom: 0.35rem;
-}
-
-.work-experience-layout {
-  display: grid;
-  grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.1fr);
-  gap: 1rem;
-  align-items: start;
-}
-
-.work-experience-nav {
-  display: grid;
-  gap: 0.65rem;
-}
-
-.work-experience-item {
-  cursor: pointer;
-  text-align: left;
-  width: 100%;
-  display: grid;
-  gap: 0.16rem;
-  border: 1px solid color-mix(in srgb, var(--border-default) 88%, white);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--bg-card) 96%, var(--bg-page));
-  padding: 0.78rem 0.88rem;
-  color: var(--text-main);
-  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
-}
-
-.work-experience-item:hover,
-.work-experience-item:focus {
-  border-color: color-mix(
-    in srgb,
-    var(--brand-primary) 32%,
-    var(--border-default)
-  );
-  background: color-mix(in srgb, var(--bg-brand-soft) 68%, var(--bg-card));
-}
-
-.work-experience-item.active {
-  border-color: color-mix(
-    in srgb,
-    var(--brand-primary) 38%,
-    var(--border-default)
-  );
-  background: color-mix(in srgb, var(--bg-brand-soft) 76%, var(--bg-card));
-}
-
-.work-experience-period {
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.work-experience-company {
-  font-weight: 700;
-  line-height: 1.25;
-}
-
-.work-experience-role {
-  font-size: 0.92rem;
-  color: var(--text-muted);
-}
-
-.work-experience-panel {
-  display: grid;
-  gap: 0.62rem;
-  border: 1px solid color-mix(in srgb, var(--border-default) 88%, white);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--bg-card) 96%, var(--bg-page));
-  padding: 1rem;
-}
-
-.work-experience-panel-period {
-  margin-bottom: 0;
-  color: var(--text-muted);
-  font-size: 0.84rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.work-experience-panel-title {
-  margin-bottom: 0;
-  font-size: 1.12rem;
-  line-height: 1.25;
-}
-
-.work-experience-panel-meta,
-.work-experience-panel-summary {
-  margin-bottom: 0;
-  color: var(--text-muted);
-}
-
-.work-experience-highlights {
-  display: grid;
-  gap: 0.55rem;
-  margin: 0.3rem 0 0;
-  padding-left: 1.1rem;
 }
 
 .project-detail-list {
@@ -2101,9 +1998,11 @@ footer,
   *::before,
   *::after {
     scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    /* Movement is removed; short color and opacity changes remain as feedback. */
+    transition-property: color, background-color, border-color, opacity !important;
+    transition-duration: 150ms !important;
   }
 }
 
@@ -2294,6 +2193,7 @@ footer,
   gap: 0.7rem;
   width: min(1400px, 100%);
   max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
 }
 
 .project-lightbox-toolbar,
@@ -2324,6 +2224,7 @@ footer,
   display: block;
   width: 100%;
   max-height: calc(100vh - 10rem);
+  max-height: calc(100dvh - 10rem);
   border-radius: 10px;
   object-fit: contain;
 }
@@ -3219,8 +3120,6 @@ footer,
   .landing-section-header,
   .identity-layout,
   .about-intro-grid,
-  .info-grid,
-  .work-experience-layout,
   .preview-grid,
   .projects-archive-grid,
   .quote-grid,
@@ -3459,20 +3358,12 @@ a.text-link-cta,
 a.text-link-cta:link,
 a.text-link-cta:visited {
   color: var(--text-main);
-  background-image: linear-gradient(
-    var(--brand-primary),
-    var(--brand-primary)
-  );
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 100% 2px;
   padding-bottom: 1px;
 }
 
 a.text-link-cta:hover,
 a.text-link-cta:focus {
   color: var(--brand-text);
-  background-size: 100% 2px;
 }
 
 .testimonial-expand {
@@ -3760,7 +3651,7 @@ a.text-link-cta {
 .info-card h3,
 .projects-archive-body .interior-section-title,
 .content-navigation-card strong,
-.work-experience-panel h3,
+.experience-title,
 .intent-option strong,
 .reply-choice strong {
   font-family: var(--font-body);
@@ -3800,7 +3691,8 @@ a.text-link-cta {
 .testimonial-source,
 .quote-aside-kicker,
 .quote-form-step,
-.work-experience-panel-period,
+.experience-period,
+.strength-index,
 .blog-detail-label,
 .project-cta-transition-label,
 .project-gallery-heading p {
@@ -3822,7 +3714,7 @@ a.text-link-cta {
 .content-navigation-direction,
 .quote-aside-kicker,
 .quote-form-step,
-.work-experience-panel-period {
+.experience-period {
   font-size: var(--fs-meta);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -3845,4 +3737,471 @@ a.text-link-cta {
 /* The testimonials archive sets its own zero inset; keep it on the content edge. */
 .testimonials-page .testimonials-section {
   padding-inline: 0;
+}
+
+/* ==========================================================================
+   Phase E: motion and mobile craft (see build-portfolio-ui skill).
+   - Motion animates transform/opacity only, <= 300ms, with strong ease-out.
+   - Hover movement only on devices that truly hover; touch gets press feedback.
+   - Reduced motion removes movement but keeps color/opacity feedback.
+   ========================================================================== */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --duration-press: 160ms;
+  --duration-hover: 200ms;
+  --duration-reveal: 240ms;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Underlines are a scaled pseudo-element (transform, GPU-composited) rather than
+   an animated background-size. Inline links inside article prose keep the
+   background technique because it underlines every line of a wrapped link. */
+:is(.link-underline, .site-nav-link, .blog-post-back, .footer-column a):is(:link, :visited, *) {
+  position: relative;
+  background-image: none;
+  transition: color var(--duration-hover) ease;
+}
+
+:is(.link-underline, .site-nav-link, .blog-post-back, .footer-column a)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--brand-primary);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--duration-reveal) var(--ease-out);
+  pointer-events: none;
+}
+
+:is(.link-underline, .site-nav-link, .blog-post-back, .footer-column a):is(:hover, :focus-visible)::after {
+  transform: scaleX(1);
+}
+
+/* Active page and call-to-action links show a permanent 2px underline.
+   .text-link-cta is complete on its own because some CTAs omit .link-underline. */
+a.text-link-cta {
+  position: relative;
+  display: inline-block;
+}
+
+a.text-link-cta::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--brand-primary);
+  pointer-events: none;
+}
+
+.site-nav-link.site-nav-link-active::after,
+a.text-link-cta::after {
+  height: 2px;
+  transform: scaleX(1);
+}
+
+/* Press feedback on pressable elements. */
+.theme-btn-primary,
+.theme-btn-outline {
+  transition: background var(--duration-hover) ease,
+    border-color var(--duration-hover) ease, color var(--duration-hover) ease,
+    transform var(--duration-press) var(--ease-out);
+}
+
+.theme-btn-primary:active,
+.theme-btn-outline:active,
+.theme-toggle:active,
+.testimonial-expand:active {
+  transform: scale(0.97);
+}
+
+.intent-option:active,
+.reply-choice:active,
+.content-navigation-card:active {
+  transform: scale(0.985);
+}
+
+/* Movement transitions use the strong ease-out curve. */
+.identity-portrait-image {
+  transition: transform var(--duration-reveal) var(--ease-out);
+}
+
+.project-preview-card,
+.writing-preview-card {
+  transition: transform var(--duration-hover) var(--ease-out),
+    border-color var(--duration-hover) ease, background var(--duration-hover) ease;
+}
+
+.intent-option,
+.reply-choice,
+.content-navigation-card {
+  transition: transform var(--duration-press) var(--ease-out),
+    border-color var(--duration-hover) ease,
+    background-color var(--duration-hover) ease;
+}
+
+.project-gallery-item img {
+  transition: transform var(--duration-reveal) var(--ease-out);
+}
+
+/* Hover movement only where hover is real; touch taps would otherwise leave
+   elements stuck in their lifted state. Keyboard focus styles are unaffected. */
+@media not all and (hover: hover) and (pointer: fine) {
+  .identity-link-card:hover .identity-portrait-image,
+  .project-preview-card:hover,
+  .writing-preview-card:hover,
+  .project-gallery-item:hover img,
+  .intent-option:hover,
+  .reply-choice:hover,
+  .content-navigation-card:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-btn-primary:active,
+  .theme-btn-outline:active,
+  .theme-toggle:active,
+  .testimonial-expand:active,
+  .intent-option:active,
+  .reply-choice:active,
+  .content-navigation-card:active {
+    transform: none;
+  }
+
+  /* Underlines fade instead of growing. */
+  :is(.link-underline, .site-nav-link, .blog-post-back, .footer-column a)::after {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+
+  :is(.link-underline, .site-nav-link, .blog-post-back, .footer-column a):is(:hover, :focus-visible)::after,
+  .site-nav-link.site-nav-link-active::after,
+  a.text-link-cta::after {
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   About page: intro entrance, scroll-drawn experience timeline, strengths.
+   Motion follows Phase E: transform/opacity only, <= 300ms per element, the
+   shared easing tokens, hover movement gated to fine pointers. Hidden reveal
+   states apply only under [data-animated], which JS sets when motion is
+   allowed, so no-JS and reduced-motion visitors see everything immediately.
+   Entrances use `animation-fill-mode: backwards` so the final state falls back
+   to the element's own styles and hover transforms keep working afterwards.
+   ========================================================================== */
+@keyframes about-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes about-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.about-page-shell {
+  gap: clamp(2.75rem, 6vw, 4.5rem);
+}
+
+.about-intro-header {
+  margin-bottom: calc(-1 * clamp(1rem, 3vw, 2rem));
+}
+
+.about-intro-copy .interior-copy:first-child {
+  color: var(--text-main);
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+}
+
+/* Intro: eyebrow, title, copy, then video, in one short cascade on load. */
+.about-intro-header > *,
+.about-intro-copy > *,
+.about-video-card {
+  animation: about-rise 300ms var(--ease-out) backwards;
+}
+
+.about-intro-header > :nth-child(2) { animation-delay: 60ms; }
+.about-intro-copy > :nth-child(1) { animation-delay: 120ms; }
+.about-intro-copy > :nth-child(2) { animation-delay: 170ms; }
+.about-intro-copy > :nth-child(n + 3) { animation-delay: 220ms; }
+.about-video-card { animation-delay: 160ms; }
+
+.about-video-frame {
+  box-shadow: 0 0 0 1px
+    color-mix(in srgb, var(--brand-primary) 22%, transparent);
+}
+
+.about-video-poster img {
+  transition: transform var(--duration-reveal) var(--ease-out);
+}
+
+.about-video-play {
+  transition: transform var(--duration-hover) var(--ease-out);
+}
+
+.about-video-poster:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: -4px;
+}
+
+.about-video-poster:active .about-video-play {
+  transform: translate(-50%, -50%) scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .about-video-poster:hover img {
+    transform: scale(1.03);
+  }
+
+  .about-video-poster:hover .about-video-play {
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+/* Experience timeline: a left rail whose fill tracks scroll progress. */
+.experience-timeline {
+  --rail-x: 0.6875rem;
+  --node-size: 0.875rem;
+  --node-top: 1.55rem;
+  position: relative;
+}
+
+.experience-rail {
+  position: absolute;
+  top: calc(var(--node-top) + var(--node-size) / 2);
+  bottom: 1.5rem;
+  left: calc(var(--rail-x) - 1px);
+  width: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--border-default);
+}
+
+.experience-rail-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-primary);
+  transform-origin: top center;
+}
+
+.experience-list {
+  display: grid;
+  gap: clamp(1.1rem, 3vw, 1.75rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.experience-entry {
+  position: relative;
+  padding-left: calc(var(--rail-x) * 2 + 1.1rem);
+}
+
+.experience-node {
+  position: absolute;
+  top: var(--node-top);
+  left: calc(var(--rail-x) - var(--node-size) / 2);
+  width: var(--node-size);
+  height: var(--node-size);
+  border: 2px solid var(--brand-primary);
+  border-radius: 50%;
+  background: var(--brand-primary);
+  box-shadow: 0 0 0 4px var(--bg-page);
+  transition: background-color var(--duration-hover) ease,
+    border-color var(--duration-hover) ease,
+    transform var(--duration-reveal) var(--ease-out);
+}
+
+[data-animated] .experience-entry:not([data-reached]) .experience-node {
+  border-color: var(--border-default);
+  background: var(--bg-page);
+  transform: scale(0.8);
+}
+
+.experience-card {
+  display: grid;
+  gap: 0.6rem;
+  padding: clamp(1rem, 2.5vw, 1.4rem);
+  border: 1px solid color-mix(in srgb, var(--border-default) 72%, transparent);
+  border-radius: 16px;
+  background: var(--bg-card);
+  transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out),
+    border-color var(--duration-hover) ease;
+}
+
+[data-animated] .experience-entry:not([data-revealed]) .experience-card {
+  opacity: 0;
+  transform: translateX(-14px);
+}
+
+.experience-entry[data-reached] .experience-card {
+  border-color: color-mix(in srgb, var(--brand-primary) 22%, var(--border-default));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .experience-card:hover {
+    border-color: color-mix(in srgb, var(--brand-primary) 40%, var(--border-default));
+  }
+}
+
+.experience-card > * {
+  margin: 0;
+}
+
+.experience-period {
+  color: var(--brand-text);
+}
+
+.experience-title {
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+.experience-company {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--text-main);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.experience-at {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.experience-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1.1rem;
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+}
+
+.experience-summary {
+  color: var(--text-muted);
+}
+
+.experience-highlights {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.85rem 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--border-default) 60%, transparent);
+  list-style: none;
+}
+
+.experience-highlights li {
+  position: relative;
+  padding-left: 1.2rem;
+  transition: opacity var(--duration-reveal) var(--ease-out),
+    transform var(--duration-reveal) var(--ease-out);
+}
+
+.experience-highlights li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 0.15rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 1px;
+  background: var(--brand-primary);
+  transform: rotate(45deg);
+}
+
+[data-animated] .experience-entry:not([data-revealed]) .experience-highlights li {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+/* Strengths: numbered cards that cascade in once and lift on hover. */
+.strengths-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.strength-card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  overflow: hidden;
+  padding: 1.25rem;
+  transition: transform var(--duration-hover) var(--ease-out),
+    border-color var(--duration-hover) ease;
+}
+
+.strength-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--brand-primary);
+  transform: scaleX(0.16);
+  transform-origin: left center;
+  transition: transform 300ms var(--ease-out);
+}
+
+.strength-card > * {
+  margin: 0;
+}
+
+.strength-index {
+  color: var(--brand-text);
+}
+
+[data-animated]:not([data-revealed]) > .strength-card {
+  opacity: 0;
+}
+
+[data-animated][data-revealed] > .strength-card {
+  animation: about-rise 300ms var(--ease-out) backwards;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .strength-card:hover {
+    border-color: color-mix(in srgb, var(--brand-primary) 40%, var(--border-default));
+    transform: translateY(-3px);
+  }
+
+  .strength-card:hover::before {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-intro-header > *,
+  .about-intro-copy > *,
+  .about-video-card {
+    animation-name: about-fade;
+  }
+
+  .about-video-poster:hover img,
+  .about-video-poster:active .about-video-play,
+  .strength-card:hover {
+    transform: none;
+  }
+
+  .about-video-poster:hover .about-video-play {
+    transform: translate(-50%, -50%);
+  }
 }
