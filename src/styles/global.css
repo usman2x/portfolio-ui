@@ -3779,7 +3779,7 @@ a.text-link-cta::after {
 }
 
 /* ==========================================================================
-   Phase F: homepage redesign (docs/pages/HOMEPAGE_REDESIGN.md).
+   Phase F: homepage redesign (docs/pages/HOME_PAGE.md).
    - One 9-step type scale and an 8px spacing grid on the homepage.
    - Space between sections (--section-gap) is clearly larger than space inside them.
    - No shadows on homepage content: hairline borders, warmed on hover.
@@ -4117,6 +4117,15 @@ html[data-theme="dark"] {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+/* Three or more services: heading above, cards in one row (the side-by-side layout fits two). */
+.home-services-inner:has(.home-services-list > :nth-child(3)) .home-services-list {
+  flex-basis: 100%;
+}
+
+.home-services-inner:has(.home-services-list > :nth-child(3)) .landing-section-title {
+  max-width: none;
 }
 
 a.home-service-card,
@@ -4482,7 +4491,7 @@ a.home-article-row:hover .home-article-arrow {
 }
 
 /* ==========================================================================
-   Phase G: About page redesign (docs/pages/ABOUT_REDESIGN.md).
+   Phase G: About page redesign (docs/pages/ABOUT_PAGE.md).
    Reuses the Phase F scale, spacing, hairlines and surfaces. Order: intro + video,
    core strengths, work experience (also on /experience/), one testimonial on the
    tinted band, then the shared inverse closing section.
