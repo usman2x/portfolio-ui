@@ -2,7 +2,7 @@ import React from "react"
 import Link from "next/link"
 
 // Closing call to action. It shares the inverse surface with the footer below it, so the page
-// ends on one strong block (docs/pages/HOMEPAGE_REDESIGN.md, section 8).
+// ends on one strong block (docs/structure/STRUCTURE.md, "Closing section").
 const BookCallSection = ({ siteSettings }) => {
   const content = siteSettings.bookCall || {}
   return (

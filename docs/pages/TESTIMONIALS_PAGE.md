@@ -1,21 +1,26 @@
-# Testimonials Page Blueprint
+# Testimonials
 
-## Goal
-
-- Give recommendations a focused, durable destination.
-- Keep the homepage concise by showing only a small featured preview.
-- Make attribution and external recommendation sources easy to scan.
+Route: `/testimonials/` · Page: `src/pages/testimonials.js` · Component: `Testimonials.js`
 
 ## Page order
 
-1. Short page introduction
-2. Complete published testimonial grid
-3. Book a call block
-4. Footer
+1. Page intro: **Testimonials Page** eyebrow, title (`--fs-page-title`) and description
+2. Grid of every published testimonial, ordered by `sortOrder`. Each card (hairline, 16px corners)
+   shows the quote (Newsreader italic), attribution (avatar initial, name, role and company) and
+   the source label, linked when `sourceUrl` is set. Quotes longer than 260 characters are cut at a
+   word boundary with a "Read full recommendation" / "Show less" toggle.
+3. Shared closing section
 
-## Content sources
+## Other uses of the component
 
-- Payload **Testimonials Page** global owns SEO and introduction copy.
-- Payload **Testimonials** collection owns recommendation text, attribution, source links, featured state, and ordering.
-- The homepage displays only the featured records allowed by **Home Page → Testimonial Limit**.
-- Long recommendations render as concise excerpts with an accessible expand/collapse control.
+- **Homepage** (`variant="home"`): the first featured testimonial, teaser only (no toggle), with
+  "Read on LinkedIn" when the source is LinkedIn. See `docs/pages/HOME_PAGE.md`.
+- **About** (`variant="home"`, full quote, relationship shown): the About Page's featured
+  testimonial on the tinted band. See `docs/pages/ABOUT_PAGE.md`.
+
+## Content
+
+- **Testimonials Page** global: SEO, eyebrow, title, description
+- **Testimonials** collection: name, role, company, relationship (manager, colleague, client,
+  other), quote, source label and URL, `featured`, `sortOrder`, `status`
+- **Home Page → testimonialLimit** and the featured flag control the homepage preview

@@ -241,11 +241,12 @@ curl -I --connect-timeout 10 http://<PUBLIC_IP>:8080/admin      # 404: portfolio
 curl -I --connect-timeout 5 http://<PUBLIC_IP>:3001/            # must time out
 ```
 
-After any Caddy change, confirm rem-labs is unaffected:
+After any Caddy change, confirm rem-labs is unaffected. Its `:8080` paths now redirect to its own
+hostnames:
 
 ```bash
-curl -I http://<PUBLIC_IP>:8080/remlabs                         # 200
-curl -I http://<PUBLIC_IP>:8080/remlabs-admin/admin             # 200
+curl -sIL http://<PUBLIC_IP>:8080/remlabs | grep -iE '^(HTTP|location)'              # 308 to https://tabrem.com/, then 200
+curl -sIL http://<PUBLIC_IP>:8080/remlabs-admin/admin | grep -iE '^(HTTP|location)'  # 308 to https://cms.tabrem.com/admin, then 200
 ```
 
 In a browser, confirm that CMS media loads on the UI and that the contact form submits without CORS errors. Verify the deployed processes and automatic startup:
@@ -256,29 +257,15 @@ sudo systemctl is-active caddy portfolio-cms portfolio-ui-deploy-webhook
 sudo ss -ltnp | grep -E ':(80|443|3001|9010)'   # 3001 and 9010 on 127.0.0.1 only
 ```
 
-## Moving an existing IP deployment to the domain
-
-Production completed this cutover on 2026-09-29. Use these steps for a VM that still serves the UI on `http://<PUBLIC_IP>` and the CMS on `:8080`.
-
-1. Deploy the current `main` with `npm run deploy:oci` while still on the IP layout.
-2. Create the [DNS](#dns) records and wait until `dig` returns the public IP.
-3. Open TCP `443` in OCI, UFW, and iptables as described in [OCI networking](#oci-networking).
-4. Back up the Caddyfile and append the `http://` redirect block and the three HTTPS site blocks from [Caddy](#caddy). Leave the existing `:80` and `:8080` blocks unchanged for now. Validate, reload, and confirm certificates were issued.
-5. Back up both env files, then update the URL values: the CMS `.env` (see the CMS runbook) and the UI `.env.production` as shown in [First deployment](#first-deployment). Run `npm run deploy:oci`; its post-deployment checks now use the domain URLs.
-6. Complete [External verification](#external-verification), including an admin login on `https://cms.themuhammadusman.com/admin`.
-7. Retire the IP entry points:
-   - change the `:80` block to the bare-IP redirect shown in [Caddy](#caddy);
-   - remove `http://<PUBLIC_IP>` from the CMS `QUOTE_ALLOWED_ORIGINS` and restart `portfolio-cms`;
-   - **on a VM without other tenants**, delete the `:8080` block and close `8080` in UFW, iptables (`sudo iptables -D INPUT <num>`, then `sudo netfilter-persistent save`), and OCI;
-   - **on the shared production VM**, keep `:8080` for rem-labs and replace only its final `reverse_proxy 127.0.0.1:3001` catch-all with `respond 404`.
-8. Add the `portfolio_security` headers snippet and reload Caddy.
-
 ## Remaining production steps
 
-1. Populate the Home Page proof points and any other empty Payload globals in the admin. Do not run `seed:core` against production after manual edits: it overwrites globals and matching records.
+1. Enter the content added by the 2026-10-05 release in Payload Admin (see the CMS runbook's
+   "Remaining production steps"). Do not run `seed:core` against production after manual edits: it
+   overwrites globals and matching records.
 2. Complete the end-to-end rebuild tests (see the TODO below).
 3. Raise HSTS to one year after a week of stable HTTPS (see [HSTS](#hsts)).
-4. Give rem-labs its own HTTPS hostname so `:8080` can be closed on the VM.
+4. rem-labs now has its own hostnames (`tabrem.com`, `cms.tabrem.com`) and its `:8080` paths
+   redirect there; close `:8080` once nothing depends on those redirects.
 5. Add atomic release switching so rebuilds do not briefly empty `out`.
 
 The CMS uses its own hostname rather than a path such as `/admin` on the UI hostname: Payload Admin is a dynamic Next.js application and shares `/_next/*` with this UI, so path consolidation would need additional routing work.
@@ -298,6 +285,20 @@ Configuration backups on the production VM, each taken immediately before the ch
 Earlier `Caddyfile.pre-remlabs-*` files belong to the rem-labs deployment.
 
 To roll back a Caddy change, copy the chosen backup over `/etc/caddy/Caddyfile`, validate, and reload. To roll back the environment, restore both env files together, rebuild and restart the CMS, then rebuild the UI (or run `npm run deploy:oci`). Restoring the IP environment also requires a Caddyfile that serves the IP.
+
+## Release flow
+
+Work happens on `develop` in both repositories; production deploys `main`.
+
+1. Merge or fast-forward `develop` into `main` in both repositories and push. Deploy both together
+   whenever a UI change depends on a CMS schema change.
+2. On the VM, run `npm run deploy:oci` (below). It applies pending migrations before the new CMS
+   starts and never seeds content.
+3. Content that a release needs (new fields, new collections) is entered in Payload Admin after the
+   deploy. The UI hides sections whose content is empty, so a release can go live before its
+   content. Do not run `seed:core` against production once content has been edited there: it
+   overwrites every record and global field it defines.
+4. Verify externally (see [External verification](#external-verification)).
 
 ## Updates
 

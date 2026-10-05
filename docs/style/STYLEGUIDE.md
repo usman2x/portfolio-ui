@@ -1,332 +1,162 @@
 # Style Guide
 
-This is the minimal visual reference for the current site.
+The visual system for every page. Tokens live in `src/styles/global.css`: palette and theme
+tokens at the top, the shared scale in the "Phase F" block, About-specific rules in "Phase G",
+and site-wide page rules in "Phase H".
 
----
+## Direction
 
-## Design Direction
+- Calm, content-led and minimal: typography, spacing and hierarchy carry the design.
+- One moment of emphasis per section; colour creates focus, not decoration.
+- Quiet is not flat: the homepage opens with large display type and concrete proof.
 
-- Blog-first, content-heavy, calm, and minimal.
-- Balance **readability (like Medium)** with **subtle brand expression**.
-- Let typography, spacing, and hierarchy carry most of the design.
-- Use color intentionally to create **focus and identity**, not decoration.
-- Aim for a quiet interface with **one moment of emphasis per section**.
-- Quiet does not mean flat: the homepage opening and proof points should feel confident, with large display type and concrete evidence before any content lists.
+## Themes
 
----
+- `sunset` (light, default) and `dark`, set as `data-theme` on `<html>`.
+- The first visit follows the operating-system preference; the header toggle overrides it and is
+  remembered in `localStorage` (`site-theme`).
+- Components use semantic tokens only, never raw hex values.
 
-## Theme System
+## Palette
 
-- Theme values live in `src/styles/global.css`.
-- Use semantic tokens, not raw hex values, in component styling.
-- Active themes:
+The palette is fixed. Contrast is met through how colours are used, never by changing values.
 
-  - `sunset` (light)
-  - `dark` (alternate)
+| Token | sunset | dark |
+| --- | --- | --- |
+| `--color-primary` / `--brand-primary` | `#E97A3C` | `#F19A64` |
+| `--color-secondary` | `#F2B38A` | `#BF8F72` |
+| `--color-accent` | `#6F8798` | `#8EA8BB` |
+| `--bg-page` | `#F7F3EE` | `#171514` |
+| `--bg-card` | `#FFFFFF` | `#221F1D` |
+| `--text-main` | `#2F2F2F` | `#F7F3EF` |
+| `--text-muted` | `#6B6B6B` | `#D1C8C1` |
+| `--border-default` | `#C9C3BD` | `#3D3733` |
 
-- The initial theme follows the visitor's operating-system preference. A navigation-bar toggle lets the visitor override it, and that choice is remembered locally.
+Derived tokens:
 
----
+- `--brand-text`: main text in sunset, primary in dark. Use it for text or rings that should carry
+  brand emphasis.
+- `--on-brand`: label colour on filled primary buttons.
+- `--bg-brand-soft` (8% primary) and `--bg-brand-soft-strong` (14%): tinted band and portrait
+  offset block.
+- `--hairline`: `color-mix(--border-default 70%, transparent)` in sunset, `--border-default` in dark.
+- Inverse closing surface: `--surface-inverse` (`#2F2F2F` / `#221F1D`), `--on-inverse`,
+  `--on-inverse-muted` (`#D1C8C1`), `--inverse-line`.
 
-## Color Palette
+### Contrast (required)
 
-Default `sunset` theme:
-
-- Primary: `#E97A3C`
-- Secondary: `#F2B38A`
-- Accent: `#6F8798`
-- Page background: `#F7F3EE`
-- Card background: `#FFFFFF`
-- Main text: `#2F2F2F`
-- Muted text: `#6B6B6B`
-- Border: `#C9C3BD`
-
-### Derived Surface Tokens (Required)
-
-Use soft tinted backgrounds to introduce subtle visual structure:
-
-- `--bg-brand-soft`: rgba(233, 122, 60, 0.08)
-- `--bg-brand-soft-strong`: rgba(233, 122, 60, 0.14) (rare use)
-- `--bg-accent-soft`: rgba(111, 135, 152, 0.08)
-
-These should be used for:
-
-- Section separation
-- Hero or intro surfaces
-- Subtle emphasis blocks
-
----
-
-## Color Usage Rules
-
-- Use `--text-main` and `--text-muted` for most of the interface.
-- Use `--brand-primary` for:
-
-  - Links
-  - Active states
-  - One key emphasis per section
-
-- Use `--brand-accent` for:
-
-  - Tags
-  - Secondary emphasis
-  - Contrast against warm primary areas
-
-- Keep backgrounds mostly neutral, but introduce **soft tinted sections** for rhythm.
-- Avoid large areas of fully saturated brand color.
-- Borders should remain subtle and structural.
-
-### Contrast (Required)
-
-The palette is fixed. Contrast is met through how each color is used, never by changing palette values.
-
-- Every text/background pair meets WCAG 2.2 AA: `4.5:1` for body and small text, `3:1` for large text (24px, or 19px bold), UI boundaries, and focus indicators.
-- Sunset primary `#E97A3C` measures 2.6:1 on the page background, so in the light theme it is used for fills, underlines, borders, active indicators, and tints, not for text. Text that should carry brand emphasis uses `--brand-text` (main text in light, primary in dark, where it measures 8.3:1).
-- Filled primary buttons use `--on-brand`: main text `#2F2F2F` on `#E97A3C` (4.66:1) in light; page background on primary in dark (8.3:1). Hover blends the primary toward the secondary so the label keeps contrast.
-- Muted text `#6B6B6B` passes on the page and cards but not on the 8% brand tint (4.48:1); copy inside tinted containers uses main text.
-- Accent `#6F8798` is for tag and structural accents, not small text (3.4:1).
-- Focus rings use `--brand-text` at 3px.
-- Verify new color pairs with a contrast calculation before merging, in both themes.
-
-### Emphasis Rule (Core Principle)
-
-Each section should have:
-
-- **One primary visual focus**
-- Color should support that focus, not compete across multiple elements
-
----
+- Every text pair meets WCAG 2.2 AA: 4.5:1 for body text, 3:1 for large text (24px, or 19px bold),
+  UI boundaries and focus indicators. Check new pairs in both themes before merging.
+- Sunset primary is 2.6:1 on the page, so in light mode it is only for fills, underlines, borders,
+  indicators and tints, never text or focus rings.
+- Muted text fails on the 8% tint in sunset (4.48:1); text on tinted bands uses main text.
+- Focus rings: 3px `--brand-text` on the page, cards and tinted band; `--color-primary` on the
+  inverse surface.
 
 ## Typography
 
-Three typefaces, each with one job. All are self-hosted by `next/font` in `src/pages/_app.js` (downloaded at build time, served from the site's own origin, no third-party requests at runtime) and exposed as `--font-heading`, `--font-body`, and `--font-mono`.
+Three faces, self-hosted by `next/font` in `src/pages/_app.js`, each with one job:
 
-| Role | Face | Weight | Used for |
-| --- | --- | --- | --- |
-| Display | Newsreader (serif, optical sizes) | 600 | homepage headline, page titles, case-study titles |
-| Section | Newsreader | 500 | section titles, article `h2`/`h3`, proof numbers |
-| Quote | Newsreader italic | 400 | testimonials |
-| Item | Inter | 600 | card, list, and option titles |
-| Body | Inter | 400 | running text, summaries, navigation, buttons |
-| Meta | IBM Plex Mono | 400–500 | dates, reading time, tags, eyebrows, labels |
-
-- Card and list titles use the sans, not the serif, so they read as items rather than sections.
-- Monospace is for metadata only; never set sentences or headings in it.
-- Uppercase is limited to short mono labels (eyebrows, dates).
-- Base font size: `18px`
-- Base line height: `1.7`
-- Long-form content width: `680px` (case-study body `760px`)
-
-Type scale (tokens in `global.css`, 1.25 ratio from the 16px root):
-
-| Token | Size | Use |
+| Role | Face | Use |
 | --- | --- | --- |
-| hero | `clamp(2.1rem, 3.8vw, 3.2rem)` | homepage headline only |
-| `--fs-h1` | `clamp(2.1rem, 3.8vw, 3rem)` | page titles |
-| `--fs-h2` | `clamp(1.65rem, 2.6vw, 2.25rem)` | section titles |
-| `--fs-h3` | `1.3rem` | card and list titles |
-| `--fs-lead` | `clamp(1.1rem, 1.4vw, 1.25rem)` | page intros and summaries |
-| body | `1.125rem` | running text |
-| `--fs-small` | `0.9375rem` | meta lines, labels |
-| `--fs-meta` | `0.8125rem` | tags, eyebrows; the minimum text size |
+| Display / section / quote | Newsreader (optical sizes) | page titles, section titles, proof values, quotes (italic) |
+| Body / item | Inter | running text, summaries, card titles (600), navigation, buttons |
+| Meta | IBM Plex Mono | eyebrows, dates, reading time, roles, labels (uppercase, 0.06em) |
 
-- Headings use `text-wrap: balance`; long titles are capped near `20–24ch`.
+`next/font` defines the face variables (`--font-serif`, `--font-sans`, `--font-mono-face`) on the
+`.font-root` wrapper. The role tokens (`--font-heading`, `--font-body`, `--font-mono`) are declared
+on both `:root` and `.font-root`; declared only on `:root` they silently fall back to Georgia and
+system fonts.
 
-Typography rules:
+### Scale
 
-- `h1` to `h4` default to the serif; item-level headings override to the sans
-- Do not load render-blocking font stylesheets from third-party origins
-- Prioritize readable paragraph rhythm over dense layouts
-- Prefer strong type hierarchy over heavy UI treatment
-- Keep headings clear and direct
+| Token | Size | Line height | Use |
+| --- | --- | --- | --- |
+| `--fs-meta` | 13px | 1.3 | mono labels, dates, roles, tags |
+| `--fs-ui` | 15px | 1.45 | navigation, buttons, captions, CTA links, footer |
+| `--fs-body` | 17px | 1.6 | summaries, card and section copy |
+| lead | 20px | 1.6 | page-intro and hero paragraphs |
+| `--fs-item` | 22px | 1.3 | card, service, role and article titles (Inter 600) |
+| prose headings | 24–28px | 1.25 | `h2` inside article and case-study bodies |
+| `--fs-quote` | 22–28px | 1.45 | testimonials (Newsreader italic) |
+| `--fs-section` | 30–40px | 1.12 | section titles (Newsreader 500) |
+| `--fs-stat` | 36–44px | 1 | proof values |
+| `--fs-page-title` | 36–48px | 1.08 | archive and utility page titles |
+| `--fs-display` | 40–60px | 1.04 | Home, About, case-study and article titles (Newsreader 600) |
 
-### Spacing Rhythm
+- Home and About are the most prominent pages; archive and utility pages (Projects, Articles,
+  Testimonials, Contact, 404, Thank-you) use `--fs-page-title`.
+- Headings use `text-wrap: balance`; display titles are capped at 21–22ch, paragraphs at 52–62ch.
+- Monospace never sets sentences or headings.
 
-- Headings should have more top margin than bottom margin
-- Paragraph spacing should support relaxed reading
-- Maintain consistent vertical rhythm across sections
-- Interactive targets should be at least `44px` on touch layouts. Primary homepage actions use a `48px` minimum height.
-- Every animated transition must respect `prefers-reduced-motion`.
+## Spacing
 
----
+- 8px grid (4 and 12 allowed for tight pairs).
+- `--section-gap` (80–128px) between sections, always larger than the space inside a section.
+- Page top: `clamp(3rem, 7vw, 6rem)` above the first heading on every page.
+- Section heading to content: 40–48px. Inside an item: 8px meta→title, 12px title→summary,
+  16px summary→outcome.
+- Every page ends a full `--section-gap` above the closing section.
+- Container: `.container`, 1120px max including 20px side padding (15px on phones). Every section
+  shares this edge.
 
-### Homepage scale and surfaces
+## Surfaces
 
-The homepage uses a reduced scale (tokens in the "Phase F" block of `global.css`; details in
-`docs/pages/HOMEPAGE_REDESIGN.md`):
-
-- Sizes: `--fs-meta` 13px, `--fs-ui` 15px, `--fs-body` 17px, lead 20px, `--fs-item` 22px,
-  `--fs-quote`, `--fs-section`, `--fs-stat`, `--fs-display` (fluid). Line heights 1.04 / 1.12 /
-  1.3 / 1.45 / 1.6.
-- Spacing on an 8px grid; `--section-gap` (80–128px) between sections, always larger than the
-  space inside a section.
-- No shadows on homepage content; 1px `--hairline` borders that warm toward `--brand-primary` on
-  hover.
-- Surfaces: the page, the services band (`--bg-brand-soft` with white cards and hairlines; the 8%
-  tint alone is only 1.08:1 against the page), and the inverse closing surface
-  (`--surface-inverse`, `--on-inverse`, `--on-inverse-muted`, `--inverse-line`, palette values
-  only) shared by the book-call section and the footer. Focus rings on the inverse surface use
-  `--color-primary`.
-- One orange primary button per view: the header's "Book a call" is outlined.
-- Focus rings on the page and the services band use `--brand-text`; `--brand-primary` is only
-  2.6:1 on the sunset page, below the 3:1 minimum for focus indicators.
-- Monospace is for short labels and dates only. Long proof values (e.g. `10% → 80%`) may wrap
-  on phones rather than overflow.
-- Font role tokens (`--font-heading`, `--font-body`, `--font-mono`) are declared on both `:root`
-  and `.font-root`, because next/font defines the face variables on `.font-root`; declared only
-  on `:root`, they silently fall back to Georgia and system fonts.
-
-### Site-wide page scale
-
-Every page uses the homepage tokens ("Phase H" block of `global.css`):
-
-- **Page intro:** optional mono eyebrow, title, lead paragraph (20px muted, max 56ch),
-  left-aligned, with About's top space (`clamp(3rem, 7vw, 6rem)`). No centred intros.
-- **Title sizes:** Home and About use `--fs-display`; case studies and articles use
-  `--fs-display`; archive and utility pages (Projects, Articles, Testimonials, Contact, 404,
-  Thank-you) use `--fs-page-title` (36–48px) so Home and About stay the most prominent.
-- **Headings:** page sections `--fs-section`; card and item titles `--fs-item` (Inter 600);
-  headings inside article/case-study prose 24–28px.
-- **Body and meta:** body `--fs-body`; dates, reading time, roles and labels in mono `--fs-meta`.
-- **Surfaces:** no shadows; cards and media are one 1px `--hairline` with 16px corners. Project
-  cards have no outer box (same anatomy as homepage selected work).
-- **Buttons:** 44px tall, 15px, 8px corners; 52px only for the hero, About intro and closing CTAs.
-  One orange primary per view: secondary actions (share, back to home, load more) are outlined.
-- **Back links:** underlined text links ("Back to all projects", "Back to all articles").
-- **Spacing:** each page ends a full `--section-gap` above the closing section.
+- No box shadows anywhere.
+- Cards and media: one 1px `--hairline`, 16px corners. Hover warms the border toward
+  `--brand-primary`; media may lift 3px on fine pointers only.
+- Three surfaces besides the page:
+  - **Tinted band** (`--bg-brand-soft`, full-bleed, hairlines top and bottom): homepage services
+    and the About testimonial. Cards on it are `--bg-card`.
+  - **Inverse closing surface**: the book-call section and footer, site-wide.
+- No gradients or large saturated blocks.
 
 ## Components
 
+### Page intro
+
+Optional mono eyebrow, title, then a 20px muted lead (max 56ch), left-aligned. Used by Projects,
+Articles, Testimonials, Contact, 404 and Thank-you (`.page-intro`). Home, About, case studies and
+articles have their own intros with the same rhythm.
+
 ### Buttons
 
-- Use:
-
-  - `.theme-btn-outline` as default
-  - `.theme-btn-primary` only for key actions (hero, main CTA)
-- Minimum height `40px`, and `44px` on touch (`pointer: coarse`)
-
-- Buttons should feel functional, not promotional
-- Avoid multiple competing button styles in one section
-
-### Cards
-
-- Use `.card` only when grouping improves scanning
-- Avoid unnecessary card usage
-- Featured cards may:
-
-  - Use subtle brand border accents
-  - Slight background variation on hover
+- `.theme-btn-primary` (filled) and `.theme-btn-outline`: 44px tall, 15px, 8px corners.
+- Large, 52px / 16px / 10px corners: hero, About intro and closing CTAs only.
+- One orange primary per view. Secondary actions (header "Book a Call", share, load more, back to
+  home) are outlined.
+- Press feedback `scale(0.97)`, removed under reduced motion.
 
 ### Links
 
-- Inline and navigation links: `--brand-primary` or text color, underline revealed on hover/focus
-- Call-to-action text links (`.text-link-cta`: "Read more", "All articles", "View case study"): `--text-main` with a persistent 2px `--brand-primary` underline, so they are identifiable without relying on color (WCAG 1.4.1)
-- Keep visually understated but clearly identifiable
-- Use a left-to-right underline transition in the primary color
-- Keep hover underlines aligned to the link text itself, not the full row or container width
+- `.text-link-cta`: main text with a persistent 2px `--brand-primary` underline ("All articles",
+  "View case study", back links), identifiable without colour.
+- Navigation links reveal a primary underline on hover and focus; the active page keeps it.
+- Back links are CTA links: "Back to all projects", "Back to all articles".
 
 ### Tags
 
-- Background: `--bg-accent-soft`
-- Text: `--brand-accent`
-- Keep compact and quiet
+Pill chips: card background, muted mono text, hairline border. Archive and detail pages only; the
+homepage shows no tags. Tags are plain words, never prefixed with `#`.
 
----
+### Cards in use
 
-## Layout Rules
+- Project card: no outer box; image, role, title, summary, tags, CTA.
+- Article card (archive): hairline box with meta, title, description, tags, CTA, optional image.
+- Homepage article: hairline-separated row link.
+- Service card: `--bg-card` box on the tinted band; the whole card is a link.
+- Testimonial card (archive): hairline box; on Home and About the quote sits unboxed.
 
-- Keep section spacing consistent and generous
-- Prefer vertical flow over complex multi-column layouts
-- Use fewer containers and more whitespace
-- Prefer spacing over divider lines between sections
-- Use **alternating background surfaces** for section separation:
+## Motion
 
-  - `--bg-page`
-  - `--bg-brand-soft`
+- Animate only `transform` and `opacity`, at most 300ms, with the easing tokens in `global.css`.
+- Hover movement only under `@media (hover: hover) and (pointer: fine)`.
+- Under `prefers-reduced-motion: reduce` movement is removed; short colour changes remain.
+- The reading progress bar updates directly with `requestAnimationFrame`, without transitions.
 
-- Keep navigation and footer visually quiet
-- Show the CMS-configured site logo and the light/dark theme control in the top navigation.
-- Header and footer may use a subtle full-width structural divider line to read as site chrome rather than page content
-- Footer should read as a restrained full-width closing section through spacing and soft tone, not through heavy card treatment
-- Favor rhythm and scanning over density
+## Accessibility
 
----
-
-## Section Design Guidelines
-
-### Section Headings
-
-- Default to one visible heading per section
-- Avoid eyebrow + title + descriptive line stacks for standard content sections
-- Reserve extra heading lines for true page-intro contexts only
-- Let supporting copy read like body text, not a second or third heading
-
-### Hero Section
-
-- Sit directly on `--bg-page`; do not wrap the hero in a bordered, shadowed card
-- Lead with the headline: display serif at `clamp(2.1rem, 3.8vw, 3.2rem)`, tight line height, balanced wrapping
-- The eyebrow uses a darkened `--brand-accent` (not `--brand-primary`) so the primary color stays reserved for the main action
-- Show specialties as a quiet inline list separated by middots, not as pill chips
-- The portrait sits beside the copy on desktop with one offset `--bg-brand-soft-strong` block behind it; this is the section's single decorative moment
-- On mobile the portrait, name, and title collapse into a compact row above the headline
-- Avoid gradients and large saturated color blocks
-
-### Proof Strip
-
-- Follows the hero on the homepage, separated by a single structural rule aligned to the content edge
-- Up to four stats: large serif value in `--text-main`, short muted label beneath
-- Company names render as quiet text wordmarks with a small uppercase label; no logos unless licensed and consistent
-- Every stat must be backed by a case study or work-experience entry
-
-### Content Sections
-
-- Default to neutral backgrounds
-- Introduce tinted backgrounds sparingly for contrast
-- Ensure clear entry point for the eye
-- On information-dense detail pages, use typography and section rhythm as the main separator before adding stronger surfaces
-
-### Featured Elements
-
-- Use subtle emphasis:
-
-  - border accents
-  - soft background shifts
-
-- Avoid heavy shadows or loud styling
-- On the homepage, featured project previews should feel lighter than archive cards and rely on consistent image sizing plus spacing over card borders
-
----
-
-## Do / Don't
-
-### Do
-
-- Use theme tokens from `global.css`
-- Use color to guide attention, not decorate
-- Maintain one clear focal point per section
-- Preserve consistency across components
-- Use soft surfaces to create structure
-- Keep UI quiet so content leads
-- Use imagery in project previews and project detail pages when available
-
-### Don't
-
-- Introduce random new colors outside the theme system
-- Hardcode palette values inside components
-- Apply brand color to multiple competing elements
-- Overuse cards, borders, or visual containers
-- Use divider lines when spacing can carry the separation
-- Use gradients, heavy shadows, or loud UI by default
-- Let portfolio elements overpower readability
-- Keep everything neutral to the point of flatness
-
----
-
-## Mental Model (Reference)
-
-- Typography → carries content
-- Spacing → creates clarity
-- Color → creates focus
-
-If everything is minimal, nothing stands out.
-Use restraint, but allow intentional emphasis.
+- Semantic landmarks, one `h1` per page, a visible focus ring on every interactive element.
+- Touch targets at least 44px; form inputs at least 16px.
+- No horizontal scroll at 390px.
+- Verify changes at 1440px and 390px in both themes, with the keyboard and with reduced motion.

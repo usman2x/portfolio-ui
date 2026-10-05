@@ -6,14 +6,15 @@
 - When a UI change requires a Payload field or API contract change, also use `../portfolio-cms/.agents/skills/develop-portfolio-cms/SKILL.md` and update both repositories together.
 - Run the CMS on port `3001` before starting or building CMS-backed UI routes.
 
-## Planning Docs
-- Keep planning, architecture, and page blueprint docs under `docs/`, not the repo root.
+## Docs
+- Keep docs under `docs/`; `docs/README.md` maps them. Every doc describes the current implementation, from features to deployment; remove or rewrite docs that stop matching the code.
 - Before implementing page, layout, or navigation changes, read the relevant docs in this order:
   1. `docs/style/STYLEGUIDE.md`
   2. `docs/structure/STRUCTURE.md`
   3. page-specific doc in `docs/pages/`
   4. `docs/seo/SEO_URLS.md`
   5. `docs/content/CONTENT_CONFIGURATION.md`
+- For CMS data changes also read `docs/CMS_INTEGRATION.md`; for releases, `docs/OCI_DEPLOYMENT.md` ("Release flow").
 
 ## Implementation Rules
 - Treat the docs in `docs/` as the active source of truth for structure, style, SEO, and content modeling.

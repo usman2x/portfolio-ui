@@ -9,13 +9,14 @@ Create deliberate, accessible interfaces that follow the repository's design and
 
 ## Establish context
 
-1. Read `AGENTS.md` and the relevant source files.
+1. Read `AGENTS.md`, `docs/README.md` (documentation map), and the relevant source files.
 2. For page, layout, navigation, or visual work, read these documents in order:
    - `docs/style/STYLEGUIDE.md`
    - `docs/structure/STRUCTURE.md`
-   - the relevant file under `docs/pages/`
+   - the page doc: `docs/pages/HOME_PAGE.md`, `ABOUT_PAGE.md`, `PROJECTS_PAGE.md`, `ARTICLES_PAGE.md`, `TESTIMONIALS_PAGE.md` or `CONTACT_PAGE.md`
    - `docs/seo/SEO_URLS.md`
    - `docs/content/CONTENT_CONFIGURATION.md`
+   - `docs/CMS_INTEGRATION.md` when page data changes
 3. Read the relevant Next.js 16 documentation under `node_modules/next/dist/docs/` before relying on framework conventions or APIs.
 4. Inspect the CMS adapter in `src/lib/cms.js` before changing CMS-backed page data.
 5. Preserve unrelated working-tree changes.
@@ -38,6 +39,19 @@ Apply these craft rules, which fit the project:
 - Gate hover-only movement behind `@media (hover: hover) and (pointer: fine)`.
 - Under `prefers-reduced-motion: reduce`, remove movement but keep short color and opacity transitions.
 - Use `dvh` instead of `vh` for viewport heights, suppress the tap highlight flash, and keep form inputs at `16px` or larger.
+
+## Apply the design system
+
+The full rules are in `docs/style/STYLEGUIDE.md`; these are the ones most often broken:
+
+- **Tokens:** use the shared scale (`--fs-meta`, `--fs-ui`, `--fs-body`, `--fs-item`, `--fs-section`, `--fs-page-title`, `--fs-display`, `--section-gap`, `--hairline`, the inverse-surface tokens). Do not introduce one-off font sizes, radii or colours.
+- **CSS placement:** `src/styles/global.css` is layered: base and legacy rules, then "Phase F" (shared scale, homepage, closing section), "Phase G" (About), "Phase H" (site-wide page rules). Put new page rules in the relevant block or a new labelled block at the end, and delete rules made obsolete by the change rather than overriding them.
+- **Titles:** `--fs-display` for Home, About, case studies and articles; `--fs-page-title` for archive and utility pages, using the shared `.page-intro` (eyebrow, title, 20px lead, left-aligned).
+- **Surfaces:** no shadows; cards and media are one 1px `--hairline` with 16px corners. Only two tinted or inverse surfaces exist (the `--bg-brand-soft` band and the closing section); text on the band uses main text, never muted.
+- **Buttons:** 44px / 15px / 8px corners; 52px only for hero, About intro and closing CTAs. Exactly one orange primary per view; secondary actions are outlined.
+- **Focus:** `--brand-text` rings on the page and band (sunset primary is only 2.6:1), `--color-primary` on the inverse surface.
+- **Fonts:** role tokens are declared on both `:root` and `.font-root`; if headings render in Georgia, that declaration has been broken.
+- **Layout:** every page starts `clamp(3rem, 7vw, 6rem)` below the header and ends a full `--section-gap` above the closing section; nothing may scroll horizontally at 390px (check pseudo-elements and long unbreakable values too).
 
 ## Make UI/UX decisions
 
@@ -64,11 +78,18 @@ Apply these craft rules, which fit the project:
 
 1. Run the narrowest relevant checks, then `npm run build` for changes that affect rendering, routing, data loading, or configuration.
 2. Keep the CMS running on port `3001` with seeded content when verifying CMS-backed routes.
-3. Inspect affected pages at representative mobile and desktop widths.
-4. Exercise keyboard navigation and visible focus states.
-5. Check empty, long-copy, and missing-optional-media cases when the changed component supports them.
-6. Confirm the browser console has no new errors and internal links honor the configured path prefix.
-7. Report what was verified and any validation that could not be run.
+3. Inspect affected pages at 1440px and 390px, in the `sunset` and `dark` themes (`data-theme` on `<html>`, persisted as `site-theme` in `localStorage`). Compare against `docs/design/*.reference.html` where one exists.
+4. Measure rather than eyeball when consistency matters: computed font family, size and weight, distances from the header, horizontal overflow (`scrollWidth` at 390px), and box shadows. Headless Chrome over the DevTools protocol works when no browser tooling is available.
+5. Walk every page with Tab and confirm a visible ring with at least 3:1 contrast against the background behind each control, including on the tinted band and the inverse closing surface.
+6. Emulate `prefers-reduced-motion: reduce` and force hover/active states to confirm that movement is removed.
+7. Check empty, long-copy, and missing-optional-media cases when the changed component supports them; sections fed by optional CMS fields must disappear cleanly when empty.
+8. Confirm the browser console has no new errors (Next.js dev-overlay HMR messages are dev-only) and internal links honor the configured path prefix.
+9. Report what was verified and any validation that could not be run.
+
+Dev-server pitfalls:
+
+- If CSS edits do not appear while JavaScript updates, Turbopack's dev cache is stale: stop the server, `rm -rf .next/dev`, restart `npm run develop`. Running `npm run build` alongside the dev server makes this more likely.
+- `src/lib/content.js` memoizes the posts request for the life of the process; after a CMS outage, restart, or migration, restart the UI dev server before trusting a 500.
 
 ## Coordinate CMS contract changes
 
@@ -77,5 +98,5 @@ When the UI needs a new or changed Payload field:
 1. Define the user-facing behavior and fallback.
 2. Update the CMS schema, access policy, migration, types, and seed data in `portfolio-cms` using its `develop-portfolio-cms` skill.
 3. Update the UI data normalization and rendering.
-4. Update integration or content-model documentation in both repositories.
+4. Update `docs/CMS_INTEGRATION.md`, `docs/content/CONTENT_CONFIGURATION.md`, the page doc, and `../portfolio-cms/docs/CONTENT_MODEL.md`.
 5. Verify the change against an actually migrated and seeded local CMS.

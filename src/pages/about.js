@@ -12,7 +12,7 @@ import {
   fetchWorkExperience,
 } from "../lib/cms"
 
-// Order (docs/pages/ABOUT_REDESIGN.md): intro + video, core strengths, work experience,
+// Order (docs/pages/ABOUT_PAGE.md): intro + video, core strengths, work experience,
 // one testimonial on the tinted band, then the shared closing section from Layout.
 const AboutPage = ({ aboutPage, siteSettings, workExperience, sharedLabels }) => {
   const [lead, ...rest] = aboutPage.summary

@@ -1,6 +1,6 @@
 # Portfolio UI
 
-Next.js portfolio site for Muhammad Usman. Page copy is configured locally, while all writings and project case studies are fetched from Payload CMS during the build.
+Next.js portfolio site for Muhammad Usman. All page copy, articles, case studies, services, testimonials and work history are fetched from Payload CMS (`../portfolio-cms`) during the build, and the site is exported as static files.
 
 ## Requirements
 
@@ -62,15 +62,15 @@ Copy `.env.example` to `.env.local` for local development. Do not commit `.env.l
 
 `PAYLOAD_API_URL` is required. Builds fail when the CMS is unavailable so stale or incomplete content cannot be deployed silently.
 
-Use `NEXT_PUBLIC_GA_TRACKING_ID` for Google Analytics. `NEXT_PUBLIC_CMS_URL` is the browser-visible CMS base URL used by quote submissions.
+Use `NEXT_PUBLIC_GA_TRACKING_ID` for Google Analytics. `NEXT_PUBLIC_CMS_URL` is the browser-visible CMS base URL used for media and contact submissions.
 
 ## Content Model
 
-- Page and shared content: Payload CMS globals and collections
-- Local development fixtures: `portfolio-cms/scripts/seed-data.mjs`
-- Writings: published Payload posts without the `case-study` tag
-- Projects: published Payload posts tagged `case-study`
-- Testimonials: published and featured Payload testimonials
+- Page and shared content: Payload CMS globals
+- Articles: published posts without the `case-study` tag
+- Projects: published posts tagged `case-study`
+- Services, testimonials and work experience: their Payload collections
+- Baseline content: `portfolio-cms/scripts/seed-data.mjs`
 - Public assets: `public/`
 
-The Payload API is the only source of writing and project content.
+See `docs/README.md` for the full documentation map.

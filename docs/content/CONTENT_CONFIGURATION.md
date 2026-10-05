@@ -1,44 +1,56 @@
-# Content Configuration Guide
+# Content Configuration
 
-The UI owns layout, interaction, routes, and presentation. Payload CMS owns all publishable text, links, option lists, ordering, and page metadata.
+The UI owns layout, interaction, routes and presentation. Payload CMS owns all publishable text,
+links, option lists, ordering and page metadata. Components never hardcode business copy; the few
+fixed UI labels ("Download CV", "Load more articles", "Back to all articles") are interface text.
 
-## CMS content model
+Schema and access rules: `../portfolio-cms/docs/CONTENT_MODEL.md`. How the UI fetches and
+normalizes content: `docs/CMS_INTEGRATION.md`.
 
-### Globals
+## Globals
 
-- **Site Settings** — identity, navigation logo, portrait, contact details, social links, navigation, footer, and book-call CTA.
-- **Home Page** — hero, specialty cues (stored as `trustChips`), proof stats and company names, section labels, the Articles section (title, one-line description, `All articles` label, count), featured projects, and testimonial preview settings. Site Settings `name`, `portrait`, `professionalTitle`, `socialLinks`, and `email` also feed the `Written by` card on every article. `postHeroLine` is retained for compatibility but is no longer rendered.
-- **About Page** — introduction, summary (the first paragraph is the lead), introduction video URL/copy (the video eyebrow is no longer shown), strengths, experience section label, and an optional `featuredTestimonial` (relationship to Testimonials; leave empty to hide the About testimonial). The About page shows the first two highlights of each Work Experience role, so order highlights with measurable results first.
-- **Testimonials Page** — testimonial archive SEO and introduction copy.
-- **Contact Page** (stored in the legacy `quote-page` global) — page copy, process, form labels/placeholders, intent and engagement options, and submission messages.
-- **Archive Settings** — article/project archive titles, centered introductions, SEO metadata, pagination size, and CTA labels. (`filterTitle`, `filterDescription`, and `writingCtaLabel` are no longer rendered.)
-- **Project Template** — shared case-study labels and navigation copy.
-- **System Pages** — not-found and thank-you copy.
+| Global | Fields the UI renders |
+| --- | --- |
+| **Site Settings** | `name`, `professionalTitle`, `logo`/`logoPath`/`logoAlt`, `portrait`/`portraitPath`/`portraitAlt`, `email`, `meetingLink` (every "Book a call"), `resumeLink` (CV links), `socialLinks`, `navigation` (`isPrimary` = outlined header button), `footerDescription`, `bookCall` (closing section), `defaultSeoTitle`, `defaultSeoDescription`. Also feeds the article "Written by" card. |
+| **Home Page** | SEO; hero `eyebrow`, `headline`, `supportingText`, `primaryCtaLabel`, `secondaryCtaLabel`, `primaryCtaNote`; proof `proofTitle`, `proofCompanies`, `proofStats`; work `projectsTitle`, `projectsArchiveLabel`, `featuredProjects` (max 3 shown); services `servicesTitle` (empty hides the section), `servicesDescription`, `servicesLimit`; testimonial `testimonialsTitle`, `testimonialsArchiveLabel`, `testimonialLimit`; articles `writingsTitle`, `writingsDescription`, `writingsArchiveLabel`, `writingsLimit`. |
+| **About Page** | SEO, `eyebrow`, `title`, `summary` (first paragraph is the lead), `video` (`title`, `description`, `url`, `transcript`, `transcriptLabel`), `strengthsTitle`, `strengths`, `experienceTitle`, `featuredTestimonial` (optional; empty hides the About testimonial). |
+| **Testimonials Page** | SEO, `eyebrow`, `title` (also the About testimonial heading), `description`. |
+| **Contact Page** (slug `quote-page`) | Page copy, process, alternatives, form labels and placeholders, `helpTypes` (the four intents), engagement, timeline and budget options, contact methods, submission and success messages. |
+| **Archive Settings** | `writingsTitle`, `writingsDescription`, `writingsSeoDescription`, `filterTitle`, `filterDescription`, `postsPerPage`, `readArticleLabel`, `projectsTitle`, `projectsDescription`, `projectsSeoDescription`. |
+| **Project Template** | `backLabel`, `stackLabel`, `linkLabel`, `defaultLinkLabel`, `linkDescription`, `storyTitle`, `previousLabel`, `nextLabel`. |
+| **System Pages** | `notFoundTitle`, `notFoundMessage`, `thankYouTitle`, `thankYouMessage`, `homeButtonLabel`. |
 
-### Collections
+Stored but not rendered: Site Settings `shortLabel`; Home Page `postHeroLine`,
+`testimonialsEyebrow`, `testimonialsDescription`; About Page `video.eyebrow`; Archive Settings
+`writingCtaLabel`.
 
-- **Posts** — writings and project case studies. A writing can be native or an external Medium, LinkedIn, or other article. External entries retain their title, excerpt, date, tags, and optional image in the shared archive but link to the original publication instead of generating a local detail page. A published post tagged `case-study` is a project; its optional role and ordered Media gallery enrich the preview and detail page while the rich-text body holds the full narrative.
-- **Work Experience** — chronological roles, summaries, links, and highlights. `sortOrder` controls display order.
-- **Testimonials** — recommendation copy, attribution, source, featured state, and display order.
-- **Media** — reusable CMS images and files.
-- **Contact Requests** (stored in the legacy `quote-requests` collection) — private feedback, service, consultancy, and general-message submissions visible only to administrators.
+## Collections
+
+| Collection | Used for |
+| --- | --- |
+| **Posts** | Articles (no `case-study` tag) and projects (tagged `case-study`). Articles are `native` (local page) or `external` (opens the source). Projects add `projectRole`, `projectOutcome` (homepage "Outcome:" line) and an ordered `projectGallery`. |
+| **Services** | Homepage "Ways to work together": `title`, `summary`, `highlights`, `contactIntent` (must match a Contact `helpTypes` value), `ctaLabel`, `showOnHome`, `sortOrder`, `status`. |
+| **Work Experience** | About and `/experience/` timeline: `company`, `role`, `period` (contains "Present" for the current role), `location`, `website`, `summary`, `highlights` (the first two are shown; put measurable results first), `sortOrder`, `status`. |
+| **Testimonials** | `name`, `role`, `company`, `relationship`, `quote`, `sourceLabel`, `sourceUrl`, `featured` (homepage), `sortOrder`, `status`. |
+| **Tags** | Article and project tags; `slug` drives `/blog/?tag=`. |
+| **Media** | Images and files; public only when `isPublic`. |
+| **Contact Requests** (slug `quote-requests`) | Private form submissions, admin-only. |
 
 ## Editorial workflow
 
-1. Edit the relevant global or collection record in Payload.
-2. Save/publish it and preview through the local UI.
-3. Rebuild or redeploy the statically exported UI so the published site receives the change.
+1. Edit a global or collection record in Payload Admin (`https://cms.themuhammadusman.com/admin`).
+2. Save or publish. Published posts, services, testimonials, work experience and every global
+   trigger the UI rebuild webhook; the static site updates when the build finishes (a minute or
+   two). Admins can also use **Rebuild UI** on the dashboard.
+3. Locally, restart `npm run develop` in `portfolio-ui` to pick up CMS changes.
 
-The UI fetches CMS content during `getStaticProps`. Components should not import local content JSON or Markdown, and business copy should not be added directly to JSX.
+Build-time CMS reads use bounded timeouts and retry transient failures; persistent failures stop the
+build so stale or incomplete content is never published.
 
-The Google Calendar destination is maintained in **Site Settings → Meeting Link**. The header, homepage, footer, and book-call band use this single value. The About video accepts standard `youtube.com` or `youtu.be` URLs in **About Page → Introduction video → URL**, with transcript copy stored beside it.
+## Seed data
 
-Published content changes trigger the UI deploy webhook configured through `UI_DEPLOY_WEBHOOK_URL`. Posts, testimonials, work experience, and website globals all participate so the static UI does not remain stale after an editorial update.
-
-Build-time CMS reads use bounded timeouts and retry transient failures. Persistent CMS failures still stop the build so stale or incomplete content is never silently published.
-
-## Development data
-
-Run `npm run seed:core` in `portfolio-cms` with `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` configured when setting up an environment. It idempotently creates or updates the shared project case studies, their tags, and testimonials through Payload REST endpoints.
-
-Use `npm run seed:dev` locally to add the blog, page, and experience fixtures as well. Canonical case-study Markdown and full-size project images live with the CMS seed inputs. The core seed uploads images through Payload, which stores originals and generated thumbnails in PostgreSQL and attaches ordered galleries to projects. Database migrations are reserved for schema changes.
+`portfolio-cms/scripts/seed-data.mjs` is the content baseline. `npm run seed:core` upserts it:
+records are matched by slug (posts, tags), name (testimonials), company (work experience) or title
+(services) and overwritten with the seed values; globals receive every field the seed defines. It
+never deletes records it does not define. Use it to set up environments; once production has been
+edited in the admin, change content there instead of re-running the seed.

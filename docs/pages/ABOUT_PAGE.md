@@ -1,97 +1,71 @@
-# About Page Blueprint
+# About Page
 
-This document defines the structure of the About page.
+Route: `/about/` · Page: `src/pages/about.js` · Visual reference: `docs/design/about-redesign.reference.html`
 
-It focuses on layout, section hierarchy, and content responsibilities.
+For a prospective client the page answers, in order: who is this person (intro and video), what do
+they bring (core strengths), have they done it before (work experience), what do collaborators say
+(one testimonial), and what is the next step (intro buttons and the shared closing section).
 
-## Goal
-- Avoid repeating the landing page intro/identity block
-- Explain what kind of work you do through summary, experience, and strengths
-- Show experience progression in a scannable chronological format
-- Keep conversion clear without repeating footer-level credentials
+## Section order
 
-## About Page Order
-1. Extended summary with introduction video
-2. Chronological work experience (scroll-drawn timeline)
-3. Strengths / focus areas
-4. Book a call block
-5. Footer
+| # | Section | Component | Surface |
+| --- | --- | --- | --- |
+| 1 | Header (About active) | `Header.js` | page |
+| 2 | Intro: eyebrow, title, lead, paragraphs, buttons, video | `about.js`, `AboutVideo.js` | page |
+| 3 | Core strengths | `about.js` | page |
+| 4 | Work experience | `WorkExperienceTimeline.js` | page |
+| 5 | Testimonial | `Testimonials.js` (`variant="home"`) | full-bleed `--bg-brand-soft` band with hairlines |
+| 6 | Closing CTA + footer | `BookCallSection.js`, `Footer.js` | inverse surface, site-wide |
 
-Credentials are handled globally in the footer and should not be duplicated as a dedicated About section.
+Sections are `--section-gap` apart. Styles live in the "Phase G" block of `src/styles/global.css`.
 
-## 1. Extended Summary
-Purpose:
-- Give a deeper written introduction
-- Clarify the kind of problems you solve
+## 2. Intro
 
-Rule:
-- Write in clear paragraphs, not bullet overload.
-- Pair the introduction with a responsive 16:9 video; never autoplay it.
-- Video eyebrow, title, description, and URL come from the Payload **About Page** global.
-- Load the YouTube iframe only after the visitor activates the poster.
-- Provide a CMS-managed transcript beneath the video.
-- The first summary paragraph reads as a lead. Header, copy, and video enter in
-  one short cascade on load (opacity only under reduced motion).
+- Eyebrow (mono meta) and title (`--fs-display`, line height 1.04, max 22ch) from **About Page**.
+- Below, a two-column flex-wrap row (48px / 80px gaps):
+  - Left: the first **Summary** paragraph as the lead (20px, main text, max 52ch); any further
+    paragraphs at `--fs-body` muted. Then "Book a call" (primary, 52px, Site Settings meeting
+    link) and "Download CV" (outline, Site Settings resume link). The primary label comes from
+    **Home Page → primaryCtaLabel**.
+  - Right: the introduction video as a figure: 16:9 YouTube poster (16px corners, hairline, no
+    card), then the title (17px 600), description (15px muted) and a "Read video transcript"
+    disclosure. Clicking the poster swaps in the `youtube-nocookie` player.
+- The video eyebrow field is not rendered.
 
-## 2. Chronological Work Experience
-Purpose:
-- Visualize career progression in a familiar and scannable format
+## 3. Core strengths
 
-Layout:
-- single column, reverse chronology, with a vertical rail on the left
-- one node per role on the rail and one card per role beside it
-- the rail fills with scroll progress; a node lights when the fill reaches it
-  and its card slides in once (highlights follow in a short stagger)
+- Grid `repeat(auto-fit, minmax(230px, 1fr))`, 40px / 32px gaps; no cards or accent bars.
+- Each item: 1px hairline top border, 24px padding-top, `01` index (mono, main text), title
+  (20px 600), description (`--fs-body` muted).
 
-Required card fields:
-- period
-- role and company
-- location
-- concise summary
-- 2 to 4 impact highlights
-- optional company link
+## 4. Work experience
 
-Rule:
-- Every role is readable without JS and under reduced motion: the rail renders
-  fully drawn and all cards are visible.
-- Reaching the page bottom counts as reaching every remaining role.
-- The same component renders `/experience/`.
+The same component renders `/experience/`, where its title is the page `h1`.
 
-## 3. Strengths / Focus Areas
-Purpose:
-- Help visitors scan your strongest areas quickly
+- Header row: section title and a "Download full CV" link (resume link).
+- Each role is a row (flex-wrap, 8px / 48px gaps), no card:
+  - Left column (220px): period (mono meta, `-` normalized to an en dash), company (17px 600,
+    links to the company website, underlined on hover), location (15px muted).
+  - Right column: 2px hairline left border as the rail, 40px left padding, 56px bottom padding
+    (0 on the last role). Title (`--fs-item`), summary (`--fs-body` muted, max 62ch), then the
+    first two highlights (17px main text with 8×2px `--brand-primary` dash markers).
+  - Node: a 12px circle on the rail at the title's top; filled `--brand-primary` for the current
+    role (period contains "Present"), page-coloured with a `--border-default` ring otherwise.
+- On phones the left column stacks above the rail column.
+- The rail is static: no scroll-drawn fill and no reveal animation.
+- Order each role's highlights in the CMS so the two with measurable results come first.
 
-Layout:
-- numbered cards (01, 02, ...) in an auto-fitting grid with a short brand
-  accent bar that extends on hover
+## 5. Testimonial
 
-Rule:
-- Keep this section scannable.
-- Cards cascade in once when the grid scrolls into view; no motion under
-  reduced motion.
+- Rendered only when **About Page → Featured testimonial** is set to a published testimonial.
+- Same two-column layout as the homepage testimonial, on the tinted band: the **Testimonials
+  Page** title with a "Read all testimonials" link on the left, the full quote on the right
+  (`--fs-quote` italic), avatar initial on `--bg-card`.
+- The caption adds the relationship after the role ("Former Software Development Manager ·
+  managed Muhammad"). Caption text uses main text on the band.
 
-## 4. Book a Call Block
-Purpose:
-- Convert trust into one concrete action
+## Content
 
-Required content order:
-- business proposition line
-- short subtitle
-- `Book a Call` button
-
-Rule:
-- Keep this as the final content band before the footer.
-
-## 5. Footer
-Purpose:
-- Keep navigation and engagement consistent across the site
-
-Should match the site-wide footer structure defined in `docs/pages/LANDING_PAGE.md`.
-
-## Recommended Content Sources
-- Payload **About Page** global
-- Payload **Work Experience** collection
-
-## Implementation Notes
-- Work experience should come from structured content, not hardcoded JSX.
-- Credentials should remain in the global footer icon row.
+**About Page** (eyebrow, title, summary, video, strengths, experience title, featured testimonial),
+**Work Experience** collection, **Testimonials Page** title, **Home Page** labels and **Site
+Settings** links. Field reference: `docs/content/CONTENT_CONFIGURATION.md`.

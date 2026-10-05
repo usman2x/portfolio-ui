@@ -14,6 +14,8 @@ The goal is to keep routing clean, human-readable, and stable as the site grows.
 - `/blog/<slug>/`
 - `/testimonials/`
 - `/contact/`
+- `/experience/`
+- `/thank-you/` (form completion)
 - `/quote/` as a legacy redirect only
 
 ## General Slug Rules
@@ -27,7 +29,8 @@ The goal is to keep routing clean, human-readable, and stable as the site grows.
 
 Rule:
 
-- Slugs should live in content files and be treated as stable identifiers.
+- Slugs live in Payload (posts and tags) and are stable identifiers; Payload blocks slug changes
+  after a post is published.
 
 ## Page-Level SEO Rules
 
@@ -57,19 +60,19 @@ Rule:
 - Title pattern:
   - `<Project Name> | Project Case Study`
 
-### Blog Archive
+### Articles Archive
 
 - URL: `/blog/`
 - Title pattern:
   - `Articles | Muhammad Usman`
 - Description should summarize article topics
 
-### Blog Detail
+### Article Detail
 
 - URL: `/blog/<slug>/`
-- Title should begin with article title
-- Description should come from post frontmatter
-- Only native CMS articles generate `/blog/<slug>/` pages. External writing entries link to their source URL and are excluded from local routes and the sitemap.
+- Title: the post's `seoTitle`, else its title
+- Description: the post's `seoDescription`, else its excerpt
+- Only native CMS articles generate `/blog/<slug>/` pages. External articles link to their source URL and are excluded from local routes and the sitemap.
 
 ### Contact Page
 
@@ -84,6 +87,29 @@ Rule:
 - Title pattern:
   - `Testimonials | Muhammad Usman`
 - Description should identify the recommendations as direct professional feedback
+
+### Experience
+
+- URL: `/experience/`
+- Title: About Page `experienceTitle`; description: About Page SEO description
+
+### System pages
+
+- 404 renders `noindex` and is excluded from the sitemap.
+- `/thank-you/` has no page-specific title or description and is currently included in the
+  sitemap.
+
+## Titles and metadata
+
+`src/components/seo.js` renders `<title>` as `<page title> | <Site Settings defaultSeoTitle>`,
+plus the description, Open Graph and Twitter tags, the canonical link and optional `noindex`.
+Detail pages honour a post's `canonicalUrl` and `noindex`; articles add `BlogPosting` JSON-LD.
+
+## Sitemap and robots
+
+`scripts/generate-sitemap.mjs` runs after `npm run build` (`postbuild`). It lists every exported
+HTML page under `NEXT_PUBLIC_SITE_URL` except 404 and `/quote/`, and writes `robots.txt` pointing
+to the sitemap. External articles have no local page, so they are never listed.
 
 ## Canonical Rules
 
@@ -100,16 +126,9 @@ Rule:
 
 ## Content Configuration Rule
 
-- SEO-critical fields should be stored in content:
-  - `title`
-  - `slug`
-  - `description`
-
-For project detail pages, also prefer:
-
-- `category`
-- `tags`
-- `cover`
+- SEO-critical fields live in Payload: page globals carry `seoTitle` and `seoDescription`; posts
+  carry `title`, `slug`, `seoTitle`, `seoDescription`, `canonicalUrl`, `noindex`, `ogImage` and
+  `coverImage`.
 
 ## URL Naming Preference
 

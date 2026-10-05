@@ -1,274 +1,77 @@
-# Structure Guide
+# Site Structure
 
-This document defines site structure, content hierarchy, and CTA flow.
-
-It is separate from `docs/style/STYLEGUIDE.md`, which defines visual language.
+Site map, shared layout and calls to action. Visual rules: `docs/style/STYLEGUIDE.md`. Page
+details: `docs/pages/`.
 
 ## Purpose
 
-- Make the website blog-first but still commercially credible.
-- Make it easy for a visitor to understand who you are, what you do, what you have worked on, and what action to take next.
-- Reduce generic navigation and replace it with clear pathways.
+Help a visitor quickly understand who Muhammad is, what he builds, the proof behind it, and how to
+start working together, while keeping the writing easy to find.
 
-## Core Site Sections
+## Routes
 
-- `Home`
-- `About`
-- `Projects` or `Case Studies`
-- `Articles`
-- `Testimonials`
-- `Contact Me`
+| Route | Page file | Doc |
+| --- | --- | --- |
+| `/` | `src/pages/index.js` | `pages/HOME_PAGE.md` |
+| `/about/` | `src/pages/about.js` | `pages/ABOUT_PAGE.md` |
+| `/experience/` | `src/pages/experience.js` | `pages/ABOUT_PAGE.md` (work experience) |
+| `/projects/`, `/projects/<slug>/` | `src/pages/projects/` | `pages/PROJECTS_PAGE.md` |
+| `/blog/`, `/blog/<slug>/` | `src/pages/blog/` | `pages/ARTICLES_PAGE.md` |
+| `/testimonials/` | `src/pages/testimonials.js` | `pages/TESTIMONIALS_PAGE.md` |
+| `/contact/` | `src/pages/contact.js` | `pages/CONTACT_PAGE.md` |
+| `/quote/` | `src/pages/quote.js` | legacy redirect to `/contact/` |
+| `/thank-you/` | `src/pages/thank-you.js` | system page |
+| 404 | `src/pages/404.js` | system page |
 
-## Homepage Structure
+Detail routes exist only for published native articles and published case studies.
 
-### 1. Identity Block
+## Shared layout (`src/components/Layout.js`)
 
-Purpose:
+Every page renders: skip link → `Header` → `<main id="main-content">` → `BookCallSection` (unless
+`showBookCall={false}`, used by Contact) → `Footer`.
 
-- Establish who you are immediately
-- Give a short, credible introduction
-- Route users to a deeper personal/professional page
+### Header
 
-Content:
+- Logo image and name linking to `/`; theme toggle; navigation from **Site Settings →
+  Navigation** with the active page underlined; the `isPrimary` item as an outlined button.
+- Below 768px the links collapse behind a menu button.
+- On article pages the reading progress bar sits on the header's bottom edge.
 
-- Name
-- Professional title
-- Portrait
-- 1 to 2 line introduction
-- Link to `/about`
+### Closing section
 
-Rule:
+One inverse surface (`--surface-inverse`) holding the book-call section and the footer, on every
+page.
 
-- The image/title block should feel like a clean personal entry point, not a heavy hero banner.
+- **Book-call section** (**Site Settings → Book Call**): title and paragraph on the left; the
+  primary "Book a Call" button (meeting link) and an "or send a message" link to `/contact/` on
+  the right, aligned to the bottom. Left-aligned.
+- **Footer**: hairline, then name, `footerDescription`, labelled pill links (Site Settings social
+  links, Email, CV from the resume link; 44px), a two-column navigation without a heading (Site
+  Settings navigation without the primary item or external links), and the copyright line.
 
-### 2. Selected Projects
+### System pages
 
-Purpose:
+404 and Thank-you use the page intro (title, message) and one outlined "Back to home" button
+(**System Pages** global); the closing section below carries the primary action.
 
-- Show proof of work quickly
-- Move visitors from general interest to concrete capability
+## Calls to action
 
-Content:
+1. **Book a call**: hero primary, About intro primary, closing section primary. Header shows it
+   outlined.
+2. **Contact**: service cards (`/contact/?intent=…`), "or send a message", footer Email.
+3. **Proof and reading**: "All case studies", "All articles", "Read all testimonials", "View case
+   study", "Read article".
 
-- Section title such as `Projects I’ve worked on`
-- 3 selected projects
-- Short summaries
-- Clear link to project detail or case study page
+Only one orange primary button is visible per view.
 
-Rule:
+## Navigation
 
-- Projects on the homepage are previews, not full documentation.
-- Each project should link to a deeper page with problem, role, approach, stack, and outcome.
+Primary navigation (CMS-configured): About, Projects, Articles, Testimonials, Contact Me, and the
+outlined Book a Call. The footer repeats the internal links.
 
-### 3. Articles
+## Content hierarchy rules
 
-Purpose:
-
-- Reinforce expertise and consistency of thinking
-- Make the site clearly blog-first
-
-Content:
-
-- Latest 2 articles
-- Link to all articles
-- Visible tags
-
-Rule:
-
-- Homepage writings should be curated and recent.
-- Writings should support credibility, not feel buried behind portfolio content.
-
-### 4. Testimonials Preview
-
-Purpose:
-
-- Provide a small trust signal without turning the homepage into a complete archive
-
-Rule:
-
-- Show one featured recommendation and link to `/testimonials/` for the full list.
-
-### 5. Primary CTA Block
-
-Purpose:
-
-- Convert interest into a concrete next step
-
-Primary actions:
-
-- `Contact Me`
-- `Book a call`
-- `See credentials`
-
-Credentials should include:
-
-- LinkedIn
-- GitHub
-- WhatsApp
-- Email
-
-Rule:
-
-- Replace generic `Contact Me` positioning with action-based options.
-- The user should understand the difference between asking for a quote, booking time, and verifying credibility.
-
-### 6. Footer
-
-Purpose:
-
-- Keep engagement alive at the bottom of every page
-
-Footer should include:
-
-- Short CTA
-- Key navigation
-- Credentials/social links
-- Email or booking link
-- Optional featured project or featured article
-
-Rule:
-
-- Footer should not be a passive legal strip.
-- It should act as a second chance conversion area.
-
-## About Page
-
-Purpose:
-
-- Give a deeper introduction beyond the homepage preview
-
-Content:
-
-- Full introduction
-- Background
-- How you work
-- Areas of strength
-- Credentials
-
-Rule:
-
-- This page should explain your professional identity clearly without turning into a long resume dump.
-
-## Projects / Case Studies
-
-Purpose:
-
-- Present detailed proof of work
-
-Structure for each project:
-
-- Project title
-- Context or problem
-- Your role
-- What you did
-- Tools or stack
-- Result or outcome
-
-Rule:
-
-- Each project detail page should read like a case study, not just a gallery card.
-
-## Articles Page
-
-Purpose:
-
-- Act as the complete archive of your writing
-
-Required features:
-
-- Load more
-- Tag filters
-- Clear links to article detail pages
-
-Rule:
-
-- This page should be easy to scan and easy to narrow down by topic.
-
-## Testimonials Page
-
-Purpose:
-
-- Present the complete set of published recommendations in one focused archive.
-
-Rule:
-
-- Homepage testimonials are previews; `/testimonials/` owns the complete listing.
-
-## Article Detail Pages
-
-Purpose:
-
-- Maximize readability and keep article discovery flowing
-
-Required features:
-
-- A compact previous and next article section
-- Tag-based navigation
-- Share options
-
-Rule:
-
-- Every article page should create one clear path to continue reading or take action; avoid duplicating previous/next content in a separate related grid.
-
-## Contact Flow
-
-Purpose:
-
-- Welcome feedback, general messages, service enquiries, and consultancy requests without making every visitor complete a sales form
-
-Preferred flow:
-
-1. Intent
-2. Engagement details only for project or consultancy enquiries
-3. Message
-4. Optional contact details for feedback and general messages
-5. Review
-
-Rule:
-
-- This should feel like a calm, adaptive wizard rather than a blank message box or a dense all-at-once form.
-- Feedback may be anonymous. Project and consultancy enquiries require reply details.
-
-## CTA Hierarchy
-
-- Primary CTA: `Contact Me`
-- Secondary CTA: `Book a call`
-- Trust CTA: `See credentials`
-- Utility CTA: `Email` or `WhatsApp`
-
-Rule:
-
-- Avoid multiple competing primary CTAs in the same section.
-
-## Navigation Priorities
-
-Recommended top-level navigation:
-
-- About
-- Projects
-- Articles
-- Testimonials
-- Contact Me
-- Book a Call
-
-Rule:
-
-- Navigation should reflect visitor goals, not internal content categories only.
-
-## Content Hierarchy Rules
-
-- Homepage should summarize, not exhaust.
-- About should deepen identity.
-- Projects should prove capability.
-- Writings should prove thinking.
-- Contact flow should support readers and qualified visitors equally well.
-- Footer should re-engage visitors at the end of every page.
-
-## What to Avoid
-
-- An unstructured message box with no indication of what happens next
-- Long homepage sections with no link to deeper pages
-- Projects without detail pages
-- Writings without archive structure
-- Footers with no action value
-- Resume-style content where a case-study or guided CTA would be clearer
+- One `h1` per page; section titles are `h2`; card and item titles `h3`.
+- One visible heading per section; eyebrows only in page intros and the hero.
+- Previews (homepage work, articles, testimonial) link to their full pages; detail pages end with
+  previous/next navigation and the closing section.

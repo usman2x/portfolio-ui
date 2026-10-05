@@ -60,9 +60,9 @@ In a second terminal, from `portfolio-cms`:
 npm run seed:dev
 ```
 
-`seed:dev` creates the first local administrator when none exists, then idempotently loads permanent portfolio content and development writings. Use the credentials from `.env` to sign in. The first run uploads and processes project media, so it can take a minute or more.
+`seed:dev` creates the first local administrator when none exists, then idempotently loads permanent portfolio content and development articles. Use the credentials from `.env` to sign in. The first run uploads and processes project media, so it can take a minute or more.
 
-Use `npm run seed:core` instead when test writings are not wanted. Never point a local seed command at production. The script rejects non-local targets unless a deliberate override is supplied.
+Use `npm run seed:core` instead when test articles are not wanted. Never point a local seed command at production. The script rejects non-local targets unless a deliberate override is supplied.
 
 ## 3. Configure and start the UI
 
@@ -93,7 +93,7 @@ npm run migrate
 
 If Payload warns that development-mode schema pushes have diverged from migrations or that data loss is possible, answer **no**. Back up the database and reconcile its migration state, or use a fresh local database. Do not approve a destructive schema push as routine startup.
 
-Run the relevant seed again when baseline content or fixtures change. Seeds are idempotent.
+Run the relevant seed again when baseline content or fixtures change. Seeds are idempotent upserts: they overwrite any record they define (matched by slug, name, company or title) and every field they set on globals, so local admin edits to those records are replaced. Records the seed does not define are left alone.
 
 ## Verification
 
@@ -146,6 +146,23 @@ npx next build --webpack
 
 The normal project and deployment command remains `npm run build`. Report the default build failure rather than silently treating the fallback as equivalent production validation.
 
+### CSS changes do not appear in the dev server
+
+Turbopack's persistent dev cache can keep serving an old `global.css` while JavaScript changes
+still hot-reload, especially after running `npm run build` alongside `npm run develop`. Stop the
+dev server, clear the dev cache and restart:
+
+```bash
+rm -rf .next/dev
+npm run develop
+```
+
+### Pages return 500 after the CMS was briefly unavailable
+
+`src/lib/content.js` memoizes the posts request for the lifetime of the dev server, so one failed
+request (for example during a CMS restart or before a migration) keeps failing until the UI dev
+server restarts. Restart `npm run develop` once the CMS answers `http://localhost:3001/api/posts`.
+
 ### Port 3000 or 3001 is already in use
 
 Stop the process already using the required port. The checked-in URLs and cross-origin settings assume the UI uses `3000` and the CMS uses `3001`.
@@ -159,4 +176,4 @@ If an administrator already exists, `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD`
 - Read `AGENTS.md` before making changes.
 - Use `.agents/skills/build-portfolio-ui/SKILL.md` for UI, UX, frontend, and Next.js work.
 - For CMS contract changes, also use `../portfolio-cms/.agents/skills/develop-portfolio-cms/SKILL.md`.
-- Treat the planning documents listed in `AGENTS.md` as implementation constraints.
+- Treat the docs listed in `docs/README.md` as implementation constraints.

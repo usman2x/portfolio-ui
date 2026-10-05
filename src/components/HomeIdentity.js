@@ -8,7 +8,7 @@ const HomeIdentity = ({ siteSettings, homeContent }) => {
   const headline = identitySection.headline
   const supportingText = identitySection.supportingText
   // trustChips stay in the CMS but are no longer shown: the proof strip below carries the
-  // same facts (docs/pages/HOMEPAGE_REDESIGN.md).
+  // same facts (docs/pages/HOME_PAGE.md).
   const primaryCtaNote = identitySection.primaryCtaNote
   const primaryCtaLabel = identitySection.primaryCtaLabel
   const secondaryCtaLabel = identitySection.secondaryCtaLabel

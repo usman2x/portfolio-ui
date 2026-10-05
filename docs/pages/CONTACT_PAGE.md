@@ -1,6 +1,18 @@
-# Contact Page Blueprint
+# Contact Page
 
-This document defines the generalized contact experience. The filename remains unchanged to preserve existing documentation links; `/contact/` is the canonical public route and `/quote/` is a legacy redirect.
+Route: `/contact/` · Page: `src/pages/contact.js`. `/quote/` (`src/pages/quote.js`) is a legacy
+redirect and is excluded from the sitemap.
+
+## Layout
+
+- Page intro: **Contact Page** eyebrow, title (`--fs-page-title`) and description, left-aligned.
+- Below, a progress aside ("Your path" steps, response note, then "Book a short call" and "Send an
+  email" text links) beside the wizard panel. Both panels are hairline cards with 16px corners and
+  no shadow; the step heading is 28px.
+- The page has no book-call section above the footer; the wizard's Continue/Send button is the
+  page's one primary action.
+- `?intent=<help type>` preselects the first step. The homepage service cards link here with their
+  `contactIntent`.
 
 ## Goal
 
@@ -50,4 +62,4 @@ Payload’s legacy `quote-page` global remains the source for page copy, engagem
 
 ## Alternative actions
 
-“Book a short call” and “Send an email” remain secondary options beside the wizard. They should never compete visually with the active Continue or Send action.
+“Book a short call” and “Send an email” are secondary text links beside the wizard and never compete visually with the active Continue or Send button.
