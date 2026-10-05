@@ -7,9 +7,9 @@ const HomeIdentity = ({ siteSettings, homeContent }) => {
   const eyebrow = identitySection.eyebrow
   const headline = identitySection.headline
   const supportingText = identitySection.supportingText
-  const trustChips = Array.isArray(identitySection.trustChips)
-    ? identitySection.trustChips
-    : []
+  // trustChips stay in the CMS but are no longer shown: the proof strip below carries the
+  // same facts (docs/pages/HOMEPAGE_REDESIGN.md).
+  const primaryCtaNote = identitySection.primaryCtaNote
   const primaryCtaLabel = identitySection.primaryCtaLabel
   const secondaryCtaLabel = identitySection.secondaryCtaLabel
 
@@ -20,13 +20,6 @@ const HomeIdentity = ({ siteSettings, homeContent }) => {
           <p className="identity-eyebrow">{eyebrow}</p>
           <h1 className="identity-headline">{headline}</h1>
           <p className="identity-supporting">{supportingText}</p>
-          {trustChips.length ? (
-            <ul className="identity-specialties">
-              {trustChips.map(item => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          ) : null}
           <div className="identity-actions">
             <a
               href={siteSettings.meetingLink}
@@ -37,12 +30,15 @@ const HomeIdentity = ({ siteSettings, homeContent }) => {
               {primaryCtaLabel}
             </a>
             <Link
-              href="/projects/"
+              href="/#projects"
               className="theme-btn-outline identity-action"
             >
               {secondaryCtaLabel}
             </Link>
           </div>
+          {primaryCtaNote ? (
+            <p className="identity-cta-note">{primaryCtaNote}</p>
+          ) : null}
         </div>
         <Link href="/about/" className="identity-link-card">
           <div className="identity-portrait">

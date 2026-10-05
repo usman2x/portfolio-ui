@@ -21,7 +21,7 @@ The project is a Next.js-based personal site for Muhammad Usman that combines:
 - `/projects/:slug/`
   - project case-study detail pages
 - `/blog/`
-  - writings archive with pagination and tag filtering
+  - articles archive with load more and tag filtering
 - `/blog/:slug/`
   - article detail pages sourced from Payload CMS
 - `/contact/`
@@ -60,7 +60,7 @@ The project is a Next.js-based personal site for Muhammad Usman that combines:
 - build-time blog ingestion from Payload CMS
 - hard-fail CMS fetches to prevent incomplete deployments
 - published CMS articles appear in the UI on the next successful Next.js build or deployment
-- tag-filtered writings archive with pagination
+- tag-filtered articles archive with load more
 - case-study project detail pages
 - share actions and SEO metadata on article pages
 - theme persistence through `src/utils/theme.js`

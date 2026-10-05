@@ -61,7 +61,7 @@ Rule:
 
 - URL: `/blog/`
 - Title pattern:
-  - `Writings | Muhammad Usman`
+  - `Articles | Muhammad Usman`
 - Description should summarize article topics
 
 ### Blog Detail
@@ -93,9 +93,9 @@ Rule:
 
 ## Internal Linking Rules
 
-- Home should link to About, Projects, Writings, and CTA pages
+- Home should link to About, Projects, Articles, and CTA pages
 - Project previews should link to project detail pages
-- Writings previews should link to blog detail pages
+- Article previews should link to blog detail pages
 - Detail pages should link laterally to related content
 
 ## Content Configuration Rule

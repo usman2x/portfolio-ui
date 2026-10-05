@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useRef } from "react"
 import Head from "next/head"
 import Link from "next/link"
 import { format } from "date-fns"
@@ -6,6 +6,9 @@ import Layout from "../../components/Layout"
 import SEO from "../../components/seo"
 import ShareActions from "../../components/ShareActions"
 import ContentNavigation from "../../components/ContentNavigation"
+import ReadingProgress from "../../components/ReadingProgress"
+import AuthorCard from "../../components/AuthorCard"
+import { tagArchiveHref } from "../../components/ArticleCard"
 import { getAllBlogPosts } from "../../lib/content"
 import { siteMetadata } from "../../lib/site"
 import { resolveSiteAssetUrl } from "../../utils/url"
@@ -19,6 +22,8 @@ const formatPostDate = date => {
 }
 
 const BlogPostPage = ({ post, siteSettings, previousPost, nextPost }) => {
+  const articleRef = useRef(null)
+  const contentRef = useRef(null)
   const title = post.title
   const slug = post.slug
   const date = post.date
@@ -68,16 +73,19 @@ const BlogPostPage = ({ post, siteSettings, previousPost, nextPost }) => {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </Head>
+      <ReadingProgress startRef={articleRef} endRef={contentRef} />
       <section className="container blog-post-shell">
-        <Link href="/blog/" className="blog-post-back">
-          &larr; Back to writings
+        <Link href="/blog/" className="text-link-cta link-underline blog-post-back">
+          Back to all articles
         </Link>
-        <article className="blog-article">
+        <article ref={articleRef} className="blog-article">
           {post.coverImageUrl ? (
             <img
               src={post.coverImageUrl}
               alt={post.coverImageAlt || title}
               className="blog-cover-image"
+              width={post.coverImageWidth || undefined}
+              height={post.coverImageHeight || undefined}
               loading="eager"
             />
           ) : null}
@@ -94,6 +102,7 @@ const BlogPostPage = ({ post, siteSettings, previousPost, nextPost }) => {
           </header>
           <div className="blog-article-layout">
             <div
+              ref={contentRef}
               className="blog-post-content article-prose"
               dangerouslySetInnerHTML={{ __html: post.contentHtml }}
             />
@@ -108,13 +117,14 @@ const BlogPostPage = ({ post, siteSettings, previousPost, nextPost }) => {
                 <Link
                   key={tag}
                   className="tag-chip"
-                  href={`/blog/?tag=${encodeURIComponent(tag.toLowerCase())}`}
+                  href={tagArchiveHref(tag)}
                 >
-                  #{tag}
+                  {tag}
                 </Link>
               ))}
             </div>
           ) : null}
+          <AuthorCard siteSettings={siteSettings} />
           <ContentNavigation
             title="Keep reading"
             previous={previousPost}

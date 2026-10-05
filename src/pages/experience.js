@@ -7,8 +7,8 @@ import { fetchAboutPage, fetchSiteSettings, fetchWorkExperience } from "../lib/c
 const ExperiencePage = ({ aboutPage, siteSettings, workExperience }) => (
   <Layout siteSettings={siteSettings}>
     <SEO title={aboutPage.experienceTitle} description={aboutPage.seoDescription} pathname="/experience/" siteSettings={siteSettings} />
-    <section className="container interior-page about-page-shell">
-      <WorkExperienceTimeline entries={workExperience} title={aboutPage.experienceTitle} />
+    <section className="container about-experience about-experience-page">
+      <WorkExperienceTimeline entries={workExperience} title={aboutPage.experienceTitle} cvHref={siteSettings.resumeLink} headingLevel="h1" />
     </section>
   </Layout>
 )

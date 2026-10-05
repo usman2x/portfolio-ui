@@ -19,7 +19,7 @@ Before implementing a page or layout change, use this order:
 - `docs/structure/`
   - overall site architecture and section hierarchy
 - `docs/pages/`
-  - page-level blueprints for Home, About, Projects, Writings, and Contact
+  - page-level blueprints for Home, About, Projects, Articles, and Contact
 - `docs/seo/`
   - route, slug, canonical, and page SEO conventions
 - `docs/content/`

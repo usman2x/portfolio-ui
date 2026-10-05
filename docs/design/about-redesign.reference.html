@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About page redesign reference</title>
+<!-- Reference only: the target look for the About page redesign. Not production code.
+     Spec: docs/pages/ABOUT_REDESIGN.md. Open this file directly in a browser;
+     the moon button switches themes. The video poster is a placeholder. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+.ss{--color-primary:#e97a3c;--color-secondary:#f2b38a;--color-accent:#6f8798;--bg-page:#f7f3ee;--bg-card:#ffffff;--text-main:#2f2f2f;--text-muted:#6b6b6b;--border-default:#c9c3bd;--brand-primary:var(--color-primary);--brand-text:var(--text-main);--on-brand:#2f2f2f;--bg-brand-soft:rgba(233,122,60,0.08);--bg-brand-soft-strong:rgba(233,122,60,0.14);--hairline:color-mix(in srgb,var(--border-default) 70%,transparent);--inv-bg:#2f2f2f;--inv-fg:#f7f3ee;--inv-muted:#d1c8c1;--inv-line:rgba(247,243,238,0.16);--font-heading:Newsreader,Georgia,Cambria,"Times New Roman",ui-serif,serif;--font-body:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--ease-out:cubic-bezier(0.23,1,0.32,1)}
+.ss[data-theme="dark"]{--color-primary:#f19a64;--color-secondary:#bf8f72;--color-accent:#8ea8bb;--bg-page:#171514;--bg-card:#221f1d;--text-main:#f7f3ef;--text-muted:#d1c8c1;--border-default:#3d3733;--brand-text:var(--color-primary);--on-brand:#171514;--bg-brand-soft:rgba(241,154,100,0.12);--bg-brand-soft-strong:rgba(241,154,100,0.18);--hairline:var(--border-default);--inv-bg:#221f1d;--inv-fg:#f7f3ef;--inv-muted:#d1c8c1;--inv-line:#3d3733}
+.ss{background:var(--bg-page);color:var(--text-main);font-family:var(--font-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.ss a{color:inherit;text-decoration:none}
+.ss :where(a,button):focus-visible{outline:3px solid var(--brand-text);outline-offset:3px;border-radius:4px}
+.ss .wrap{max-width:1120px;margin:0 auto;padding-inline:24px}
+.ss .h2{margin:0;font-family:var(--font-heading);font-size:clamp(1.875rem,1.6vw + 1.3rem,2.5rem);line-height:1.12;font-weight:500;letter-spacing:-0.015em;text-wrap:balance}
+.ss .meta{margin:0;font-family:var(--font-mono);font-size:13px;line-height:1.3;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted)}
+.ss .nav a{position:relative;font-size:15px;font-weight:500;padding:10px 0}
+.ss .nav a::after{content:"";position:absolute;left:0;right:0;bottom:4px;height:1px;background:var(--brand-primary);transform:scaleX(0);transform-origin:left;transition:transform 240ms var(--ease-out)}
+.ss .nav a:hover::after,.ss .nav a:focus-visible::after{transform:scaleX(1)}
+.ss .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:44px;padding:10px 18px;border-radius:8px;font-family:var(--font-body);font-size:15px;font-weight:600;line-height:1.2;cursor:pointer;transition:background 200ms ease,border-color 200ms ease,transform 160ms var(--ease-out)}
+.ss .btn-lg{min-height:52px;padding:14px 24px;font-size:16px;border-radius:10px}
+.ss .btn-primary{color:var(--on-brand);background:var(--brand-primary);border:1px solid var(--brand-primary)}
+.ss .btn-primary:hover{background:color-mix(in srgb,var(--brand-primary) 70%,var(--color-secondary));border-color:color-mix(in srgb,var(--brand-primary) 70%,var(--color-secondary))}
+.ss .btn-outline{color:var(--brand-text);background:transparent;border:1px solid var(--brand-primary)}
+.ss .btn-outline:hover{background:color-mix(in srgb,var(--brand-primary) 8%,transparent)}
+.ss .btn:active{transform:scale(0.97)}
+.ss .cta{font-size:15px;font-weight:700;text-decoration-line:underline;text-decoration-color:var(--brand-primary);text-decoration-thickness:2px;text-underline-offset:6px;width:fit-content}
+.ss .cta:hover{color:var(--brand-text)}
+.ss .work-media{transition:transform 240ms var(--ease-out),border-color 200ms ease}
+.ss .work:hover .work-media{transform:translateY(-3px);border-color:color-mix(in srgb,var(--brand-primary) 40%,var(--border-default))}
+.ss .work:hover .work-title{color:var(--brand-text)}
+.ss .option{transition:border-color 200ms ease}
+.ss .option:hover{border-color:var(--brand-primary)}
+.ss .row-link{transition:background 200ms ease}
+.ss .row-link:hover{background:var(--bg-brand-soft)}
+.ss .row-link:hover .arrow{transform:translateX(4px)}
+.ss .arrow{transition:transform 240ms var(--ease-out)}
+.ss .toggle{display:inline-grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid var(--border-default);border-radius:50%;background:transparent;color:var(--text-main);cursor:pointer}
+.ss .toggle:hover{border-color:var(--brand-primary);background:var(--bg-brand-soft);color:var(--brand-text)}
+.ss .inv{background:var(--inv-bg);color:var(--inv-fg)}
+.ss .inv :where(a,button):focus-visible{outline-color:var(--color-primary)}
+.ss .inv .cta:hover{color:var(--color-primary)}
+.ss .inv .nav a::after{bottom:2px}
+.ss .pill{display:inline-flex;align-items:center;gap:8px;min-height:44px;box-sizing:border-box;padding:0 16px 0 12px;border:1px solid var(--inv-line);border-radius:999px;font-size:14px;font-weight:500}
+.ss .pill:hover{border-color:var(--color-primary)}
+.ss .role{display:flex;flex-wrap:wrap;gap:8px 48px}
+.ss .role-when{flex:0 0 220px;display:flex;flex-direction:column;gap:6px;padding-top:4px}
+.ss .role-co{font-size:17px;font-weight:600;width:fit-content}
+.ss .role-co:hover{text-decoration:underline;text-decoration-color:var(--brand-primary);text-decoration-thickness:2px;text-underline-offset:5px}
+.ss .role-where{font-size:15px;color:var(--text-muted)}
+.ss .role-what{position:relative;flex:1 1 480px;min-width:0;padding:0 0 56px 40px;border-left:2px solid var(--hairline)}
+.ss .role-what::before{content:"";position:absolute;left:-7px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--bg-page);border:2px solid var(--border-default);box-sizing:border-box}
+.ss .role-current::before{background:var(--brand-primary);border-color:var(--brand-primary)}
+.ss .role-last{padding-bottom:0}
+.ss .role-title{margin:0;font-family:var(--font-body);font-size:22px;line-height:1.3;font-weight:600;letter-spacing:-0.011em}
+.ss .role-summary{margin:10px 0 0;font-size:17px;line-height:1.6;color:var(--text-muted);max-width:62ch}
+.ss .role-points{margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;max-width:62ch}
+.ss .role-points li{position:relative;padding-left:20px;font-size:17px;line-height:1.6}
+.ss .role-points li::before{content:"";position:absolute;left:0;top:0.7em;width:8px;height:2px;background:var(--brand-primary)}
+.ss .role-points strong{font-weight:600}
+@media (prefers-reduced-motion: reduce){.ss .btn:active,.ss .work:hover .work-media,.ss .row-link:hover .arrow{transform:none}}
+</style>
+</head>
+<body>
+<div class="ss" data-theme="sunset">
+
+<!-- 1. Header: who, where to go, one action -->
+<header style="border-bottom: 1px solid var(--hairline);">
+<div class="wrap" style="padding-block: 12px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 32px;">
+<a href="#top" style="display: flex; align-items: center; gap: 12px;">
+<img src="../../public/images/usman.jpg" alt="" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; object-position: center 20%;">
+<span style="font-size: 16px; font-weight: 600; line-height: 1.25;">Muhammad Usman</span>
+</a>
+<nav aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 32px;">
+<div class="nav" style="display: flex; flex-wrap: wrap; gap: 0 28px;">
+<a href="#work">Work</a>
+<a href="#services">Services</a>
+<a href="#" aria-current="page" style="text-decoration: underline; text-decoration-color: var(--brand-primary); text-decoration-thickness: 2px; text-underline-offset: 8px;">About</a>
+<a href="#articles">Articles</a>
+<a href="#">Contact</a>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<button type="button" class="toggle" onclick="var r=document.querySelector('.ss');r.dataset.theme=r.dataset.theme==='dark'?'sunset':'dark'" aria-label="Switch to dark theme" title="Switch to dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></button>
+<a href="#" class="btn btn-outline">Book a call</a>
+</div>
+</nav>
+</div>
+</header>
+
+<main id="top">
+
+<!-- 2. Intro: who, in one screen; the video is the page's one visual moment -->
+<section class="wrap" style="padding-top: clamp(48px, 7vw, 96px);">
+<p class="meta">About</p>
+<h1 style="margin: 24px 0 0; font-family: var(--font-heading); font-size: clamp(2.5rem, 2.9vw + 1.6rem, 3.75rem); line-height: 1.04; font-weight: 600; letter-spacing: -0.025em; max-width: 22ch; text-wrap: balance;">A systems-minded engineer turning complex product and platform problems into dependable software.</h1>
+<div style="margin-top: 56px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 48px 80px;">
+<div style="flex: 1 1 440px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+<p style="margin: 0; font-size: 20px; line-height: 1.6; color: var(--text-main); max-width: 52ch;">I’m a Senior Full-Stack Engineer and Systems Architect with more than nine years of experience engineering high-throughput, data-heavy systems and intelligent automation pipelines.</p>
+<p style="margin: 0; font-size: 17px; line-height: 1.6; color: var(--text-muted); max-width: 58ch;">My work spans multi-tenant microservices, real-time synchronization, enterprise ETL, metadata lineage, fintech, cloud migration, mobile products, and AI-enabled workflows for organizations including Walmart and teams across Australia, Europe, the United States, France, and Saudi Arabia.</p>
+<div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 12px;">
+<a href="#" class="btn btn-lg btn-primary">Book a call</a>
+<a href="#" class="btn btn-lg btn-outline">Download CV</a>
+</div>
+</div>
+<figure style="flex: 1 1 420px; min-width: 0; margin: 0; display: flex; flex-direction: column; gap: 16px;">
+<a href="#" aria-label="Play the introduction video" style="display: block; border-radius: 16px; overflow: hidden; border: 1px solid var(--hairline);"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 180'%3E%3Crect width='320' height='180' fill='%23ebe6df'/%3E%3Ctext x='160' y='95' font-family='sans-serif' font-size='14' fill='%236b6b6b' text-anchor='middle'%3EVideo poster (from CMS)%3C/text%3E%3C/svg%3E" alt="Muhammad Usman recording his video introduction" style="display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover;"></a>
+<figcaption style="display: flex; flex-direction: column; gap: 6px;">
+<span style="font-size: 17px; font-weight: 600;">A quick introduction</span>
+<span style="font-size: 15px; line-height: 1.45; color: var(--text-muted); max-width: 52ch;">My background, the systems I build, and how I approach complex engineering work.</span>
+<a href="#" class="cta" style="margin-top: 8px;">Read video transcript</a>
+</figcaption>
+</figure>
+</div>
+</section>
+
+<!-- 3. Strengths before history: what I bring, scannable, no boxes -->
+<section class="wrap" style="padding-top: clamp(80px, 9vw, 128px);">
+<h2 class="h2" style="margin-bottom: 48px;">Core strengths</h2>
+<ol style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 40px 32px;">
+<li style="border-top: 1px solid var(--hairline); padding-top: 24px; display: flex; flex-direction: column; gap: 10px;"><span class="meta" style="color: var(--text-main);">01</span><span style="font-size: 20px; line-height: 1.3; font-weight: 600; letter-spacing: -0.011em;">Backend and system design</span><span style="font-size: 17px; line-height: 1.6; color: var(--text-muted);">Java, Spring Boot, Kotlin, Python, microservices, multi-tenant architecture, and event-driven systems.</span></li>
+<li style="border-top: 1px solid var(--hairline); padding-top: 24px; display: flex; flex-direction: column; gap: 10px;"><span class="meta" style="color: var(--text-main);">02</span><span style="font-size: 20px; line-height: 1.3; font-weight: 600; letter-spacing: -0.011em;">Data platforms and streaming</span><span style="font-size: 17px; line-height: 1.6; color: var(--text-muted);">Kafka, Spark, Apache Beam, Airflow, Snowflake, Databricks, Azure data services, lineage, and observability.</span></li>
+<li style="border-top: 1px solid var(--hairline); padding-top: 24px; display: flex; flex-direction: column; gap: 10px;"><span class="meta" style="color: var(--text-main);">03</span><span style="font-size: 20px; line-height: 1.3; font-weight: 600; letter-spacing: -0.011em;">AI and intelligent automation</span><span style="font-size: 17px; line-height: 1.6; color: var(--text-muted);">Production-minded LLM, RAG, speech recognition, AI observability, and workflow automation.</span></li>
+<li style="border-top: 1px solid var(--hairline); padding-top: 24px; display: flex; flex-direction: column; gap: 10px;"><span class="meta" style="color: var(--text-main);">04</span><span style="font-size: 20px; line-height: 1.3; font-weight: 600; letter-spacing: -0.011em;">Frontend and product delivery</span><span style="font-size: 17px; line-height: 1.6; color: var(--text-muted);">React, Next.js, Angular, responsive interfaces, and end-to-end delivery that connects product goals to reliable systems.</span></li>
+</ol>
+</section>
+
+<!-- 4. Experience: a timeline, not a stack of cards. Dates and company left, role and outcomes right -->
+<section class="wrap" style="padding-top: clamp(80px, 9vw, 128px); padding-bottom: clamp(80px, 9vw, 128px);">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px 24px; margin-bottom: 48px;">
+<h2 class="h2">Work experience</h2>
+<a href="#" class="cta">Download full CV</a>
+</div>
+<ol style="margin: 0; padding: 0; list-style: none;">
+
+<li class="role">
+<div class="role-when"><span class="meta">Jan 2025 – Present</span><a href="#" class="role-co">Self-employed</a><span class="role-where">Remote</span></div>
+<div class="role-what role-current">
+<h3 class="role-title">Independent Professional</h3>
+<p class="role-summary">Delivering full-stack, event-driven, headless CMS, and real-time AI systems across Java, Spring Boot, Kafka, Python, React, and Angular.</p>
+<ul class="role-points"><li>Deployed NVIDIA NeMo ASR on Google Cloud and connected Python inference, Spring Boot WebSockets, and Angular for low-latency browser transcription.</li><li>Built scalable event-driven microservices and real-time data pipelines with Java, Spring Boot, and Kafka.</li></ul>
+</div>
+</li>
+
+<li class="role">
+<div class="role-when"><span class="meta">Feb 2023 – Oct 2024</span><a href="#" class="role-co">Alex Solutions</a><span class="role-where">Remote</span></div>
+<div class="role-what">
+<h3 class="role-title">Senior Software Engineer</h3>
+<p class="role-summary">Built and enhanced enterprise metadata discovery, cataloguing, and lineage capabilities across more than 40 data technologies.</p>
+<ul class="role-points"><li>Optimized H2 queries and Groovy/Python processing to reduce memory use and improve scanner execution by <strong>10–20%</strong>.</li><li>Remediated SQL-injection risks across <strong>25+ scanners</strong> and migrated Jenkins delivery pipelines to GitLab CI/CD.</li></ul>
+</div>
+</li>
+
+<li class="role">
+<div class="role-when"><span class="meta">Oct 2019 – Feb 2023</span><a href="#" class="role-co">Confiz</a><span class="role-where">Lahore, Pakistan</span></div>
+<div class="role-what">
+<h3 class="role-title">Software Engineer (III)</h3>
+<p class="role-summary">Engineered Walmart’s backend-heavy Unified Data Platform and cloud-migration tooling while leading delivery, quality, and team development initiatives.</p>
+<ul class="role-points"><li>Integrated SonarQube security gates and expanded automated test coverage from <strong>10% to 80%</strong>.</li><li>Led an eight-person team and created onboarding practices that reduced senior-resource training overhead by <strong>90%</strong>.</li></ul>
+</div>
+</li>
+
+<li class="role">
+<div class="role-when"><span class="meta">Feb 2019 – Oct 2019</span><a href="#" class="role-co">Cloud Card Inc.</a><span class="role-where">Lahore, Pakistan</span></div>
+<div class="role-what">
+<h3 class="role-title">Software Engineer</h3>
+<p class="role-summary">Built PCI-compliant, multi-tenant banking infrastructure supporting the complete prepaid-card and digital-payment lifecycle.</p>
+<ul class="role-points"><li>Wrapped third-party SOAP payment capabilities with REST APIs, reducing client integration effort by <strong>50%</strong>.</li><li>Delivered six-plus Spring microservices for card activation, KYC, payments, fees, notifications, and customer preferences.</li></ul>
+</div>
+</li>
+
+<li class="role">
+<div class="role-when"><span class="meta">Jan 2017 – Feb 2019</span><a href="#" class="role-co">Trangolabs</a><span class="role-where">Lahore, Pakistan</span></div>
+<div class="role-what role-last">
+<h3 class="role-title">Software Developer (Java)</h3>
+<p class="role-summary">Customized and deployed a high-scale CPQ engine for a major German manufacturer while leading and growing a Java delivery team.</p>
+<ul class="role-points"><li>Reduced complex quotation processing from <strong>days to hours</strong> through tailored CPQ workflows.</li><li>Led three developers, interviewed 20+ candidates, and hired and trained five team members.</li></ul>
+</div>
+</li>
+
+</ol>
+</section>
+
+<!-- 5. Proof from people: one quote on the page's one tinted band -->
+<section style="background: var(--bg-brand-soft); border-block: 1px solid var(--hairline);">
+<div class="wrap" style="padding-block: clamp(64px, 7vw, 96px); display: flex; flex-wrap: wrap; gap: 40px 80px;">
+<div style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 24px; align-items: flex-start;">
+<h2 class="h2" style="max-width: 14ch;">What collaborators say about working with me</h2>
+<a href="#" class="cta">Read all testimonials</a>
+</div>
+<figure style="flex: 2 1 560px; margin: 0; display: flex; flex-direction: column; gap: 32px;">
+<blockquote style="margin: 0; font-family: var(--font-heading); font-size: clamp(1.375rem, 1vw + 1rem, 1.75rem); line-height: 1.45; font-style: italic; font-weight: 400; text-wrap: pretty;">“Muhammad Usman was a key member of one of the software development teams I managed, and it was a real pleasure to have him in my team: he is a consistent, reliable, honest and conscientious person with an open mind and readily adaptable to any challenge he is given, so I heartily recommend him with no reservations.”</blockquote>
+<figcaption style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px;">
+<span aria-hidden="true" style="display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--bg-card); font-family: var(--font-heading); font-size: 20px; font-weight: 600;">P</span>
+<span style="display: flex; flex-direction: column; line-height: 1.45;">
+<span style="font-size: 17px; font-weight: 600;">Pascal Inard</span>
+<span style="font-size: 15px; color: var(--text-main);">Former Software Development Manager · managed Muhammad</span>
+</span>
+</figcaption>
+</figure>
+</div>
+</section>
+
+</main>
+
+
+<!-- 8. Closing: one strong ending, then the footer on the same surface -->
+<footer class="inv">
+<div class="wrap" style="padding-top: clamp(72px, 8vw, 112px); padding-bottom: 40px;">
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 32px 64px; padding-bottom: clamp(64px, 7vw, 96px);">
+<div style="flex: 1 1 560px; display: flex; flex-direction: column; gap: 16px;">
+<h2 class="h2" style="font-size: clamp(2.125rem, 2vw + 1.5rem, 3rem); line-height: 1.08; max-width: 20ch;">Need senior engineering support for a complex product or platform?</h2>
+<p style="margin: 0; font-size: 18px; line-height: 1.6; color: var(--inv-muted); max-width: 54ch;">Book a focused Google Calendar call to discuss the problem, delivery constraints, and a practical next step.</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px;">
+<a href="#" class="btn btn-lg btn-primary">Book a call</a>
+<a href="#" class="cta">or send a message</a>
+</div>
+</div>
+<div style="border-top: 1px solid var(--inv-line); padding-top: 48px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px 64px;">
+<div style="flex: 1 1 480px; display: flex; flex-direction: column; gap: 12px;">
+<p style="margin: 0; font-size: 17px; font-weight: 600;">Muhammad Usman</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: var(--inv-muted); max-width: 50ch;">Senior full-stack engineer building scalable products, data platforms, cloud systems, and practical AI automation.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px;">
+<a href="#" class="pill"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>GitHub</a>
+<a href="#" class="pill"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>LinkedIn</a>
+<a href="#" class="pill"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>Email</a>
+<a href="#" class="pill"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>CV</a>
+</div>
+</div>
+<nav aria-label="Footer" class="nav" style="flex: 0 1 360px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; align-content: start;">
+<a href="#work" style="width: fit-content;">Work</a>
+<a href="#" style="width: fit-content;">About</a>
+<a href="#services" style="width: fit-content;">Services</a>
+<a href="#" style="width: fit-content;">Testimonials</a>
+<a href="#articles" style="width: fit-content;">Articles</a>
+<a href="#" style="width: fit-content;">Contact</a>
+</nav>
+</div>
+<p style="margin: 48px 0 0; font-size: 14px; color: var(--inv-muted);">© 2026 Muhammad Usman. All rights reserved.</p>
+</div>
+</footer>
+
+</div>
+</body>
+</html>

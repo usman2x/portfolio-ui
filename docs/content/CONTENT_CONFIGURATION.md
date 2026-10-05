@@ -7,11 +7,11 @@ The UI owns layout, interaction, routes, and presentation. Payload CMS owns all 
 ### Globals
 
 - **Site Settings** — identity, navigation logo, portrait, contact details, social links, navigation, footer, and book-call CTA.
-- **Home Page** — hero, specialty cues (stored as `trustChips`), proof stats and company names, section labels, featured projects, and testimonial preview settings. `postHeroLine` is retained for compatibility but is no longer rendered.
-- **About Page** — introduction, summary, introduction video URL/copy, strengths, and experience section label.
+- **Home Page** — hero, specialty cues (stored as `trustChips`), proof stats and company names, section labels, the Articles section (title, one-line description, `All articles` label, count), featured projects, and testimonial preview settings. Site Settings `name`, `portrait`, `professionalTitle`, `socialLinks`, and `email` also feed the `Written by` card on every article. `postHeroLine` is retained for compatibility but is no longer rendered.
+- **About Page** — introduction, summary (the first paragraph is the lead), introduction video URL/copy (the video eyebrow is no longer shown), strengths, experience section label, and an optional `featuredTestimonial` (relationship to Testimonials; leave empty to hide the About testimonial). The About page shows the first two highlights of each Work Experience role, so order highlights with measurable results first.
 - **Testimonials Page** — testimonial archive SEO and introduction copy.
 - **Contact Page** (stored in the legacy `quote-page` global) — page copy, process, form labels/placeholders, intent and engagement options, and submission messages.
-- **Archive Settings** — writing/project archive titles, centered introductions, SEO metadata, filters, pagination size, and CTA labels.
+- **Archive Settings** — article/project archive titles, centered introductions, SEO metadata, pagination size, and CTA labels. (`filterTitle`, `filterDescription`, and `writingCtaLabel` are no longer rendered.)
 - **Project Template** — shared case-study labels and navigation copy.
 - **System Pages** — not-found and thank-you copy.
 

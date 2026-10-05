@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage redesign reference</title>
+<!-- Reference only: the target look for the homepage redesign. Not production code.
+     Spec: docs/pages/HOMEPAGE_REDESIGN.md. Open this file directly in a browser;
+     the moon button switches themes. Images are placeholders except the portrait. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+.ss{--color-primary:#e97a3c;--color-secondary:#f2b38a;--color-accent:#6f8798;--bg-page:#f7f3ee;--bg-card:#ffffff;--text-main:#2f2f2f;--text-muted:#6b6b6b;--border-default:#c9c3bd;--brand-primary:var(--color-primary);--brand-text:var(--text-main);--on-brand:#2f2f2f;--bg-brand-soft:rgba(233,122,60,0.08);--bg-brand-soft-strong:rgba(233,122,60,0.14);--hairline:color-mix(in srgb,var(--border-default) 70%,transparent);--inv-bg:#2f2f2f;--inv-fg:#f7f3ee;--inv-muted:#d1c8c1;--inv-line:rgba(247,243,238,0.16);--font-heading:Newsreader,Georgia,Cambria,"Times New Roman",ui-serif,serif;--font-body:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--ease-out:cubic-bezier(0.23,1,0.32,1)}
+.ss[data-theme="dark"]{--color-primary:#f19a64;--color-secondary:#bf8f72;--color-accent:#8ea8bb;--bg-page:#171514;--bg-card:#221f1d;--text-main:#f7f3ef;--text-muted:#d1c8c1;--border-default:#3d3733;--brand-text:var(--color-primary);--on-brand:#171514;--bg-brand-soft:rgba(241,154,100,0.12);--bg-brand-soft-strong:rgba(241,154,100,0.18);--hairline:var(--border-default);--inv-bg:#221f1d;--inv-fg:#f7f3ef;--inv-muted:#d1c8c1;--inv-line:#3d3733}
+.ss{background:var(--bg-page);color:var(--text-main);font-family:var(--font-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.ss a{color:inherit;text-decoration:none}
+.ss :where(a,button):focus-visible{outline:3px solid var(--brand-text);outline-offset:3px;border-radius:4px}
+.ss .wrap{max-width:1120px;margin:0 auto;padding-inline:24px}
+.ss .h2{margin:0;font-family:var(--font-heading);font-size:clamp(1.875rem,1.6vw + 1.3rem,2.5rem);line-height:1.12;font-weight:500;letter-spacing:-0.015em;text-wrap:balance}
+.ss .meta{margin:0;font-family:var(--font-mono);font-size:13px;line-height:1.3;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted)}
+.ss .nav a{position:relative;font-size:15px;font-weight:500;padding:10px 0}
+.ss .nav a::after{content:"";position:absolute;left:0;right:0;bottom:4px;height:1px;background:var(--brand-primary);transform:scaleX(0);transform-origin:left;transition:transform 240ms var(--ease-out)}
+.ss .nav a:hover::after,.ss .nav a:focus-visible::after{transform:scaleX(1)}
+.ss .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:44px;padding:10px 18px;border-radius:8px;font-family:var(--font-body);font-size:15px;font-weight:600;line-height:1.2;cursor:pointer;transition:background 200ms ease,border-color 200ms ease,transform 160ms var(--ease-out)}
+.ss .btn-lg{min-height:52px;padding:14px 24px;font-size:16px;border-radius:10px}
+.ss .btn-primary{color:var(--on-brand);background:var(--brand-primary);border:1px solid var(--brand-primary)}
+.ss .btn-primary:hover{background:color-mix(in srgb,var(--brand-primary) 70%,var(--color-secondary));border-color:color-mix(in srgb,var(--brand-primary) 70%,var(--color-secondary))}
+.ss .btn-outline{color:var(--brand-text);background:transparent;border:1px solid var(--brand-primary)}
+.ss .btn-outline:hover{background:color-mix(in srgb,var(--brand-primary) 8%,transparent)}
+.ss .btn:active{transform:scale(0.97)}
+.ss .cta{font-size:15px;font-weight:700;text-decoration-line:underline;text-decoration-color:var(--brand-primary);text-decoration-thickness:2px;text-underline-offset:6px;width:fit-content}
+.ss .cta:hover{color:var(--brand-text)}
+.ss .work-media{transition:transform 240ms var(--ease-out),border-color 200ms ease}
+.ss .work:hover .work-media{transform:translateY(-3px);border-color:color-mix(in srgb,var(--brand-primary) 40%,var(--border-default))}
+.ss .work:hover .work-title{color:var(--brand-text)}
+.ss .option{transition:border-color 200ms ease}
+.ss .option:hover{border-color:var(--brand-primary)}
+.ss .row-link{transition:background 200ms ease}
+.ss .row-link:hover{background:var(--bg-brand-soft)}
+.ss .row-link:hover .arrow{transform:translateX(4px)}
+.ss .arrow{transition:transform 240ms var(--ease-out)}
+.ss .toggle{display:inline-grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid var(--border-default);border-radius:50%;background:transparent;color:var(--text-main);cursor:pointer}
+.ss .toggle:hover{border-color:var(--brand-primary);background:var(--bg-brand-soft);color:var(--brand-text)}
+.ss .inv{background:var(--inv-bg);color:var(--inv-fg)}
+.ss .inv :where(a,button):focus-visible{outline-color:var(--color-primary)}
+.ss .inv .cta:hover{color:var(--color-primary)}
+.ss .inv .nav a::after{bottom:2px}
+.ss .pill{display:inline-flex;align-items:center;gap:8px;min-height:44px;box-sizing:border-box;padding:0 16px 0 12px;border:1px solid var(--inv-line);border-radius:999px;font-size:14px;font-weight:500}
+.ss .pill:hover{border-color:var(--color-primary)}
+@media (prefers-reduced-motion: reduce){.ss .btn:active,.ss .work:hover .work-media,.ss .row-link:hover .arrow{transform:none}}
+</style>
+</head>
+<body>
+<div class="ss" data-theme="sunset">
+
+<!-- 1. Header: who, where to go, one action -->
+<header style="border-bottom: 1px solid var(--hairline);">
+<div class="wrap" style="padding-block: 12px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 32px;">
+<a href="#top" style="display: flex; align-items: center; gap: 12px;">
+<img src="../../public/images/usman.jpg" alt="" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; object-position: center 20%;">
+<span style="font-size: 16px; font-weight: 600; line-height: 1.25;">Muhammad Usman</span>
+</a>
+<nav aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 32px;">
+<div class="nav" style="display: flex; flex-wrap: wrap; gap: 0 28px;">
+<a href="#work">Work</a>
+<a href="#services">Services</a>
+<a href="#">About</a>
+<a href="#articles">Articles</a>
+<a href="#">Contact</a>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<button type="button" class="toggle" onclick="var r=document.querySelector('.ss');r.dataset.theme=r.dataset.theme==='dark'?'sunset':'dark'" aria-label="Switch to dark theme" title="Switch to dark theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></button>
+<a href="#" class="btn btn-outline">Book a call</a>
+</div>
+</nav>
+</div>
+</header>
+
+<main id="top">
+
+<!-- 2. Hero: what I do, for whom, next step -->
+<section class="wrap" style="padding-top: clamp(48px, 7vw, 96px); padding-bottom: clamp(56px, 6vw, 80px); display: flex; flex-wrap: wrap; align-items: center; gap: 48px 80px;">
+<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+<p class="meta">Senior full-stack engineer · Systems architect · Data &amp; AI</p>
+<h1 style="margin: 24px 0 0; font-family: var(--font-heading); font-size: clamp(2.5rem, 2.9vw + 1.6rem, 3.75rem); line-height: 1.04; font-weight: 600; letter-spacing: -0.025em; max-width: 21ch; text-wrap: balance;">Engineering scalable products, data platforms, and intelligent automation for ambitious teams.</h1>
+<p style="margin: 24px 0 0; font-size: 20px; line-height: 1.6; color: var(--text-muted); max-width: 56ch;">9+ years building high-throughput systems across Java, Python, React, cloud infrastructure, big data, fintech, and real-time AI for global enterprises and growing products.</p>
+<div style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 12px;">
+<a href="#" class="btn btn-lg btn-primary">Book a call</a>
+<a href="#work" class="btn btn-lg btn-outline">See selected work</a>
+</div>
+<p style="margin: 16px 0 0; font-size: 15px; line-height: 1.45; color: var(--text-muted); max-width: 52ch;">A focused call to discuss the problem, delivery constraints, and a practical next step.</p>
+</div>
+<a href="#" aria-label="About Muhammad Usman" style="flex: 1 1 260px; max-width: 320px; display: flex; flex-direction: column; gap: 16px;">
+<span style="position: relative; display: block; padding: 0 16px 16px 0;">
+<span aria-hidden="true" style="position: absolute; inset: 16px 0 0 16px; border-radius: 28px; background: var(--bg-brand-soft-strong);"></span>
+<img src="../../public/images/usman.jpg" alt="Portrait of Muhammad Usman" style="position: relative; display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 30%; border-radius: 28px;">
+</span>
+<span style="display: flex; flex-direction: column; line-height: 1.45;">
+<span style="font-size: 17px; font-weight: 600;">Muhammad Usman</span>
+<span style="font-size: 15px; color: var(--text-muted);">Senior Full-Stack Engineer and Systems Architect</span>
+</span>
+</a>
+</section>
+
+<!-- 3. Proof: numbers and names -->
+<section aria-label="Proof" class="wrap">
+<div style="border-top: 1px solid var(--hairline); padding-top: 48px; display: flex; flex-direction: column; gap: 40px;">
+<dl style="margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 32px;">
+<div style="display: flex; flex-direction: column-reverse; gap: 8px;"><dt style="font-size: 15px; line-height: 1.45; color: var(--text-muted); max-width: 22ch;">years shipping production systems</dt><dd style="margin: 0; font-family: var(--font-heading); font-size: clamp(2.25rem, 1.5vw + 1.5rem, 2.75rem); line-height: 1; font-weight: 500; letter-spacing: -0.02em;">9+</dd></div>
+<div style="display: flex; flex-direction: column-reverse; gap: 8px;"><dt style="font-size: 15px; line-height: 1.45; color: var(--text-muted); max-width: 22ch;">data technologies in metadata tooling</dt><dd style="margin: 0; font-family: var(--font-heading); font-size: clamp(2.25rem, 1.5vw + 1.5rem, 2.75rem); line-height: 1; font-weight: 500; letter-spacing: -0.02em;">40+</dd></div>
+<div style="display: flex; flex-direction: column-reverse; gap: 8px;"><dt style="font-size: 15px; line-height: 1.45; color: var(--text-muted); max-width: 22ch;">customers on a lending platform</dt><dd style="margin: 0; font-family: var(--font-heading); font-size: clamp(2.25rem, 1.5vw + 1.5rem, 2.75rem); line-height: 1; font-weight: 500; letter-spacing: -0.02em;">25,000+</dd></div>
+<div style="display: flex; flex-direction: column-reverse; gap: 8px;"><dt style="font-size: 15px; line-height: 1.45; color: var(--text-muted); max-width: 22ch;">test coverage on Walmart’s data platform</dt><dd style="margin: 0; font-family: var(--font-heading); font-size: clamp(2.25rem, 1.5vw + 1.5rem, 2.75rem); line-height: 1; font-weight: 500; letter-spacing: -0.02em;">10% → 80%</dd></div>
+</dl>
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 40px;">
+<p class="meta">Trusted by teams at</p>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px 40px; font-size: 17px; font-weight: 600; color: var(--text-muted);">
+<li>Walmart</li><li>Alex Solutions</li><li>Confiz</li><li>Seulah</li><li>StreetApp</li><li>Cloud Card</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- 4. Selected work: problem, role, outcome -->
+<section id="work" class="wrap" style="padding-top: clamp(80px, 9vw, 128px);">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px 24px; margin-bottom: 48px;">
+<h2 class="h2">Selected work</h2>
+<a href="#" class="cta">All case studies</a>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 56px 32px;">
+
+<a href="#" class="work" style="display: flex; flex-direction: column;">
+<span class="work-media" style="display: block; border-radius: 16px; overflow: hidden; border: 1px solid var(--hairline); background: var(--bg-card);"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200'%3E%3Crect width='320' height='200' fill='%23ebe6df'/%3E%3Ctext x='160' y='105' font-family='sans-serif' font-size='14' fill='%236b6b6b' text-anchor='middle'%3EProject image (from CMS)%3C/text%3E%3C/svg%3E" alt="" style="display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: center top;"></span>
+<span class="meta" style="margin-top: 24px; letter-spacing: 0.02em;">Backend engineer and team lead</span>
+<span class="work-title" style="margin-top: 8px; font-size: 22px; line-height: 1.3; font-weight: 600; letter-spacing: -0.011em; transition: color 200ms ease;">Unified Data Platform (UDP)</span>
+<span style="margin-top: 12px; font-size: 17px; line-height: 1.6; color: var(--text-muted);">Walmart’s centralized enterprise ETL ecosystem for low-code ingestion, Spark and Beam processing, Airflow orchestration, governance, and monitoring.</span>
+<span style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--hairline); font-size: 15px; line-height: 1.45;"><strong style="font-weight: 600;">Outcome:</strong> test coverage raised from 10% to 80%</span>
+</a>
+
+<a href="#" class="work" style="display: flex; flex-direction: column;">
+<span class="work-media" style="display: block; border-radius: 16px; overflow: hidden; border: 1px solid var(--hairline); background: var(--bg-card);"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200'%3E%3Crect width='320' height='200' fill='%23ebe6df'/%3E%3Ctext x='160' y='105' font-family='sans-serif' font-size='14' fill='%236b6b6b' text-anchor='middle'%3EProject image (from CMS)%3C/text%3E%3C/svg%3E" alt="" style="display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: center top;"></span>
+<span class="meta" style="margin-top: 24px; letter-spacing: 0.02em;">Senior software engineer</span>
+<span class="work-title" style="margin-top: 8px; font-size: 22px; line-height: 1.3; font-weight: 600; letter-spacing: -0.011em; transition: color 200ms ease;">Data Landscape Scanner</span>
+<span style="margin-top: 12px; font-size: 17px; line-height: 1.6; color: var(--text-muted);">A cloud-agnostic metadata discovery and lineage framework.</span>
+<span style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--hairline); font-size: 15px; line-height: 1.45;"><strong style="font-weight: 600;">Outcome:</strong> supports more than 40 enterprise data technologies</span>
+</a>
+
+<a href="#" class="work" style="display: flex; flex-direction: column;">
+<span class="work-media" style="display: block; border-radius: 16px; overflow: hidden; border: 1px solid var(--hairline); background: var(--bg-card);"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200'%3E%3Crect width='320' height='200' fill='%23ebe6df'/%3E%3Ctext x='160' y='105' font-family='sans-serif' font-size='14' fill='%236b6b6b' text-anchor='middle'%3EProject image (from CMS)%3C/text%3E%3C/svg%3E" alt="" style="display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: center top;"></span>
+<span class="meta" style="margin-top: 24px; letter-spacing: 0.02em;">Lead full-stack engineer</span>
+<span class="work-title" style="margin-top: 8px; font-size: 22px; line-height: 1.3; font-weight: 600; letter-spacing: -0.011em; transition: color 200ms ease;">CAPA Multi-Vendor Warehouse Platform</span>
+<span style="margin-top: 12px; font-size: 17px; line-height: 1.6; color: var(--text-muted);">A multi-tenant B2B procurement network connecting US auto dealerships with warehouse inventory and accounting systems.</span>
+<span style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--hairline); font-size: 15px; line-height: 1.45;"><strong style="font-weight: 600;">Outcome:</strong> [one measurable result]</span>
+</a>
+
+</div>
+</section>
+
+<!-- 5. Services: how to engage -->
+<section id="services" style="margin-top: clamp(80px, 9vw, 128px); background: var(--bg-brand-soft); border-block: 1px solid var(--hairline);">
+<div class="wrap" style="padding-block: clamp(64px, 7vw, 96px); display: flex; flex-wrap: wrap; gap: 40px 80px;">
+<div style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 16px;">
+<h2 class="h2" style="max-width: 12ch;">Ways to work together</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.6; color: var(--text-main); max-width: 36ch;">Products, data platforms, and AI automation, from first architecture to production.</p>
+</div>
+<div style="flex: 2 1 560px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
+<a href="#" class="option" style="display: flex; flex-direction: column; gap: 12px; padding: 32px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--hairline);">
+<span class="meta" style="color: var(--text-main);">01</span>
+<span style="font-size: 22px; line-height: 1.3; font-weight: 600; letter-spacing: -0.011em;">Project or services</span>
+<span style="font-size: 17px; line-height: 1.6; color: var(--text-muted); flex-grow: 1;">Tell me about a product, platform, or engineering need.</span>
+<span class="cta" style="margin-top: 12px;">Start a project enquiry</span>
+</a>
+<a href="#" class="option" style="display: flex; flex-direction: column; gap: 12px; padding: 32px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--hairline);">
+<span class="meta" style="color: var(--text-main);">02</span>
+<span style="font-size: 22px; line-height: 1.3; font-weight: 600; letter-spacing: -0.011em;">Consultancy</span>
+<span style="font-size: 17px; line-height: 1.6; color: var(--text-muted); flex-grow: 1;">Start a focused advisory or technical review conversation.</span>
+<span class="cta" style="margin-top: 12px;">Request a technical review</span>
+</a>
+</div>
+</div>
+</section>
+
+<!-- 6. Social proof -->
+<section id="testimonials" class="wrap" style="padding-top: clamp(80px, 9vw, 128px); display: flex; flex-wrap: wrap; gap: 40px 80px;">
+<div style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 24px; align-items: flex-start;">
+<h2 class="h2" style="max-width: 13ch;">Trusted by the people I’ve worked with</h2>
+<a href="#" class="cta">Read all testimonials</a>
+</div>
+<figure style="flex: 2 1 560px; margin: 0; display: flex; flex-direction: column; gap: 32px;">
+<blockquote style="margin: 0; font-family: var(--font-heading); font-size: clamp(1.375rem, 1vw + 1rem, 1.75rem); line-height: 1.45; font-style: italic; font-weight: 400; letter-spacing: -0.005em; text-wrap: pretty;">“He is able to deliver technical solutions based on a combination of functional and technical requirements and deliver software outcomes in areas where he feels comfortable. Where he lacks knowledge he will research and acquire the knowledge needed…”</blockquote>
+<figcaption style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px;">
+<span aria-hidden="true" style="display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--bg-brand-soft-strong); font-family: var(--font-heading); font-size: 20px; font-weight: 600;">C</span>
+<span style="display: flex; flex-direction: column; line-height: 1.45; flex-grow: 1;">
+<span style="font-size: 17px; font-weight: 600;">Clinton Jones</span>
+<span style="font-size: 15px; color: var(--text-muted);">Product Leader in Data &amp; Metadata Management</span>
+</span>
+<a href="#" class="cta">Read on LinkedIn</a>
+</figcaption>
+</figure>
+</section>
+
+<!-- 7. Articles: expertise and branding -->
+<section id="articles" class="wrap" style="padding-top: clamp(80px, 9vw, 128px); padding-bottom: clamp(80px, 9vw, 128px);">
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px 24px; margin-bottom: 40px;">
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<h2 class="h2">Articles</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.6; color: var(--text-muted);">Practical notes on building reliable software, data platforms, and useful AI systems.</p>
+</div>
+<a href="#" class="cta">All articles</a>
+</div>
+<div style="border-top: 1px solid var(--hairline);">
+<a href="#" class="row-link" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 40px; padding: 28px 16px; border-bottom: 1px solid var(--hairline);">
+<span class="meta" style="flex: 0 0 200px; letter-spacing: 0.02em;">Sep 23, 2026 · 4 min</span>
+<span style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px;">
+<span style="font-size: 22px; line-height: 1.3; font-weight: 600; letter-spacing: -0.011em;">Quality Gates That Help Teams Ship</span>
+<span style="font-size: 17px; line-height: 1.6; color: var(--text-muted);">Practical guidance for making automated tests and static analysis useful in delivery workflows.</span>
+</span>
+<span class="arrow" aria-hidden="true" style="font-size: 22px; color: var(--brand-text);">→</span>
+</a>
+<a href="#" class="row-link" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 40px; padding: 28px 16px; border-bottom: 1px solid var(--hairline);">
+<span class="meta" style="flex: 0 0 200px; letter-spacing: 0.02em;">Sep 23, 2026 · 4 min</span>
+<span style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px;">
+<span style="font-size: 22px; line-height: 1.3; font-weight: 600; letter-spacing: -0.011em;">Hardening Data Connectors Without Stalling Delivery</span>
+<span style="font-size: 17px; line-height: 1.6; color: var(--text-muted);">A practical approach to secure query construction across many data integrations.</span>
+</span>
+<span class="arrow" aria-hidden="true" style="font-size: 22px; color: var(--brand-text);">→</span>
+</a>
+</div>
+</section>
+
+</main>
+
+<!-- 8. Closing: one strong ending, then the footer on the same surface -->
+<footer class="inv">
+<div class="wrap" style="padding-top: clamp(72px, 8vw, 112px); padding-bottom: 40px;">
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 32px 64px; padding-bottom: clamp(64px, 7vw, 96px);">
+<div style="flex: 1 1 560px; display: flex; flex-direction: column; gap: 16px;">
+<h2 class="h2" style="font-size: clamp(2.125rem, 2vw + 1.5rem, 3rem); line-height: 1.08; max-width: 20ch;">Need senior engineering support for a complex product or platform?</h2>
+<p style="margin: 0; font-size: 18px; line-height: 1.6; color: var(--inv-muted); max-width: 54ch;">Book a focused Google Calendar call to discuss the problem, delivery constraints, and a practical next step.</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px;">
+<a href="#" class="btn btn-lg btn-primary">Book a call</a>
+<a href="#" class="cta">or send a message</a>
+</div>
+</div>
+<div style="border-top: 1px solid var(--inv-line); padding-top: 48px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px 64px;">
+<div style="flex: 1 1 480px; display: flex; flex-direction: column; gap: 12px;">
+<p style="margin: 0; font-size: 17px; font-weight: 600;">Muhammad Usman</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: var(--inv-muted); max-width: 50ch;">Senior full-stack engineer building scalable products, data platforms, cloud systems, and practical AI automation.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px;">
+<a href="#" class="pill"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>GitHub</a>
+<a href="#" class="pill"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>LinkedIn</a>
+<a href="#" class="pill"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>Email</a>
+<a href="#" class="pill"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>CV</a>
+</div>
+</div>
+<nav aria-label="Footer" class="nav" style="flex: 0 1 360px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; align-content: start;">
+<a href="#work" style="width: fit-content;">Work</a>
+<a href="#" style="width: fit-content;">About</a>
+<a href="#services" style="width: fit-content;">Services</a>
+<a href="#" style="width: fit-content;">Testimonials</a>
+<a href="#articles" style="width: fit-content;">Articles</a>
+<a href="#" style="width: fit-content;">Contact</a>
+</nav>
+</div>
+<p style="margin: 48px 0 0; font-size: 14px; color: var(--inv-muted);">© 2026 Muhammad Usman. All rights reserved.</p>
+</div>
+</footer>
+
+</div>
+</body>
+</html>

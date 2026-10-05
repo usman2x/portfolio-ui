@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
 import { fetchQuotePage, fetchSiteSettings } from "../lib/cms"
@@ -74,6 +74,16 @@ const ContactPage = ({ quotePage, siteSettings }) => {
   const intentOptions = quotePage.helpTypes?.length
     ? quotePage.helpTypes
     : Object.keys(INTENT_COPY).map(value => ({ label: value, value }))
+
+  // Service cards on the homepage link here with ?intent=<help type>; preselect it.
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("intent")
+    if (!requested) return
+    const match = intentOptions.find(option => option.value === requested)
+    if (match) setValues(current => ({ ...current, intent: match.value }))
+    // Runs once on load; intentOptions comes from static props.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const updateValue = event => {
     const { name, type, checked, value } = event.target
@@ -199,7 +209,7 @@ const ContactPage = ({ quotePage, siteSettings }) => {
         siteSettings={siteSettings}
       />
       <section className="container interior-page quote-page-shell">
-        <section className="interior-section quote-intro">
+        <section className="interior-section page-intro quote-intro">
           <p className="section-eyebrow">{quotePage.eyebrow}</p>
           <h1 className="page-title">{quotePage.title}</h1>
           <p className="page-description">{quotePage.description}</p>

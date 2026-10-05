@@ -73,7 +73,6 @@ const Header = ({ siteSettings }) => {
           ) : null}
           <span className="logo-copy">
             <span className="logo">{siteSettings.name}</span>
-            <span className="logo-meta">{siteSettings.shortLabel}</span>
           </span>
         </Link>
         <nav
@@ -105,7 +104,7 @@ const Header = ({ siteSettings }) => {
                   : item.url
               const external = /^https?:/i.test(itemUrl)
               const className = item.isPrimary
-                ? "theme-btn-primary theme-btn-sm header-nav-cta"
+                ? "theme-btn-outline theme-btn-sm header-nav-cta"
                 : getNavClassName(item.url)
               const content = external ? (
                 <a

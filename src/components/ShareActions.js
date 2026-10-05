@@ -42,7 +42,7 @@ const ShareActions = ({ title, pathname }) => {
 
   return (
     <div className="share-actions" aria-label="Share this article">
-      <button type="button" className="theme-btn-primary theme-btn-sm" onClick={handleShare}>
+      <button type="button" className="theme-btn-outline theme-btn-sm" onClick={handleShare}>
         Share
       </button>
       <a

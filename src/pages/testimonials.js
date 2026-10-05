@@ -13,7 +13,7 @@ const TestimonialsPage = ({ pageContent, siteSettings, testimonials }) => (
       siteSettings={siteSettings}
     />
     <div className="container interior-page testimonials-page">
-      <header className="testimonials-page-intro">
+      <header className="page-intro testimonials-page-intro">
         <p className="section-eyebrow">{pageContent.eyebrow}</p>
         <h1 className="page-title">{pageContent.title}</h1>
         <p className="page-description">{pageContent.description}</p>

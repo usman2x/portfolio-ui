@@ -31,13 +31,9 @@ const AboutVideo = ({ video }) => {
   const videoId = embedUrl.split("/").pop()
   const posterUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
 
+  // One heading per block: the video eyebrow is not shown. The title is a caption, not a heading.
   return (
-    <aside className="about-video-card" aria-labelledby="about-video-title">
-      <div className="about-video-copy">
-        <p className="section-eyebrow">{video.eyebrow}</p>
-        <h2 id="about-video-title" className="interior-section-title">{video.title}</h2>
-        <p>{video.description}</p>
-      </div>
+    <figure className="about-video">
       <div className="about-video-frame">
         {isPlaying ? (
           <iframe
@@ -48,19 +44,25 @@ const AboutVideo = ({ video }) => {
             allowFullScreen
           />
         ) : (
-          <button className="about-video-poster" type="button" onClick={() => setIsPlaying(true)} aria-label={`Play ${video.title}`}>
+          <button className="about-video-poster" type="button" onClick={() => setIsPlaying(true)} aria-label={`Play video: ${video.title}`}>
             <img src={posterUrl} alt="" loading="lazy" width="480" height="360" />
-            <span className="about-video-play" aria-hidden="true">▶</span>
+            <span className="about-video-play" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+            </span>
           </button>
         )}
       </div>
-      {video.transcript ? (
-        <details className="about-video-transcript">
-          <summary>{video.transcriptLabel || "Read video transcript"}</summary>
-          <p>{video.transcript}</p>
-        </details>
-      ) : null}
-    </aside>
+      <figcaption className="about-video-caption">
+        <span className="about-video-title">{video.title}</span>
+        {video.description ? <span className="about-video-description">{video.description}</span> : null}
+        {video.transcript ? (
+          <details className="about-video-transcript">
+            <summary>{video.transcriptLabel || "Read video transcript"}</summary>
+            <p>{video.transcript}</p>
+          </details>
+        ) : null}
+      </figcaption>
+    </figure>
   )
 }
 

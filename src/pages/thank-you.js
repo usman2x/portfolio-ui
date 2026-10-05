@@ -3,14 +3,17 @@ import Link from "next/link";
 import Layout from "../components/Layout";
 import { fetchSiteSettings, fetchSystemPages } from "../lib/cms";
 
+// Outline button: the closing section below already carries the page's one primary action.
 const ThankYouPage = ({ siteSettings, systemPages }) => {
   return (
     <Layout siteSettings={siteSettings}>
-      <div className="thank-you-page">
-        <h1>{systemPages.thankYouTitle}</h1>
-        <p>{systemPages.thankYouMessage}</p>
-        <Link href="/" className="theme-btn-primary">{systemPages.homeButtonLabel}</Link>
-      </div>
+      <section className="container page-intro utility-page">
+        <h1 className="page-title">{systemPages.thankYouTitle}</h1>
+        <p className="page-description">{systemPages.thankYouMessage}</p>
+        <div className="page-actions">
+          <Link href="/" className="theme-btn-outline">{systemPages.homeButtonLabel}</Link>
+        </div>
+      </section>
     </Layout>
   );
 };

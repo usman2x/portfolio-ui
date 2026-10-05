@@ -282,6 +282,15 @@ const pickMediaUrl = (media, baseUrl, sizeKey) => {
   return toAbsoluteUrl(baseUrl, sizedPath || directPath)
 }
 
+const pickMediaSize = (media, sizeKey) => {
+  const sized = media?.sizes?.[sizeKey]
+  const source = sized?.url ? sized : media
+  return {
+    width: source?.width || null,
+    height: source?.height || null,
+  }
+}
+
 const normalizeGalleryMedia = (media, baseUrl) => {
   if (!media || typeof media !== "object") return null
   const fullUrl = toAbsoluteUrl(baseUrl, media.url)
@@ -366,7 +375,15 @@ export const fetchHomePage = async () => {
 
 export const fetchAboutPage = async () => {
   const data = await fetchPayloadGlobal("about-page")
-  return { ...data, summary: textRows(data.summary) }
+  const featured = data.featuredTestimonial
+  return {
+    ...data,
+    summary: textRows(data.summary),
+    featuredTestimonial:
+      featured && typeof featured === "object" && featured.quote
+        ? normalizeTestimonial(featured)
+        : null,
+  }
 }
 
 export const fetchTestimonialsPage = () =>
@@ -499,6 +516,8 @@ export const fetchWorkExperience = async () => {
   const payload = await response.json()
   return (payload.docs || []).map(item => ({
     ...item,
+    period: (item.period || "").replace(/\s+-\s+/g, " – "),
+    isCurrent: /present/i.test(item.period || ""),
     highlights: textRows(item.highlights),
   }))
 }
@@ -552,6 +571,26 @@ export const fetchPayloadPosts = async () => {
   return posts
 }
 
+// Lower-case phrases shown after the role ("Former manager · managed Muhammad").
+const relationshipLabels = {
+  manager: "managed Muhammad",
+  colleague: "worked on the same team",
+  client: "client",
+}
+
+const normalizeTestimonial = item => ({
+  id: item.id,
+  name: item.name,
+  role: item.role,
+  company: item.company || "",
+  quote: item.quote,
+  relationship: item.relationship,
+  relationshipLabel: relationshipLabels[item.relationship] || "",
+  sourceLabel: item.sourceLabel || "Recommendation",
+  sourceUrl: item.sourceUrl || "",
+  featured: Boolean(item.featured),
+})
+
 export const fetchPayloadTestimonials = async () => {
   const payloadApiUrl = getPayloadApiUrl()
   if (!payloadApiUrl) {
@@ -571,18 +610,42 @@ export const fetchPayloadTestimonials = async () => {
   }
 
   const payload = await response.json()
+  return Array.isArray(payload?.docs) ? payload.docs.map(normalizeTestimonial) : []
+}
+
+export const fetchPayloadServices = async () => {
+  const payloadApiUrl = getPayloadApiUrl()
+  if (!payloadApiUrl) {
+    throw new Error("PAYLOAD_API_URL is required to load services.")
+  }
+
+  const endpoint = new URL("/api/services", payloadApiUrl)
+  endpoint.searchParams.set("depth", "0")
+  endpoint.searchParams.set("limit", "20")
+  endpoint.searchParams.set("sort", "sortOrder")
+  endpoint.searchParams.set("where[status][equals]", "published")
+  endpoint.searchParams.set("where[showOnHome][equals]", "true")
+  const response = await fetchCms(endpoint.toString())
+  // A CMS without the services collection yet answers 404; the homepage then hides the section.
+  if (response.status === 404) return []
+  if (!response.ok) {
+    throw new Error(
+      `CMS services fetch failed with ${response.status} ${response.statusText}`
+    )
+  }
+
+  const payload = await response.json()
   return Array.isArray(payload?.docs)
-    ? payload.docs.map(item => ({
-        id: item.id,
-        name: item.name,
-        role: item.role,
-        company: item.company || "",
-        quote: item.quote,
-        relationship: item.relationship,
-        sourceLabel: item.sourceLabel || "Recommendation",
-        sourceUrl: item.sourceUrl || "",
-        featured: Boolean(item.featured),
-      }))
+    ? payload.docs
+        .map(item => ({
+          id: item.id,
+          title: item.title || "",
+          summary: item.summary || "",
+          highlights: textRows(item.highlights),
+          contactIntent: item.contactIntent || "",
+          ctaLabel: item.ctaLabel || "Start a conversation",
+        }))
+        .filter(item => item.title && item.summary)
     : []
 }
 
@@ -609,6 +672,7 @@ export const getCmsContent = async () => {
       const publishedDate = post?.publishedAt || post?.createdAt || null
       const tags = normalizeTags(post?.tags)
       const coverImageUrl = pickMediaUrl(post?.coverImage, publicCmsUrl, "card")
+      const coverImageSize = pickMediaSize(post?.coverImage, "card")
       const coverThumbnailUrl =
         pickMediaUrl(post?.coverImage, publicCmsUrl, "thumbnail") ||
         coverImageUrl
@@ -640,8 +704,11 @@ export const getCmsContent = async () => {
         coverImageUrl,
         coverThumbnailUrl,
         coverImageAlt: post?.coverImage?.alt || post.title || "",
+        coverImageWidth: coverImageSize.width,
+        coverImageHeight: coverImageSize.height,
         ogImageUrl,
         projectRole: post.projectRole || "",
+        projectOutcome: post.projectOutcome || "",
         projectGallery,
         isCaseStudy: hasTag(post?.tags, "case-study"),
         publicationType: post.publicationType || "native",

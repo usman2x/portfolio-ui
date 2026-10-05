@@ -15,7 +15,7 @@ It is separate from `docs/style/STYLEGUIDE.md`, which defines visual language.
 - `Home`
 - `About`
 - `Projects` or `Case Studies`
-- `Writings`
+- `Articles`
 - `Testimonials`
 - `Contact Me`
 
@@ -60,7 +60,7 @@ Rule:
 - Projects on the homepage are previews, not full documentation.
 - Each project should link to a deeper page with problem, role, approach, stack, and outcome.
 
-### 3. Latest Writings
+### 3. Articles
 
 Purpose:
 
@@ -70,7 +70,7 @@ Purpose:
 Content:
 
 - Latest 2 articles
-- Link to all writings
+- Link to all articles
 - Visible tags
 
 Rule:
@@ -168,7 +168,7 @@ Rule:
 
 - Each project detail page should read like a case study, not just a gallery card.
 
-## Writings Page
+## Articles Page
 
 Purpose:
 
@@ -176,7 +176,7 @@ Purpose:
 
 Required features:
 
-- Pagination
+- Load more
 - Tag filters
 - Clear links to article detail pages
 
@@ -194,7 +194,7 @@ Rule:
 
 - Homepage testimonials are previews; `/testimonials/` owns the complete listing.
 
-## Writing Detail Pages
+## Article Detail Pages
 
 Purpose:
 
@@ -246,7 +246,7 @@ Recommended top-level navigation:
 
 - About
 - Projects
-- Writings
+- Articles
 - Testimonials
 - Contact Me
 - Book a Call

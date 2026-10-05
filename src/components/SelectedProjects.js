@@ -2,60 +2,50 @@ import React from "react"
 import Link from "next/link"
 import ProjectVisual from "./ProjectVisual"
 
+// Featured case studies. The title link stretches over the card, so the whole card is one
+// click target and one tab stop.
 const SelectedProjects = ({ projects, homeContent }) => {
+  if (!projects.length) return null
+
   return (
-    <section id="projects" className="container landing-section">
+    <section
+      id="projects"
+      className="container landing-section home-work"
+      aria-labelledby="home-work-title"
+    >
       <div className="landing-section-header">
-        <h2 className="landing-section-title">{homeContent.projectsTitle}</h2>
+        <h2 id="home-work-title" className="landing-section-title">
+          {homeContent.projectsTitle}
+        </h2>
         <Link href="/projects/" className="text-link-cta link-underline">
           {homeContent.projectsArchiveLabel}
         </Link>
       </div>
-      <div className="preview-grid projects-preview-grid">
+      <div className="home-work-grid">
         {projects.map(project => (
-          <article
-            key={project.slug}
-            className="preview-card project-preview-card"
-          >
-            <Link
-              href={`/projects/${project.slug}/`}
-              className="project-preview-media-link"
-              aria-label={`Open ${project.title} case study`}
-            >
+          <article key={project.slug} className="home-work-card">
+            <div className="home-work-media">
               <ProjectVisual
                 image={project.thumbnailImage || project.image}
-                alt={project.imageAlt || `${project.title} project preview`}
+                alt={project.imageAlt || `${project.title} preview`}
                 title={project.title}
-                className="project-preview-media"
+                className="home-work-image"
               />
-            </Link>
-            <div className="preview-card-body">
-              <h3 className="preview-card-title">
-                <Link
-                  href={`/projects/${project.slug}/`}
-                  className="project-anchor-link link-underline"
-                >
-                  {project.title}
-                </Link>
-              </h3>
-              <p className="preview-card-summary">{project.summary}</p>
-              <p className="preview-card-role">
-                {project.role ? `${project.role} ` : ""}
-                <Link
-                  href={`/projects/${project.slug}/`}
-                  className="text-link-cta link-underline project-inline-more"
-                >
-                  Read more
-                </Link>
-              </p>
-              <div className="preview-tag-list">
-                {(project.tags || []).slice(0, 4).map(tag => (
-                  <span key={tag} className="tag-chip">
-                    {tag}
-                  </span>
-                ))}
-              </div>
             </div>
+            {project.role ? (
+              <p className="home-work-role">{project.role}</p>
+            ) : null}
+            <h3 className="home-work-title">
+              <Link href={`/projects/${project.slug}/`} className="home-work-link">
+                {project.title}
+              </Link>
+            </h3>
+            <p className="home-work-summary">{project.summary}</p>
+            {project.outcome ? (
+              <p className="home-work-outcome">
+                <strong>Outcome:</strong> {project.outcome}
+              </p>
+            ) : null}
           </article>
         ))}
       </div>

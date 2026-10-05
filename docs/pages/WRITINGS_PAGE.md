@@ -1,6 +1,6 @@
-# Writings Blueprint
+# Articles Blueprint
 
-This document defines the structure for the writings archive and individual article pages.
+This document defines the structure for the articles archive and individual article pages.
 
 It covers layout, discovery flow, filtering, pagination, internal linking, and SEO-aware content rules.
 
@@ -30,57 +30,54 @@ Rule:
 
 - Slugs must be stable and stored in content frontmatter.
 
-## Writings System
+## Articles System
 
-The writings system has three layers:
+The articles system has three layers:
 
-1. Homepage latest writings preview
-2. Writings archive page
+1. Homepage Articles section
+2. Articles archive page
 3. Article detail page
 
 The archive supports native and external writing entries. Native articles open on this site. External entries coexist in the same chronological and topic-based lists, but open their original Medium, LinkedIn, or other publication in a new tab. External entries do not generate local detail routes.
 
-## 1. Homepage Latest Writings Preview
+## 1. Homepage Articles Section
 
 Purpose:
 
-- Show the newest or most relevant writing on the landing page
+- Show the newest articles directly on the landing page
 - Drive readers into the archive
 
-Required content:
+Layout:
 
-- latest 3 to 6 posts
-- title
-- date
-- short summary
-- tags
-- link to detail page
-- link to `/blog/`
+- Header row: section title (`Articles`) with a one-line description underneath on the left; an `All articles →` link to `/blog/` on the right.
+- On mobile the `All articles` link moves below the description.
+- Below the header, the latest articles, newest first, using the same `ArticleCard` as the archive (title, excerpt, date, tags, cover thumbnail).
+- Title, description, link label, and article count (`writingsLimit`, default 2) come from the Home Page global.
 
 Presentation rule:
 
-- On the homepage preview, use a vertical list for latest writings (stacked entries), not a multi-column card grid.
+- Use a vertical list of stacked cards, not a multi-column card grid.
 
 Rule:
 
 - Homepage should preview the archive, not replace it.
 
-## 2. Writings Archive Page: `/blog/`
+## 2. Articles Archive Page: `/blog/`
 
 Purpose:
 
-- Act as the complete archive of writing
-- Help users scan by topic and recency
+- Act as the complete archive of articles
+- Help users scan by recency, with tag chips for topic discovery
 - Route readers into individual articles
 
 Recommended page order:
 
 1. Archive intro
-2. Tag filter area
-3. Article list
-4. Pagination
-5. Optional CTA band
-6. Footer
+2. Topic filter panel (left column on desktop, above the list on mobile) beside the article list
+3. `Load more articles` button
+4. Footer
+
+There is no result count.
 
 ### Archive Intro
 
@@ -91,7 +88,7 @@ Required content:
 
 Recommended title:
 
-- `Writings`
+- `Articles`
 
 Recommended supporting copy:
 
@@ -102,22 +99,17 @@ Rule:
 - Keep the intro brief.
 - Center the archive title and supporting copy, and keep the title as the only heading in the archive intro/filter region.
 
-### Tag Filter Area
+### Topic Filter Panel
 
-Purpose:
+- Title and description come from Archive Settings (`filterTitle`, `filterDescription`).
+- Shows an `All` pill plus every tag used by an article; the active pill is highlighted and marked `aria-current`.
+- One active tag at a time, stored in the URL as `/blog/?tag=<slug>`.
 
-- Help readers narrow content quickly
+### Tag Filtering
 
-Recommended behavior:
-
-- show all tags
-- allow one active filter at a time initially
-- include an `All` state
-
-Rule:
-
-- Start simple.
-- Single-tag filtering is enough for the first version.
+- Tag chips on cards and article pages link to `/blog/?tag=<slug>`.
+- With a tag active, the intro heading becomes `Articles tagged <tag>` (also used for the page title and Open Graph/Twitter titles); the `All` pill clears it.
+- Tags render as plain words in pill chips, never with a `#` prefix.
 
 ### Article List
 
@@ -142,25 +134,19 @@ Rule:
 - Archive cards should be easy to scan.
 - Avoid making cards too visually heavy.
 
-### Pagination
+### Load More
 
 Purpose:
 
-- keep the archive manageable as content grows
+- keep the archive manageable as content grows without leaving the page
 
-Recommended behavior:
+Behavior:
 
-- page-based pagination
-- query param or route-based pagination is acceptable
-
-Preferred UX:
-
-- clear next / previous controls
-- visible current page state
-
-Rule:
-
-- Keep pagination simple and readable.
+- show the first `postsPerPage` articles (Archive Settings, default 6)
+- a `Load more articles` button appends the next batch to the same list
+- hide the button once every article for the current topic is shown
+- move keyboard focus to the first newly added article
+- changing the topic resets the list to the first batch
 
 ### Optional CTA Band
 
@@ -193,7 +179,8 @@ Recommended page order:
 2. Article body
 3. Tags
 4. Share actions
-5. A single previous/next discovery section
+5. `Written by` author card
+6. A single previous/next discovery section
 6. Comments if enabled
 7. Book a call block
 8. Footer
@@ -209,11 +196,24 @@ Required content:
 
 Optional:
 
-- cover image
+- cover image, shown in full at its natural aspect ratio (no cropping); width/height attributes reserve its space
 
 Rule:
 
 - Header should be clean and article-first.
+
+### Reading Progress
+
+- A 3px bar in `--brand-primary` on the bottom edge of the sticky nav bar (rendered inside the header), so it stays visible while scrolling.
+- Fills from 0% at the top of the article to 100% when the end of the article body reaches the bottom of the viewport; the author card and footer do not count.
+- Article detail pages only; `aria-hidden="true"`; updates via `requestAnimationFrame` without transitions.
+
+### Author Card
+
+- Small `Written by` label, round portrait, name, professional title, and social icon links.
+- All values come from Site Settings (`name`, `portrait`, `professionalTitle`, `socialLinks`, `email`); nothing is set per article.
+- External links open in a new tab with `rel="noopener noreferrer"` and an `aria-label`.
+- Icons reuse the footer credential icon style.
 
 ### Article Body
 
@@ -324,16 +324,10 @@ Examples:
 - use `mental-health`, not both `mental health` and `mental-health`
 - use `ai`, not both `AI` and `Artificial Intelligence` as separate filter tags unless there is a clear distinction
 
-## Pagination Strategy
+## Batch Size
 
-Recommended first version:
-
-- 6 to 12 posts per page
-
-Rule:
-
-- use a predictable archive structure
-- keep page titles and canonicals clean if paginated routes are introduced
+- 6 to 12 articles per batch (`postsPerPage`)
+- `/blog/` stays a single canonical URL; there are no paginated routes
 
 ## Internal Linking Rules
 
@@ -362,7 +356,7 @@ URL:
 
 Title pattern:
 
-- `Writings | Muhammad Usman`
+- `Articles | Muhammad Usman`
 
 Description direction:
 

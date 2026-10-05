@@ -150,6 +150,51 @@ Typography rules:
 
 ---
 
+### Homepage scale and surfaces
+
+The homepage uses a reduced scale (tokens in the "Phase F" block of `global.css`; details in
+`docs/pages/HOMEPAGE_REDESIGN.md`):
+
+- Sizes: `--fs-meta` 13px, `--fs-ui` 15px, `--fs-body` 17px, lead 20px, `--fs-item` 22px,
+  `--fs-quote`, `--fs-section`, `--fs-stat`, `--fs-display` (fluid). Line heights 1.04 / 1.12 /
+  1.3 / 1.45 / 1.6.
+- Spacing on an 8px grid; `--section-gap` (80–128px) between sections, always larger than the
+  space inside a section.
+- No shadows on homepage content; 1px `--hairline` borders that warm toward `--brand-primary` on
+  hover.
+- Surfaces: the page, the services band (`--bg-brand-soft` with white cards and hairlines; the 8%
+  tint alone is only 1.08:1 against the page), and the inverse closing surface
+  (`--surface-inverse`, `--on-inverse`, `--on-inverse-muted`, `--inverse-line`, palette values
+  only) shared by the book-call section and the footer. Focus rings on the inverse surface use
+  `--color-primary`.
+- One orange primary button per view: the header's "Book a call" is outlined.
+- Focus rings on the page and the services band use `--brand-text`; `--brand-primary` is only
+  2.6:1 on the sunset page, below the 3:1 minimum for focus indicators.
+- Monospace is for short labels and dates only. Long proof values (e.g. `10% → 80%`) may wrap
+  on phones rather than overflow.
+- Font role tokens (`--font-heading`, `--font-body`, `--font-mono`) are declared on both `:root`
+  and `.font-root`, because next/font defines the face variables on `.font-root`; declared only
+  on `:root`, they silently fall back to Georgia and system fonts.
+
+### Site-wide page scale
+
+Every page uses the homepage tokens ("Phase H" block of `global.css`):
+
+- **Page intro:** optional mono eyebrow, title, lead paragraph (20px muted, max 56ch),
+  left-aligned, with About's top space (`clamp(3rem, 7vw, 6rem)`). No centred intros.
+- **Title sizes:** Home and About use `--fs-display`; case studies and articles use
+  `--fs-display`; archive and utility pages (Projects, Articles, Testimonials, Contact, 404,
+  Thank-you) use `--fs-page-title` (36–48px) so Home and About stay the most prominent.
+- **Headings:** page sections `--fs-section`; card and item titles `--fs-item` (Inter 600);
+  headings inside article/case-study prose 24–28px.
+- **Body and meta:** body `--fs-body`; dates, reading time, roles and labels in mono `--fs-meta`.
+- **Surfaces:** no shadows; cards and media are one 1px `--hairline` with 16px corners. Project
+  cards have no outer box (same anatomy as homepage selected work).
+- **Buttons:** 44px tall, 15px, 8px corners; 52px only for the hero, About intro and closing CTAs.
+  One orange primary per view: secondary actions (share, back to home, load more) are outlined.
+- **Back links:** underlined text links ("Back to all projects", "Back to all articles").
+- **Spacing:** each page ends a full `--section-gap` above the closing section.
+
 ## Components
 
 ### Buttons
@@ -175,7 +220,7 @@ Typography rules:
 ### Links
 
 - Inline and navigation links: `--brand-primary` or text color, underline revealed on hover/focus
-- Call-to-action text links (`.text-link-cta`: "Read more", "All writings", "View case study"): `--text-main` with a persistent 2px `--brand-primary` underline, so they are identifiable without relying on color (WCAG 1.4.1)
+- Call-to-action text links (`.text-link-cta`: "Read more", "All articles", "View case study"): `--text-main` with a persistent 2px `--brand-primary` underline, so they are identifiable without relying on color (WCAG 1.4.1)
 - Keep visually understated but clearly identifiable
 - Use a left-to-right underline transition in the primary color
 - Keep hover underlines aligned to the link text itself, not the full row or container width

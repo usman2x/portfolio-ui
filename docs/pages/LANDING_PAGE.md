@@ -13,14 +13,18 @@ It translates `docs/structure/STRUCTURE.md` into a concrete landing page plan.
 
 ## Landing Page Order
 
+The order follows a prospective client's questions: what you do, proof, how to engage, trust,
+then how you think. Full layout, type, spacing and surface rules: `docs/pages/HOMEPAGE_REDESIGN.md`
+(visual target: `docs/design/homepage-redesign.reference.html`).
+
 1. Header
 2. Identity block
 3. Proof strip
-4. Latest writings
-5. Selected projects
+4. Selected projects
+5. Ways to work together (Services collection)
 6. Testimonial preview
-7. Book a call block
-8. Footer
+7. Articles
+8. Book a call block and footer (one inverse surface)
 
 ## 1. Header
 
@@ -29,16 +33,19 @@ Purpose:
 - Help users orient quickly
 - Keep top navigation simple
 
-Recommended links:
+Recommended links (Site Settings → Navigation):
 
 - About
 - Projects
-- Writings
+- Articles
 - Contact Me
-- Book a Call
+- Book a Call (outlined; the orange primary appears once per view, in the hero)
+
+Testimonials can live in the footer only.
 
 Rule:
 
+- Logo image and name only; no tagline line under the name.
 - Keep the header visually quiet.
 - Use a subtle primary-color underline on nav hover and active states.
 - Avoid adding too many links.
@@ -59,8 +66,6 @@ Required content:
 - Small eyebrow
 - Main headline
 - Supporting text
-- Focus cues:
-  who you help, what you build, why trust you, what to do next
 - Link to `/about`
 
 Recommended framing:
@@ -76,9 +81,11 @@ Content intent:
 Suggested content pattern:
 
 - Small eyebrow
-- Main headline
+- Main headline (`--fs-display`, max 21ch)
 - Supporting text
-- Focus cues list
+- Two buttons and a one-line note under them (`primaryCtaNote`)
+
+The trust-chips list is removed; the proof strip carries that evidence.
 
 Example structure:
 
@@ -88,11 +95,11 @@ Example structure:
 
 Primary action inside this section:
 
-- `Book a Call`
+- `Book a call` (primary, 52px tall)
 
 Secondary action:
 
-- `View Projects`
+- `See selected work` (outline, links to `#work`)
 
 Rule:
 
@@ -127,7 +134,7 @@ Purpose:
 
 Section title:
 
-- `Selected projects`
+- `Selected work`
 
 Required content:
 
@@ -136,12 +143,15 @@ Required content:
 - Link from each project to a detailed project page or case study
 - Project preview image when available
 
-Each project preview should show:
+Each project preview should show, in this order:
 
+- 16:10 image
+- Your role (meta style)
 - Project name
 - One-sentence context
-- Your role or contribution
-- Optional stack or outcome
+- Hairline, then `Outcome:` from the post's `projectOutcome` field (hidden when empty)
+
+The whole card is one link; no tags and no separate `Read more`.
 
 Project detail pages should eventually include:
 
@@ -154,17 +164,40 @@ Project detail pages should eventually include:
 
 CTA in this section:
 
-- `View all projects`
+- `All case studies`
 
 Rule:
 
 - Homepage cards are previews only.
 - Keep the section intro to one visible heading.
 - Do not place long project descriptions on the landing page.
-- Keep selected-project previews visually light with consistent image sizing and minimal card chrome.
-- Keep the project CTA inline at the end of supporting text as `Read more`, not as a detached control.
+- Keep selected-project previews visually light with consistent image sizing and hairline borders, no shadows.
 
-## 4. Latest Writings
+## 3a. Ways to Work Together
+
+Purpose:
+
+- Answer "how do we work together?" before trust and reading content
+
+Content:
+
+- Home Page global: `servicesTitle`, `servicesDescription`, `servicesLimit` (an empty title hides the section)
+- Services collection: published rows with `showOnHome`, ordered by `sortOrder`
+
+Layout:
+
+- Full-bleed `--bg-brand-soft` band with hairlines; title and one sentence on the left, white cards on the right
+- Each card: `01`/`02` index, title, summary, optional highlights, one CTA
+- The whole card links to `/contact/?intent=<contactIntent>`; the contact wizard preselects that intent
+
+## 3b. Testimonial Preview
+
+- Title and one `Read all testimonials` link on the left, the quote on the right (stacks on phones)
+- Shows the first featured, published testimonial by `sortOrder`
+- The quote is cut at a word boundary, never mid-word; no expand button on the homepage
+- The source link reads `Read on LinkedIn` when the testimonial has a LinkedIn `sourceUrl`
+
+## 4. Articles
 
 Purpose:
 
@@ -174,25 +207,25 @@ Purpose:
 
 Section title:
 
-- `Latest writings`
+- `Articles`
 
 Required content:
 
-- Latest 2 articles
-- Tag visibility
+- Latest articles (Home Page `writingsLimit`, default 2), newest first
+- One-line description (`writingsDescription`)
 - Link to `/blog`
 
-Each article preview should show:
+Each article is one row link with hairline separators:
 
-- Title
-- Date
-- Optional short summary
-- Tags
-- Link to article detail page
+- Date · reading time (meta style)
+- Title and short summary
+- Arrow on the right
+
+No tags and no separate `Read article` link on the homepage; the archive keeps the full cards.
 
 Archive page requirements:
 
-- Pagination
+- Load more
 - Tag filters
 
 Article detail page requirements:
@@ -203,11 +236,11 @@ Article detail page requirements:
 
 CTA in this section:
 
-- `See all writings`
+- `All articles`
 
 Rule:
 
-- Writings should feel equal to or stronger than projects in importance.
+- Articles sit on the page background, not a tinted box.
 - Keep the section intro to one visible heading.
 
 ## 5. Book a Call Block
@@ -221,11 +254,12 @@ Required content order:
 
 - business proposition line
 - short supporting subtitle
-- `Book a Call` button
+- `Book a call` button, plus an `or send a message` text link
 
 Rule:
 
-- Keep this as a dedicated full-width section before the footer.
+- Shares one inverse surface (`--surface-inverse`) with the footer, site-wide.
+- Left-aligned: copy on the left, actions on the right, aligned to the bottom.
 - Use one primary action only.
 
 ## 6. Footer
@@ -242,7 +276,8 @@ Footer should include:
 - Credentials/social links
 - Email or booking link
 
-Credentials should appear as icon links directly under the footer name/introduction block.
+Credentials appear as labelled pill links (icon + text, 44px tall) under the footer name and
+description: GitHub, LinkedIn, Email, CV. Navigation is a two-column list without a heading.
 
 Optional:
 
@@ -276,7 +311,7 @@ Recommended implementation order:
 
 1. Identity block
 2. Selected projects with detail-page links
-3. Latest writings section
+3. Articles section
 4. CTA block with credentials
 5. Footer
 
@@ -284,12 +319,15 @@ Recommended implementation order:
 
 - Create `/about` page structure
 - Create project/case-study detail template
-- Create writings archive behavior: pagination + tags
+- Create writings archive behavior: load more + tags
 - Create quote wizard flow
 
 ---
 
 # Content-Ready Homepage Spec
+
+> Superseded for order and layout by the sections above and `docs/pages/HOMEPAGE_REDESIGN.md`.
+> Kept for the content notes below.
 
 This section turns the landing page blueprint into concrete homepage content using the material currently in the repo.
 
@@ -298,7 +336,7 @@ This section turns the landing page blueprint into concrete homepage content usi
 1. Header
 2. Identity block
 3. Selected projects
-4. Latest writings
+4. Articles
 5. CTA block
 6. Footer
 
@@ -308,7 +346,7 @@ Recommended nav:
 
 - About
 - Projects
-- Writings
+- Articles
 - Contact Me
 - Book a Call
 
@@ -419,11 +457,11 @@ Important structural note:
 - Homepage cards should eventually link to internal project detail pages, not only external profile links.
 - Each project detail page should become a case study.
 
-## 4. Latest Writings
+## 4. Articles
 
 Recommended section title:
 
-- `Latest writings`
+- `Articles`
 
 Recommended section subtitle:
 
@@ -448,7 +486,7 @@ Recommended homepage article cards:
 
 Section CTA:
 
-- `See All Writings`
+- `All articles`
 
 Structural note:
 
@@ -457,7 +495,7 @@ Structural note:
 
 Archive requirements for `/blog`:
 
-- Pagination
+- Load more
 - Tag filters
 
 Detail page requirements:
@@ -489,7 +527,7 @@ Recommended footer structure:
 
 - About
 - Projects
-- Writings
+- Articles
 - Contact Me
 
 Credentials placement:

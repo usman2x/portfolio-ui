@@ -23,6 +23,7 @@ export const getAllProjects = async () => {
     summary: project.excerpt || project.description || "",
     description: project.description || project.excerpt || "",
     role: project.projectRole || "",
+    outcome: project.projectOutcome || "",
     image: project.coverImageUrl || null,
     thumbnailImage: project.coverThumbnailUrl || project.coverImageUrl || null,
     imageAlt: project.coverImageAlt || project.title || "",

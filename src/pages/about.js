@@ -1,14 +1,21 @@
-import React, { useRef } from "react"
+import React from "react"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
 import WorkExperienceTimeline from "../components/WorkExperienceTimeline"
 import AboutVideo from "../components/AboutVideo"
-import useRevealOnce from "../lib/useRevealOnce"
-import { fetchAboutPage, fetchSiteSettings, fetchWorkExperience } from "../lib/cms"
+import Testimonials from "../components/Testimonials"
+import {
+  fetchAboutPage,
+  fetchHomePage,
+  fetchSiteSettings,
+  fetchTestimonialsPage,
+  fetchWorkExperience,
+} from "../lib/cms"
 
-const AboutPage = ({ aboutPage, siteSettings, workExperience }) => {
-  const strengthsRef = useRef(null)
-  useRevealOnce(strengthsRef)
+// Order (docs/pages/ABOUT_REDESIGN.md): intro + video, core strengths, work experience,
+// one testimonial on the tinted band, then the shared closing section from Layout.
+const AboutPage = ({ aboutPage, siteSettings, workExperience, sharedLabels }) => {
+  const [lead, ...rest] = aboutPage.summary
 
   return (
     <Layout siteSettings={siteSettings}>
@@ -18,52 +25,103 @@ const AboutPage = ({ aboutPage, siteSettings, workExperience }) => {
         pathname="/about/"
         siteSettings={siteSettings}
       />
-      <section className="container interior-page about-page-shell">
-        <header className="about-intro-header">
-          <p className="section-eyebrow">{aboutPage.eyebrow}</p>
-          <h1 className="page-title">{aboutPage.title}</h1>
-        </header>
-        <section className="about-intro-grid">
-          <div className="interior-section about-intro-copy">
-            {aboutPage.summary.map(paragraph => (
-              <p key={paragraph} className="interior-copy">
-                {paragraph}
-              </p>
-            ))}
+      <div className="about-page">
+        <section className="container about-intro" aria-labelledby="about-title">
+          <p className="about-eyebrow">{aboutPage.eyebrow}</p>
+          <h1 id="about-title" className="about-title">{aboutPage.title}</h1>
+          <div className="about-intro-row">
+            <div className="about-intro-copy">
+              {lead ? <p className="about-lead">{lead}</p> : null}
+              {rest.map(paragraph => (
+                <p key={paragraph} className="about-copy">{paragraph}</p>
+              ))}
+              <div className="about-actions">
+                {siteSettings.meetingLink ? (
+                  <a
+                    href={siteSettings.meetingLink}
+                    className="theme-btn-primary about-action"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {sharedLabels.primaryCtaLabel}
+                  </a>
+                ) : null}
+                {siteSettings.resumeLink ? (
+                  <a
+                    href={siteSettings.resumeLink}
+                    className="theme-btn-outline about-action"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Download CV
+                  </a>
+                ) : null}
+              </div>
+            </div>
+            <AboutVideo video={aboutPage.video} />
           </div>
-          <AboutVideo video={aboutPage.video} />
         </section>
 
-        <WorkExperienceTimeline entries={workExperience} title={aboutPage.experienceTitle} />
+        {aboutPage.strengths?.length ? (
+          <section className="container about-strengths" aria-labelledby="about-strengths-title">
+            <h2 id="about-strengths-title" className="landing-section-title">
+              {aboutPage.strengthsTitle}
+            </h2>
+            <ol className="about-strengths-list">
+              {aboutPage.strengths.map((item, index) => (
+                <li key={item.title} className="about-strength">
+                  <span className="strength-index" aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="about-strength-title">{item.title}</h3>
+                  <p className="about-strength-description">{item.description}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ) : null}
 
-        <section className="interior-section strengths-section">
-          <h2 className="interior-section-title">{aboutPage.strengthsTitle}</h2>
-          <ol className="strengths-grid" ref={strengthsRef}>
-            {aboutPage.strengths.map((item, index) => (
-              <li
-                key={item.title}
-                className="info-card strength-card"
-                style={{ animationDelay: `${index * 70}ms` }}
-              >
-                <span className="strength-index" aria-hidden="true">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
-      </section>
+        <div className="container about-experience">
+          <WorkExperienceTimeline
+            entries={workExperience}
+            title={aboutPage.experienceTitle}
+            cvHref={siteSettings.resumeLink}
+          />
+        </div>
+
+        {aboutPage.featuredTestimonial ? (
+          <div className="about-testimonial-band">
+            <Testimonials
+              testimonials={[aboutPage.featuredTestimonial]}
+              content={sharedLabels}
+              archiveHref="/testimonials/"
+              variant="home"
+              showRelationship
+              quoteLimit={null}
+            />
+          </div>
+        ) : null}
+      </div>
     </Layout>
   )
 }
 
 export const getStaticProps = async () => {
-  const [aboutPage, siteSettings, workExperience] = await Promise.all([
-    fetchAboutPage(), fetchSiteSettings(), fetchWorkExperience(),
-  ])
-  return { props: { aboutPage, siteSettings, workExperience } }
+  const [aboutPage, siteSettings, workExperience, testimonialsPage, homePage] =
+    await Promise.all([
+      fetchAboutPage(),
+      fetchSiteSettings(),
+      fetchWorkExperience(),
+      fetchTestimonialsPage(),
+      fetchHomePage(),
+    ])
+  // Shared labels: the testimonials page title, the homepage's archive link and CTA labels.
+  const sharedLabels = {
+    testimonialsTitle: testimonialsPage.title,
+    testimonialsArchiveLabel: homePage.testimonialsArchiveLabel || "Read all testimonials",
+    primaryCtaLabel: homePage.primaryCtaLabel || "Book a call",
+  }
+  return { props: { aboutPage, siteSettings, workExperience, sharedLabels } }
 }
 
 export default AboutPage

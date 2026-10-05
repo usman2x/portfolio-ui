@@ -1,31 +1,24 @@
-import React from "react"
+import React, { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { format } from "date-fns"
 import Layout from "../../components/Layout"
 import SEO from "../../components/seo"
+import ArticleCard from "../../components/ArticleCard"
 import { getAllBlogPosts } from "../../lib/content"
 import { fetchArchiveSettings, fetchSiteSettings } from "../../lib/cms"
-import WritingLink from "../../components/WritingLink"
-import {
-  getWritingCtaLabel,
-  getWritingSourceLabel,
-  isExternalWriting,
-} from "../../lib/writings"
 
-const formatPostDate = date => {
-  const parsedDate = new Date(date)
-  return Number.isNaN(parsedDate.getTime())
-    ? ""
-    : format(parsedDate, "MMMM d, yyyy")
-}
+const buildArchivePath = tag =>
+  tag ? `/blog/?tag=${encodeURIComponent(tag)}` : "/blog/"
 
 const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
   const router = useRouter()
   const postsPerPage = archiveSettings.postsPerPage || 6
   const selectedTag =
-    typeof router.query.tag === "string" ? router.query.tag : "all-tags"
-  const requestedPage = Number.parseInt(router.query.page || "1", 10)
+    typeof router.query.tag === "string" ? router.query.tag.toLowerCase() : ""
+  const [visibleCount, setVisibleCount] = useState(postsPerPage)
+  const listRef = useRef(null)
+  const focusIndexRef = useRef(null)
+
   const allTags = Array.from(
     posts.reduce((tagMap, post) => {
       ;(post.tags || []).forEach(tag => {
@@ -39,57 +32,61 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
   )
     .map(([value, label]) => ({ value, label }))
     .sort((a, b) => a.label.localeCompare(b.label))
-  const filteredPosts =
-    selectedTag === "all-tags"
-      ? posts
-      : posts.filter(post =>
-          (post.tags || []).some(tag => tag.toLowerCase() === selectedTag)
-        )
-  const selectedTagLabel =
-    selectedTag === "all-tags"
-      ? "All"
-      : allTags.find(tag => tag.value === selectedTag)?.label || selectedTag
-  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / postsPerPage))
-  const currentPage =
-    Number.isFinite(requestedPage) && requestedPage > 0
-      ? Math.min(requestedPage, totalPages)
-      : 1
-  const visiblePosts = filteredPosts.slice(
-    (currentPage - 1) * postsPerPage,
-    currentPage * postsPerPage
-  )
-  const buildArchivePath = (tag, page = 1) => {
-    const params = new URLSearchParams()
-    if (page > 1) {
-      params.set("page", String(page))
-    }
-    if (tag !== "all-tags") {
-      params.set("tag", tag)
-    }
-    const queryString = params.toString()
+  const filteredPosts = selectedTag
+    ? posts.filter(post =>
+        (post.tags || []).some(tag => tag.toLowerCase() === selectedTag)
+      )
+    : posts
+  const selectedTagLabel = selectedTag
+    ? allTags.find(tag => tag.value === selectedTag)?.label || selectedTag
+    : ""
+  const visiblePosts = filteredPosts.slice(0, visibleCount)
+  const hasMore = filteredPosts.length > visibleCount
+  const pageTitle = selectedTag
+    ? `Articles tagged ${selectedTagLabel}`
+    : archiveSettings.writingsTitle
 
-    return queryString ? `/blog/?${queryString}` : "/blog/"
+  // Start from the first batch again whenever the topic changes.
+  useEffect(() => {
+    setVisibleCount(postsPerPage)
+  }, [selectedTag, postsPerPage])
+
+  // Move keyboard focus to the first newly revealed article.
+  useEffect(() => {
+    if (focusIndexRef.current === null || !listRef.current) return
+    const link = listRef.current
+      .querySelectorAll(".writing-list-title-link")
+      .item(focusIndexRef.current)
+    focusIndexRef.current = null
+    link?.focus()
+  }, [visibleCount])
+
+  const loadMore = () => {
+    focusIndexRef.current = visibleCount
+    setVisibleCount(count => count + postsPerPage)
   }
 
   return (
     <Layout siteSettings={siteSettings}>
       <SEO
-        title={archiveSettings.writingsTitle}
+        title={pageTitle}
         description={archiveSettings.writingsSeoDescription}
         pathname="/blog/"
         siteSettings={siteSettings}
       />
       <main className="writings-page">
-        <section className="container writings-page-header">
-          <h1 className="page-title">{archiveSettings.writingsTitle}</h1>
+        <section className="container page-intro writings-page-header">
+          <h1 className="page-title">{pageTitle}</h1>
           <p className="page-description">
-            {archiveSettings.writingsDescription ||
-              "Practical notes on building reliable software, data platforms, and useful AI systems."}
+            {archiveSettings.writingsDescription}
           </p>
         </section>
         <section className="container">
           <div className="writings-layout">
-            <aside className="writings-filter-panel">
+            <aside
+              className="writings-filter-panel"
+              aria-label={archiveSettings.filterTitle}
+            >
               <div className="writings-filter-copy">
                 <p className="writings-filter-title">
                   {archiveSettings.filterTitle}
@@ -100,10 +97,9 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
               </div>
               <div className="writings-tag-list">
                 <Link
-                  href={buildArchivePath("all-tags")}
-                  className={`blog-tag-pill ${
-                    selectedTag === "all-tags" ? "active" : ""
-                  }`}
+                  href={buildArchivePath("")}
+                  className={`blog-tag-pill ${selectedTag ? "" : "active"}`}
+                  aria-current={selectedTag ? undefined : "page"}
                 >
                   All
                 </Link>
@@ -114,6 +110,9 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
                     className={`blog-tag-pill ${
                       selectedTag === tag.value ? "active" : ""
                     }`}
+                    aria-current={
+                      selectedTag === tag.value ? "page" : undefined
+                    }
                   >
                     {tag.label}
                   </Link>
@@ -121,138 +120,27 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
               </div>
             </aside>
             <div className="writings-main">
-              <div className="writings-results-bar">
-                <p className="writings-results-copy">
-                  Showing {visiblePosts.length} of {filteredPosts.length}{" "}
-                  article
-                  {filteredPosts.length === 1 ? "" : "s"}
-                  {selectedTag !== "all-tags" ? ` in ${selectedTagLabel}` : ""}.
-                </p>
-                <Link href="/contact/" className="text-link-cta link-underline">
-                  {archiveSettings.writingCtaLabel}
-                </Link>
-              </div>
-              <div className="writings-list">
-                {visiblePosts.map(post => {
-                  const {
-                    id,
-                    title,
-                    date,
-                    description,
-                    excerpt,
-                    tags,
-                    coverImageUrl,
-                    coverImageAlt,
-                    readingTimeMinutes,
-                  } = post
-                  const hasImage = Boolean(coverImageUrl)
-
-                  return (
-                    <article
-                      key={id}
-                      className={`writing-list-item ${
-                        hasImage ? "writing-list-item-with-media" : ""
-                      }`}
-                    >
-                      <div className="writing-list-body">
-                        <p className="writing-list-meta">
-                          {getWritingSourceLabel(post) ? (
-                            <>
-                              <span>{getWritingSourceLabel(post)}</span>
-                              <span aria-hidden="true">•</span>
-                            </>
-                          ) : null}
-                          <span>{formatPostDate(date)}</span>
-                          {!isExternalWriting(post) ? <span>•</span> : null}
-                          {!isExternalWriting(post) ? (
-                            <span>{readingTimeMinutes} min read</span>
-                          ) : null}
-                        </p>
-                        <h2 className="writing-list-title">
-                          <WritingLink
-                            post={post}
-                            className="writing-list-title-link link-underline"
-                          >
-                            {title}
-                          </WritingLink>
-                        </h2>
-                        <p className="writing-list-description">
-                          {description || excerpt}
-                        </p>
-                        {tags?.length ? (
-                          <div className="writing-list-tags">
-                            {tags.map(tag => (
-                              <Link
-                                key={tag}
-                                className="tag-chip"
-                                href={buildArchivePath(tag.toLowerCase())}
-                              >
-                                #{tag}
-                              </Link>
-                            ))}
-                          </div>
-                        ) : null}
-                        <WritingLink
-                          post={post}
-                          className="text-link-cta link-underline writing-read-link"
-                        >
-                          {getWritingCtaLabel(
-                            post,
-                            archiveSettings.readArticleLabel
-                          )}
-                          {isExternalWriting(post) ? (
-                            <span aria-hidden="true"> ↗</span>
-                          ) : null}
-                        </WritingLink>
-                      </div>
-                      {coverImageUrl ? (
-                        <WritingLink post={post} className="writing-list-media">
-                          <img
-                            src={post.coverThumbnailUrl || coverImageUrl}
-                            alt={coverImageAlt || title}
-                            className="writing-list-image"
-                            loading="lazy"
-                            decoding="async"
-                          />
-                        </WritingLink>
-                      ) : null}
-                    </article>
-                  )
-                })}
-              </div>
-              {totalPages > 1 ? (
-                <nav
-                  className="writings-pagination"
-                  aria-label="Blog pagination"
+              {visiblePosts.length ? (
+                <div ref={listRef} className="writings-list">
+                  {visiblePosts.map(post => (
+                    <ArticleCard
+                      key={post.id}
+                      post={post}
+                      readArticleLabel={archiveSettings.readArticleLabel}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="page-description">No articles found.</p>
+              )}
+              {hasMore ? (
+                <button
+                  type="button"
+                  className="theme-btn-outline writings-load-more"
+                  onClick={loadMore}
                 >
-                  {currentPage > 1 ? (
-                    <Link
-                      href={buildArchivePath(selectedTag, currentPage - 1)}
-                      className="pagination-link pagination-link-prev"
-                    >
-                      Previous page
-                    </Link>
-                  ) : (
-                    <span className="pagination-link pagination-link-disabled">
-                      Previous page
-                    </span>
-                  )}
-                  <p className="pagination-status">
-                    Page {currentPage} of {totalPages}
-                  </p>
-                  {currentPage < totalPages ? (
-                    <Link
-                      href={buildArchivePath(selectedTag, currentPage + 1)}
-                      className="pagination-link pagination-link-next"
-                    >
-                      Next page
-                    </Link>
-                  ) : (
-                    <span className="pagination-link pagination-link-disabled">
-                      Next page
-                    </span>
-                  )}
-                </nav>
+                  Load more articles
+                </button>
               ) : null}
             </div>
           </div>

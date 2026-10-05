@@ -16,7 +16,7 @@ const ProjectsPage = ({ projects, archiveSettings, siteSettings }) => {
         siteSettings={siteSettings}
       />
       <section className="container interior-page">
-        <header className="archive-page-header">
+        <header className="page-intro archive-page-header">
           <h1 className="page-title">{archiveSettings.projectsTitle}</h1>
           <p className="page-description">
             {archiveSettings.projectsDescription ||
