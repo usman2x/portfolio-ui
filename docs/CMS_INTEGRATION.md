@@ -65,7 +65,9 @@ route.
 
 The contact wizard posts JSON to `NEXT_PUBLIC_CMS_URL/api/quote-requests/submit`. The CMS
 validates the payload, limits origins to `UI_PUBLIC_URL` and `QUOTE_ALLOWED_ORIGINS`, and applies a
-honeypot and rate limit. Submissions are admin-only.
+rate limit (5 per 15 minutes per client). The honeypot field `hp_trap_7f3k` sits outside the form so
+browser autofill cannot fill it; a submission that fills it is stored with status `spam`, never
+discarded. Submissions are admin-only. See `docs/pages/CONTACT_PAGE.md`.
 
 ## Contract changes
 
