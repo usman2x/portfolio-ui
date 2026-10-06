@@ -90,7 +90,7 @@ Rule:
 ### Experience (retired)
 
 - `/experience/` repeated About's work history and nothing linked to it. It was removed on
-  2026-10-06; Caddy redirects it permanently to `/about/#experience`, and it is no longer in the
+  2026-10-06; Caddy redirects it permanently (301) to `/about/#experience`, and it is no longer in the
   sitemap.
 
 ### System pages

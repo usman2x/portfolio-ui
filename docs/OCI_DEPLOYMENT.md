@@ -270,11 +270,9 @@ sudo ss -ltnp | grep -E ':(80|443|3001|9010)'   # 3001 and 9010 on 127.0.0.1 onl
 4. rem-labs now has its own hostnames (`tabrem.com`, `cms.tabrem.com`) and its `:8080` paths
    redirect there; close `:8080` once nothing depends on those redirects.
 5. Add atomic release switching so rebuilds do not briefly empty `out`.
-6. With the design-consistency release: add the two `/experience` redirects to the
-   `www.themuhammadusman.com` block (see [Caddy](#caddy)). Back up the Caddyfile first
-   (`sudo cp /etc/caddy/Caddyfile /etc/caddy/Caddyfile.pre-experience-redirect-<date>`), validate,
-   reload, then check `curl -sI https://www.themuhammadusman.com/experience/` returns `308` to
-   `/about/#experience` and rem-labs still answers.
+6. Done 2026-10-06: the two `/experience` redirects are live in the `www.themuhammadusman.com`
+   block (see [Caddy](#caddy)); `curl -sI https://www.themuhammadusman.com/experience/` returns
+   `301` to `/about/#experience` (Caddy's `permanent`), and rem-labs was checked after the reload.
 
 The CMS uses its own hostname rather than a path such as `/admin` on the UI hostname: Payload Admin is a dynamic Next.js application and shares `/_next/*` with this UI, so path consolidation would need additional routing work.
 
@@ -289,6 +287,7 @@ Configuration backups on the production VM, each taken immediately before the ch
 | `/etc/caddy/Caddyfile.pre-portfolio-headers-20260929` | Current layout without security headers |
 | `/srv/portfolio/portfolio-cms/.env.pre-domain-20260929` | CMS environment with IP URLs |
 | `/srv/portfolio/portfolio-ui/.env.production.pre-domain-20260929` | UI environment with IP URLs |
+| `/etc/caddy/Caddyfile.pre-experience-redirect-20261006` | Current layout without the `/experience` redirects |
 
 Earlier `Caddyfile.pre-remlabs-*` files belong to the rem-labs deployment.
 
