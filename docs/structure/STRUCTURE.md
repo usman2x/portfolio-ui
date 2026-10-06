@@ -14,7 +14,6 @@ start working together, while keeping the writing easy to find.
 | --- | --- | --- |
 | `/` | `src/pages/index.js` | `pages/HOME_PAGE.md` |
 | `/about/` | `src/pages/about.js` | `pages/ABOUT_PAGE.md` |
-| `/experience/` | `src/pages/experience.js` | `pages/ABOUT_PAGE.md` (work experience) |
 | `/projects/`, `/projects/<slug>/` | `src/pages/projects/` | `pages/PROJECTS_PAGE.md` |
 | `/blog/`, `/blog/<slug>/` | `src/pages/blog/` | `pages/ARTICLES_PAGE.md` |
 | `/testimonials/` | `src/pages/testimonials.js` | `pages/TESTIMONIALS_PAGE.md` |
@@ -23,7 +22,8 @@ start working together, while keeping the writing easy to find.
 | `/thank-you/` | `src/pages/thank-you.js` | system page |
 | 404 | `src/pages/404.js` | system page |
 
-Detail routes exist only for published native articles and published case studies.
+Detail routes exist only for published native articles and published case studies. The retired
+`/experience/` route redirects to `/about/#experience` in Caddy (`docs/OCI_DEPLOYMENT.md`).
 
 ## Shared layout (`src/components/Layout.js`)
 

@@ -30,7 +30,7 @@ Stored but not rendered: Site Settings `shortLabel`; Home Page `postHeroLine`,
 | --- | --- |
 | **Posts** | Articles (no `case-study` tag) and projects (tagged `case-study`). Articles are `native` (local page) or `external` (opens the source). Projects add `projectRole`, `projectOutcome` (homepage "Outcome:" line) and an ordered `projectGallery`. |
 | **Services** | Homepage "Ways to work together": `title`, `summary`, `highlights`, `contactIntent` (must match a Contact `helpTypes` value), `ctaLabel`, `showOnHome`, `sortOrder`, `status`. |
-| **Work Experience** | About and `/experience/` timeline: `company`, `role`, `period` (contains "Present" for the current role), `location`, `website`, `summary`, `highlights` (the first two are shown; put measurable results first), `sortOrder`, `status`. |
+| **Work Experience** | About timeline (`#experience`): `company`, `role`, `period` (contains "Present" for the current role), `location`, `website`, `summary`, `highlights` (the first two are shown; put measurable results first), `sortOrder`, `status`. |
 | **Testimonials** | `name`, `role`, `company`, `relationship`, `quote`, `sourceLabel`, `sourceUrl`, `featured` (homepage), `sortOrder`, `status`. |
 | **Tags** | Article and project tags; `slug` drives `/blog/?tag=`. |
 | **Media** | Images and files; public only when `isPublic`. |

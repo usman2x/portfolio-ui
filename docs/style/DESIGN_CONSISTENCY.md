@@ -30,7 +30,7 @@ Build each once and reuse it.
 
 | Pattern | Where it already exists | Use it on |
 | --- | --- | --- |
-| Page intro (P2) | `.page-intro` (Phase H): Projects, Articles, Testimonials, Thank-you, 404 | Contact (drop the eyebrow) |
+| Page intro (P2) | `.page-intro` (Phase H) | every non-detail page (done) |
 | Project card: whole-card link, role, title, summary, outcome; no tags (P3, P5) | `ProjectCard.js` | Home, `/projects/` (done) |
 | Article row: meta, title + summary, arrow; whole row is the link (P3, P5) | `ArticleRow.js`, `ContentNavigation.js` | Home, `/blog/`, previous/next on detail pages (done) |
 | Quote: serif italic at `--fs-quote`, caption with initial avatar (P3) | homepage testimonial, `TestimonialList.js` | `/testimonials/` (done) |
@@ -121,7 +121,14 @@ Decided 2026-10-06 after reviewing the built pages. Visual target: the endings o
 
 </details>
 
-### 2. One page intro pattern (P2)
+### 2. One page intro pattern (P2). Done.
+
+Testimonials dropped its eyebrow (item 6), `/experience/` is gone (item 8), `--fs-h1` is retired
+(`.page-title` uses `--fs-page-title`), and the 404 title reads "This page doesn’t exist" (seed).
+Contact's eyebrow went with item 7.
+
+<details><summary>Original brief</summary>
+
 
 - **Files:** `pages/testimonials.js`, `pages/contact.js`, `pages/experience.js`,
   `WorkExperienceTimeline.js`, the `.page-title` / `--fs-h1` rules in `global.css`.
@@ -134,6 +141,8 @@ Decided 2026-10-06 after reviewing the built pages. Visual target: the endings o
   title, such as "This page doesn't exist", in the System Pages global (content only).
 - **Done when:** every non-detail page starts the same way, with the same distance from the header
   to the title and from the title to the content.
+
+</details>
 
 ### 3. Projects archive uses the homepage project card (P3, P4, P5). Done.
 
@@ -227,7 +236,14 @@ description updated) and has no eyebrow.
 
 </details>
 
-### 7. Contact page: labels and boxes (P3, P6)
+### 7. Contact page: labels and boxes (P3, P6). Done.
+
+No eyebrow, no "Your path" label, the progress trail without a box, "Prefer a conversation?" as a
+sans heading. The only mono label is the form's step counter; the only boxes are the form surface
+and its intent options.
+
+<details><summary>Original brief</summary>
+
 
 - **Files:** `pages/contact.js`, `.quote-aside-card`, `.quote-form-section`.
 - **Problem:** three small labels ("Contact", "Your path", "Prefer a conversation?") and two boxed
@@ -238,7 +254,16 @@ description updated) and has no eyebrow.
 - **Done when:** the page uses at most one monospace label and one boxed surface besides the form
   controls.
 
-### 8. Decide what `/experience/` is for (P2, P5)
+</details>
+
+### 8. Decide what `/experience/` is for (P2, P5). Done: removed.
+
+Decided 2026-10-06: About is enough. `src/pages/experience.js` is deleted, the About timeline
+section has `id="experience"`, and the runbook adds a permanent Caddy redirect to
+`/about/#experience` (applied with the release; "Remaining production steps").
+
+<details><summary>Original brief</summary>
+
 
 - **Files:** `pages/experience.js`, sitemap, navigation.
 - **Problem:** it repeats About's work history in full under a weaker title, and nothing on the
@@ -250,13 +275,24 @@ description updated) and has no eyebrow.
     redirect belongs in the Caddyfile.
 - **Decide with the user**, then update the sitemap and `docs/pages/ABOUT_PAGE.md`.
 
-### 9. Monospace label budget (P6)
+</details>
+
+### 9. Monospace label budget (P6). Done.
+
+Every label listed below is gone or sans; tags are sans too. A site-wide audit (10 routes) leaves
+mono only on data (dates, periods, roles, indexes, the Contact step counter) and on the Home and
+About reference eyebrows.
+
+<details><summary>Original brief</summary>
+
 
 - **Files:** global; currently "Tech stack", "Browse by topic", "Share this article", "Written by",
   "← Previous project", "→ Next article", the gallery helper text, and the Contact labels.
 - **Change:** monospace only for dates, reading time, periods and roles. Turn the rest into sans
   headings (`--fs-ui` 600) or remove them where the content speaks for itself. Most are resolved by
   items 5 and 7.
+
+</details>
 
 ### 10. Section rhythm (P1). Done.
 

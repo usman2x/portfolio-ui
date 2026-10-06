@@ -115,11 +115,9 @@ system fonts.
 - Home and About are the most prominent pages; archive and utility pages (Projects, Articles,
   Testimonials, Contact, 404, Thank-you) use `--fs-page-title`.
 - Headings use `text-wrap: balance`; display titles are capped at 21–22ch, paragraphs at 52–62ch.
-- Monospace is for data only (P6): never labels, eyebrows, helper text, sentences or headings.
-  **Migrating:** mono labels remain on Contact (items 7, 9). Detail pages, Testimonials and the
-  Articles filter use sans labels.
-- `--fs-h1` is the older `.page-title` size; `--fs-page-title` supersedes it. **Migrating:** retire
-  `--fs-h1` with item 2.
+- Monospace is for data only (P6): dates, reading time, periods, roles, indexes and the Contact
+  step counter. Never helper text, sentences, headings or tags. The Home and About reference
+  designs keep their hero eyebrows and the "Trusted by teams at" proof label.
 
 ## Spacing
 
@@ -158,11 +156,10 @@ system fonts.
 
 Title at `--fs-page-title`, then one 20px muted lead sentence (max 56ch), left-aligned
 (`.page-intro`, P2). A label above the title only when it adds meaning. Used by Projects, Articles,
-Testimonials, Experience, Contact, 404 and Thank-you. Home, About, case studies and articles have
+Testimonials, Contact, 404 and Thank-you. Home, About, case studies and articles have
 their own intros with the same rhythm at `--fs-display`.
 
-**Migrating:** Testimonials and Contact still show an eyebrow label, and Experience has no page
-intro (item 2).
+Home and About keep their own eyebrows (hero specialties, "About"), as in the reference designs.
 
 ### Buttons
 

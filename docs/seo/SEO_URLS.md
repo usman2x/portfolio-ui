@@ -14,7 +14,6 @@ The goal is to keep routing clean, human-readable, and stable as the site grows.
 - `/blog/<slug>/`
 - `/testimonials/`
 - `/contact/`
-- `/experience/`
 - `/thank-you/` (form completion)
 - `/quote/` as a legacy redirect only
 
@@ -88,10 +87,11 @@ Rule:
   - `Testimonials | Muhammad Usman`
 - Description should identify the recommendations as direct professional feedback
 
-### Experience
+### Experience (retired)
 
-- URL: `/experience/`
-- Title: About Page `experienceTitle`; description: About Page SEO description
+- `/experience/` repeated About's work history and nothing linked to it. It was removed on
+  2026-10-06; Caddy redirects it permanently to `/about/#experience`, and it is no longer in the
+  sitemap.
 
 ### System pages
 

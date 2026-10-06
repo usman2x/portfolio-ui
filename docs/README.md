@@ -31,7 +31,7 @@ a systemd service behind it.
 | `seo/SEO_URLS.md` | URL and metadata rules |
 | `content/CONTENT_CONFIGURATION.md` | CMS fields and editorial workflow |
 | `pages/HOME_PAGE.md` | `/` |
-| `pages/ABOUT_PAGE.md` | `/about/` and `/experience/` |
+| `pages/ABOUT_PAGE.md` | `/about/` |
 | `pages/PROJECTS_PAGE.md` | `/projects/` and case studies |
 | `pages/ARTICLES_PAGE.md` | `/blog/` and articles |
 | `pages/TESTIMONIALS_PAGE.md` | `/testimonials/` |

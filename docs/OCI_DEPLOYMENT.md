@@ -119,6 +119,9 @@ themuhammadusman.com {
 
 www.themuhammadusman.com {
 	import portfolio_security
+	# Retired routes (the UI is a static export, so redirects live here).
+	redir /experience/ /about/#experience permanent
+	redir /experience /about/#experience permanent
 	root * /srv/portfolio/portfolio-ui/out
 
 	encode zstd gzip
@@ -267,6 +270,11 @@ sudo ss -ltnp | grep -E ':(80|443|3001|9010)'   # 3001 and 9010 on 127.0.0.1 onl
 4. rem-labs now has its own hostnames (`tabrem.com`, `cms.tabrem.com`) and its `:8080` paths
    redirect there; close `:8080` once nothing depends on those redirects.
 5. Add atomic release switching so rebuilds do not briefly empty `out`.
+6. With the design-consistency release: add the two `/experience` redirects to the
+   `www.themuhammadusman.com` block (see [Caddy](#caddy)). Back up the Caddyfile first
+   (`sudo cp /etc/caddy/Caddyfile /etc/caddy/Caddyfile.pre-experience-redirect-<date>`), validate,
+   reload, then check `curl -sI https://www.themuhammadusman.com/experience/` returns `308` to
+   `/about/#experience` and rem-labs still answers.
 
 The CMS uses its own hostname rather than a path such as `/admin` on the UI hostname: Payload Admin is a dynamic Next.js application and shares `/_next/*` with this UI, so path consolidation would need additional routing work.
 

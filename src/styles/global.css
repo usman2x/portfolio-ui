@@ -2732,13 +2732,12 @@ footer,
   --fs-lead: clamp(1.1rem, 1.4vw, 1.25rem);
   --fs-h3: 1.3rem;
   --fs-h2: clamp(1.65rem, 2.6vw, 2.25rem);
-  --fs-h1: clamp(2.1rem, 3.8vw, 3rem);
   --measure: 68ch;
 }
 
 /* Type scale */
 .page-title {
-  font-size: var(--fs-h1);
+  font-size: var(--fs-page-title);
   line-height: 1.1;
   max-width: 22ch;
   text-wrap: balance;
@@ -3275,7 +3274,7 @@ html[data-theme="dark"] {
   margin-top: 0;
 }
 
-:is(.home-page, .about-page, .about-experience-page) .landing-section-header {
+:is(.home-page, .about-page) .landing-section-header {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -3284,7 +3283,7 @@ html[data-theme="dark"] {
   margin-bottom: 3rem;
 }
 
-:is(.home-page, .about-page, .about-experience-page) .landing-section-title {
+:is(.home-page, .about-page) .landing-section-title {
   margin: 0;
   font-size: var(--fs-section);
   line-height: 1.12;
@@ -3292,7 +3291,7 @@ html[data-theme="dark"] {
   text-wrap: balance;
 }
 
-:is(.home-page, .about-page, .about-experience-page) .landing-section-description {
+:is(.home-page, .about-page) .landing-section-description {
   margin: 0.75rem 0 0;
   max-width: 60ch;
   font-size: var(--fs-body);
@@ -3941,11 +3940,10 @@ a.home-article-row:hover .home-article-arrow {
 /* ==========================================================================
    Phase G: About page redesign (docs/pages/ABOUT_PAGE.md).
    Reuses the Phase F scale, spacing, hairlines and surfaces. Order: intro + video,
-   core strengths, work experience (also on /experience/), one testimonial on the
+   core strengths, work experience (#experience), one testimonial on the
    tinted band, then the closing band (a section gap below it).
    ========================================================================== */
-.content:has(> .about-page),
-.content:has(> .about-experience-page) {
+.content:has(> .about-page) {
   padding-block: 0;
 }
 
@@ -4204,9 +4202,6 @@ a.home-article-row:hover .home-article-arrow {
 }
 
 /* Work experience: one row per role; the rail is each role's left border. */
-.about-experience-page {
-  padding-block: clamp(3rem, 7vw, 6rem) var(--section-gap);
-}
 
 .experience-list {
   margin: 0;
@@ -4934,4 +4929,37 @@ a.testimonial-entry-name:focus-visible {
   font-size: var(--fs-ui);
   line-height: 1.45;
   color: var(--text-muted);
+}
+
+/* Contact (DESIGN_CONSISTENCY item 7): the progress trail sits on the page without a box, the form
+   is the one surface, and the only mono label is the form's step counter. */
+.quote-aside-card {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+/* Align with the unboxed trail above it. */
+.quote-alternatives {
+  padding-inline: 0;
+}
+
+.quote-alternatives-title {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-ui);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-main);
+}
+
+/* Tags are labels, not data (P6): sans, like the rest of the UI text. */
+.tag-chip,
+.blog-tag-pill {
+  font-family: var(--font-body);
+  font-weight: 500;
+  letter-spacing: 0;
 }

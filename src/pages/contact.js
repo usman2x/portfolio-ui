@@ -210,15 +210,14 @@ const ContactPage = ({ quotePage, siteSettings }) => {
       />
       <section className="container interior-page quote-page-shell">
         <section className="interior-section page-intro quote-intro">
-          <p className="section-eyebrow">{quotePage.eyebrow}</p>
           <h1 className="page-title">{quotePage.title}</h1>
           <p className="page-description">{quotePage.description}</p>
         </section>
 
         <div className="quote-layout contact-wizard-layout">
           <aside className="quote-aside" aria-label="Form progress">
+            {/* Progress trail without a box; the form is the page's one surface. */}
             <div className="quote-aside-card">
-              <p className="quote-aside-kicker">Your path</p>
               <ol className="wizard-progress-list">
                 {steps.map((step, index) => (
                   <li
@@ -249,9 +248,9 @@ const ContactPage = ({ quotePage, siteSettings }) => {
               <p className="quote-response-note">{quotePage.responseNote}</p>
             </div>
             <div className="quote-alternatives">
-              <p className="quote-aside-kicker">
+              <h2 className="quote-alternatives-title">
                 {quotePage.alternativesTitle}
-              </p>
+              </h2>
               <a
                 href={siteSettings.meetingLink}
                 className="text-link-cta link-underline"
