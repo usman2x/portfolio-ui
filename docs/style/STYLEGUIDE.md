@@ -116,8 +116,8 @@ system fonts.
   Testimonials, Contact, 404, Thank-you) use `--fs-page-title`.
 - Headings use `text-wrap: balance`; display titles are capped at 21–22ch, paragraphs at 52–62ch.
 - Monospace is for data only (P6): never labels, eyebrows, helper text, sentences or headings.
-  **Migrating:** mono labels remain on detail pages, Contact and Testimonials (items 5, 6, 7, 9).
-  The Articles filter title is already a sans heading.
+  **Migrating:** mono labels remain on Contact and Testimonials (items 6, 7, 9). Detail pages and
+  the Articles filter use sans labels.
 - `--fs-h1` is the older `.page-title` size; `--fs-page-title` supersedes it. **Migrating:** retire
   `--fs-h1` with item 2.
 
@@ -170,8 +170,7 @@ intro (item 2).
 - Large, 52px / 16px / 10px corners: hero, About intro and closing CTAs only.
 - One orange primary per view (P4). Secondary actions (header "Book a call", load more, back to
   home) are outlined.
-- Sharing is a quiet row of text links, never buttons. **Migrating:** articles show four outlined
-  share buttons (item 5).
+- Sharing is a quiet list of text links (`ShareActions`), never buttons.
 - Press feedback `scale(0.97)`, removed under reduced motion.
 
 ### Links
@@ -180,15 +179,15 @@ intro (item 2).
   without colour. Forward calls to action only ("All articles", "Download full CV"), at most one
   per section (P4).
 - Navigation links reveal a primary underline on hover and focus; the active page keeps it.
-- Back links are quiet: `--fs-ui`, `--text-muted`, "← All projects", underlined on hover only.
-  **Migrating:** detail pages still use CTA links for "Back to all projects/articles" (item 5).
+- Back links are quiet (`BackLink`): `--fs-ui`, `--text-muted`, "← All projects", underlined on
+  hover only.
 
 ### Tags
 
 Pill chips: card background, muted text, hairline border, plain words, never prefixed with `#`.
 Tags appear only where they do a job: the Articles topic filter. Cards and rows show no tags.
 
-**Migrating:** the case-study header still shows tags (item 5).
+Case-study headers show role and outcome instead of tags.
 
 ### Cards in use
 
@@ -204,8 +203,7 @@ One pattern per content type, everywhere it is listed (P5):
 - **Previous / next and "Keep reading"**: the project card or article row with a plain-text
   direction label.
 
-**Migrating:** detail pages use boxed author and navigation cards (item 5), and `/testimonials/`
-uses boxed cards (item 6).
+**Migrating:** `/testimonials/` uses boxed cards (item 6).
 
 ## Motion
 

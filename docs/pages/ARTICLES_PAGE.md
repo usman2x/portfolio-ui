@@ -38,15 +38,20 @@ opens:
    (rendered into the header). Empty at the top, full when the end of the article body reaches the
    bottom of the viewport; the author card and footer do not count. Article pages only,
    `aria-hidden`, updated with `requestAnimationFrame`.
-2. "Back to all articles" text link
+2. Quiet back link "← All articles" (`BackLink`)
 3. Optional cover image, shown in full at its natural aspect ratio (no crop); width and height
    attributes reserve its space
 4. Title (`--fs-display`, max 22ch), description (20px lead), meta (`DATE • N MIN READ`, mono)
-5. Body (680px reading column) with a share rail: Share, LinkedIn, X, Copy link, all outlined
+5. Body (680px reading column) with a sticky share rail: a "Share" heading (sans) and a list of
+   text links (LinkedIn, X, Copy link, plus "More options" for the native share sheet where the
+   browser supports it). "Copy link" confirms with "Link copied" and a polite live region. On
+   phones the links sit in one row under the body.
 6. Tags (plain words, linking to the tag filter)
-7. "Written by" author card from **Site Settings**: portrait, name, `professionalTitle`, social
-   links and email as labelled icon links (external links open in a new tab)
-8. "Keep reading": previous and next article cards
+7. Author line from **Site Settings**, no box: a hairline, then portrait, "Written by", name,
+   `professionalTitle`, and social links and email as labelled icon links (external links open
+   in a new tab)
+8. "Keep reading" a full section gap below: previous and next as article rows
+   (`ContentNavigation`) with a plain "Previous article" / "Next article" label
 9. Closing band
 
 ## SEO

@@ -32,7 +32,7 @@ Build each once and reuse it.
 | --- | --- | --- |
 | Page intro (P2) | `.page-intro` (Phase H): Projects, Articles, Thank-you, 404 | Testimonials, Contact (drop the eyebrow), Experience |
 | Project card: whole-card link, role, title, summary, outcome; no tags (P3, P5) | `ProjectCard.js` | Home, `/projects/` (done) |
-| Article row: meta, title + summary, arrow; whole row is the link (P3, P5) | `ArticleRow.js` | Home, `/blog/` (done); "Keep reading" (item 5) |
+| Article row: meta, title + summary, arrow; whole row is the link (P3, P5) | `ArticleRow.js`, `ContentNavigation.js` | Home, `/blog/`, previous/next on detail pages (done) |
 | Quote: serif italic at `--fs-quote`, caption with initial avatar (P3) | homepage testimonial | `/testimonials/` |
 | Closing band directly above the footer (P7) | `BookCallSection.js`, `Footer.js` | every page except Contact, Thank-you, 404 (item 1a) |
 
@@ -170,7 +170,14 @@ the filter title is a sans heading.
 
 </details>
 
-### 5. Detail pages: header, sharing, author and next/previous (P3, P4, P6)
+### 5. Detail pages: header, sharing, author and next/previous (P3, P4, P6). Done.
+
+`BackLink`, a role/outcome facts row (projects have no period field), `ShareActions` as text
+links, an unboxed author line and `ContentNavigation` as article rows. No outlined buttons and no
+boxes outside media on either detail page (checked in the browser at 1440 and 390px).
+
+<details><summary>Original brief</summary>
+
 
 - **Files:** `pages/projects/[slug].js`, `pages/blog/[slug].js`, `ShareActions.js`,
   `AuthorCard.js`, `ContentNavigation.js`, `ProjectGallery.js`.
@@ -196,6 +203,8 @@ the filter title is a sans heading.
     in plain text.
   - Gallery helper text: `--fs-ui` sans, muted.
 - **Done when:** a detail page has no orange outlined buttons and no boxed cards except media.
+
+</details>
 
 ### 6. Testimonials page as a quote list (P3, P6)
 
@@ -240,13 +249,23 @@ the filter title is a sans heading.
   headings (`--fs-ui` 600) or remove them where the content speaks for itself. Most are resolved by
   items 5 and 7.
 
-### 10. Section rhythm (P1)
+### 10. Section rhythm (P1). Done.
+
+Case studies: `--section-gap` between sections, 48px from a heading to its content, 40px from the
+header to the gallery. Articles: "Keep reading" a full section gap below the author line. Every
+page intro now sits 40px above its first content block (`.interior-page`, `.writings-page`),
+measured on Projects, Articles, Testimonials and a case study.
+
+<details><summary>Original brief</summary>
+
 
 - **Files:** case-study and article page styles.
 - **Problem:** the case study uses 56 / 56 / 128px between sections, the Articles archive 56px
   from the intro to the list.
 - **Change:** `--section-gap` between sections, 48px from a section heading to its content, 40px
   from the page intro to the first content block.
+
+</details>
 
 ### 11. System pages metadata. Done.
 

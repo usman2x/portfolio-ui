@@ -1,9 +1,9 @@
 import React from "react"
-import Link from "next/link"
 import Layout from "../../components/Layout"
 import SEO from "../../components/seo"
 import ProjectVisual from "../../components/ProjectVisual"
 import ContentNavigation from "../../components/ContentNavigation"
+import BackLink from "../../components/BackLink"
 import ProjectGallery from "../../components/ProjectGallery"
 import { getAllProjects, getProjectPagination } from "../../lib/content"
 import { fetchProjectTemplate, fetchSiteSettings } from "../../lib/cms"
@@ -72,49 +72,39 @@ const ProjectPage = ({ project, previousProject, nextProject, projectTemplate, s
         siteSettings={siteSettings}
       />
       <section className="container interior-page project-template-shell">
-        <section className="project-case-study-hero">
-          <div className="project-case-study-copy">
-            <Link
-              href="/projects/"
-              className="text-link-cta link-underline project-case-study-back"
+        {/* Header: back link, title, summary, then one facts row (role, outcome) like the project
+            card. Category tags are not shown; the real stack is in the body. */}
+        <header className="project-case-study-hero">
+          <BackLink href="/projects/">{projectTemplate.backLabel}</BackLink>
+          <h1 className="project-case-study-title">{project.title}</h1>
+          <p className="project-case-study-summary">{project.summary}</p>
+          {project.role || project.outcome ? (
+            <dl className="project-facts">
+              {project.role ? (
+                <div>
+                  <dt>Role</dt>
+                  <dd>{project.role}</dd>
+                </div>
+              ) : null}
+              {project.outcome ? (
+                <div>
+                  <dt>Outcome</dt>
+                  <dd>{project.outcome}</dd>
+                </div>
+              ) : null}
+            </dl>
+          ) : null}
+          {project.link ? (
+            <a
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-link-cta link-underline project-reference-link"
             >
-              {projectTemplate.backLabel}
-            </Link>
-            <h1 className="project-case-study-title">{project.title}</h1>
-            <p className="project-case-study-summary">{project.summary}</p>
-          </div>
-
-          <aside className="project-case-study-meta">
-            <div className="project-case-study-meta-card">
-              <p className="project-case-study-meta-title">{projectTemplate.stackLabel}</p>
-              <div className="preview-tag-list project-detail-tag-list">
-                {(project.tags || []).map(tag => (
-                  <span key={tag} className="tag-chip">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {project.link ? (
-              <div className="project-case-study-meta-card">
-                <p className="project-case-study-meta-title">{projectTemplate.linkLabel}</p>
-                <p className="project-case-study-meta-copy">
-                  {projectTemplate.linkDescription}
-                </p>
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-link-cta link-underline project-reference-link"
-                >
-                  {projectLinkLabel}
-                </a>
-              </div>
-            ) : null}
-          </aside>
-        </section>
-
+              {projectLinkLabel} <span aria-hidden="true">↗</span>
+            </a>
+          ) : null}
+        </header>
 
         {project.image && !project.projectGallery?.length ? (
           <figure className="project-story-figure project-story-cover">
