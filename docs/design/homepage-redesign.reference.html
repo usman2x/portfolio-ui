@@ -12,8 +12,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&amp;display=swap">
 <style>
 body{margin:0}
-.ss{--color-primary:#e97a3c;--color-secondary:#f2b38a;--color-accent:#6f8798;--bg-page:#f7f3ee;--bg-card:#ffffff;--text-main:#2f2f2f;--text-muted:#6b6b6b;--border-default:#c9c3bd;--brand-primary:var(--color-primary);--brand-text:var(--text-main);--on-brand:#2f2f2f;--bg-brand-soft:rgba(233,122,60,0.08);--bg-brand-soft-strong:rgba(233,122,60,0.14);--hairline:color-mix(in srgb,var(--border-default) 70%,transparent);--inv-bg:#2f2f2f;--inv-fg:#f7f3ee;--inv-muted:#d1c8c1;--inv-line:rgba(247,243,238,0.16);--font-heading:Newsreader,Georgia,Cambria,"Times New Roman",ui-serif,serif;--font-body:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--ease-out:cubic-bezier(0.23,1,0.32,1)}
-.ss[data-theme="dark"]{--color-primary:#f19a64;--color-secondary:#bf8f72;--color-accent:#8ea8bb;--bg-page:#171514;--bg-card:#221f1d;--text-main:#f7f3ef;--text-muted:#d1c8c1;--border-default:#3d3733;--brand-text:var(--color-primary);--on-brand:#171514;--bg-brand-soft:rgba(241,154,100,0.12);--bg-brand-soft-strong:rgba(241,154,100,0.18);--hairline:var(--border-default);--inv-bg:#221f1d;--inv-fg:#f7f3ef;--inv-muted:#d1c8c1;--inv-line:#3d3733}
+.ss{--color-primary:#e97a3c;--color-secondary:#f2b38a;--color-accent:#6f8798;--bg-page:#f7f3ee;--bg-card:#ffffff;--text-main:#2f2f2f;--text-muted:#6b6b6b;--border-default:#c9c3bd;--brand-primary:var(--color-primary);--brand-text:var(--text-main);--on-brand:#2f2f2f;--bg-brand-soft:rgba(233,122,60,0.08);--bg-brand-soft-strong:rgba(233,122,60,0.14);--hairline:color-mix(in srgb,var(--border-default) 70%,transparent);--inv-bg:#2f2f2f;--inv-fg:#f7f3ee;--inv-muted:#d1c8c1;--inv-line:rgba(247,243,238,0.16);--surface-closing:#493a31;--font-heading:Newsreader,Georgia,Cambria,"Times New Roman",ui-serif,serif;--font-body:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--ease-out:cubic-bezier(0.23,1,0.32,1)}
+.ss[data-theme="dark"]{--color-primary:#f19a64;--color-secondary:#bf8f72;--color-accent:#8ea8bb;--bg-page:#171514;--bg-card:#221f1d;--text-main:#f7f3ef;--text-muted:#d1c8c1;--border-default:#3d3733;--brand-text:var(--color-primary);--on-brand:#171514;--bg-brand-soft:rgba(241,154,100,0.12);--bg-brand-soft-strong:rgba(241,154,100,0.18);--hairline:var(--border-default);--inv-bg:#221f1d;--inv-fg:#f7f3ef;--inv-muted:#d1c8c1;--inv-line:#3d3733;--surface-closing:#3f3027}
 .ss{background:var(--bg-page);color:var(--text-main);font-family:var(--font-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
 .ss a{color:inherit;text-decoration:none}
 .ss :where(a,button):focus-visible{outline:3px solid var(--brand-text);outline-offset:3px;border-radius:4px}
@@ -44,6 +44,9 @@ body{margin:0}
 .ss .toggle{display:inline-grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid var(--border-default);border-radius:50%;background:transparent;color:var(--text-main);cursor:pointer}
 .ss .toggle:hover{border-color:var(--brand-primary);background:var(--bg-brand-soft);color:var(--brand-text)}
 .ss .inv{background:var(--inv-bg);color:var(--inv-fg)}
+.ss .closing{margin-top:clamp(80px,9vw,128px);background:var(--surface-closing);color:var(--inv-fg)}
+.ss .closing :where(a,button):focus-visible{outline-color:var(--color-primary)}
+.ss .closing .cta:hover{color:var(--color-primary)}
 .ss .inv :where(a,button):focus-visible{outline-color:var(--color-primary)}
 .ss .inv .cta:hover{color:var(--color-primary)}
 .ss .inv .nav a::after{bottom:2px}
@@ -157,7 +160,7 @@ body{margin:0}
 </div>
 </section>
 
-<!-- 5. Services: how to engage -->
+<!-- 5. Ways to work together: how to engage, right after the evidence -->
 <section id="services" style="margin-top: clamp(80px, 9vw, 128px); background: var(--bg-brand-soft); border-block: 1px solid var(--hairline);">
 <div class="wrap" style="padding-block: clamp(64px, 7vw, 96px); display: flex; flex-wrap: wrap; gap: 40px 80px;">
 <div style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 16px;">
@@ -201,7 +204,7 @@ body{margin:0}
 </section>
 
 <!-- 7. Articles: expertise and branding -->
-<section id="articles" class="wrap" style="padding-top: clamp(80px, 9vw, 128px); padding-bottom: clamp(80px, 9vw, 128px);">
+<section id="articles" class="wrap" style="padding-top: clamp(80px, 9vw, 128px);">
 <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px 24px; margin-bottom: 40px;">
 <div style="display: flex; flex-direction: column; gap: 12px;">
 <h2 class="h2">Articles</h2>
@@ -229,22 +232,27 @@ body{margin:0}
 </div>
 </section>
 
-</main>
 
-<!-- 8. Closing: one strong ending, then the footer on the same surface -->
-<footer class="inv">
-<div class="wrap" style="padding-top: clamp(72px, 8vw, 112px); padding-bottom: 40px;">
-<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 32px 64px; padding-bottom: clamp(64px, 7vw, 96px);">
+<!-- Closing band: the same next step on every page, a softer ink directly above the footer -->
+<section class="closing" aria-labelledby="closing-title">
+<div class="wrap" style="padding-block: clamp(64px, 7vw, 96px); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 32px 64px;">
 <div style="flex: 1 1 560px; display: flex; flex-direction: column; gap: 16px;">
-<h2 class="h2" style="font-size: clamp(2.125rem, 2vw + 1.5rem, 3rem); line-height: 1.08; max-width: 20ch;">Need senior engineering support for a complex product or platform?</h2>
-<p style="margin: 0; font-size: 18px; line-height: 1.6; color: var(--inv-muted); max-width: 54ch;">Book a focused Google Calendar call to discuss the problem, delivery constraints, and a practical next step.</p>
+<h2 id="closing-title" class="h2" style="max-width: 20ch;">Have a problem worth building a product around?</h2>
+<p style="margin: 0; font-size: 18px; line-height: 1.6; color: var(--inv-muted); max-width: 54ch;">Book a focused call. We’ll pin down the problem, what you already have, and the smallest product that proves it.</p>
 </div>
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px;">
 <a href="#" class="btn btn-lg btn-primary">Book a call</a>
 <a href="#" class="cta">or send a message</a>
 </div>
 </div>
-<div style="border-top: 1px solid var(--inv-line); padding-top: 48px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px 64px;">
+</section>
+
+</main>
+
+<!-- Footer: navigation and contact details only; the call to action lives in the page above it -->
+<footer class="inv">
+<div class="wrap" style="padding-top: 64px; padding-bottom: 40px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px 64px;">
 <div style="flex: 1 1 480px; display: flex; flex-direction: column; gap: 12px;">
 <p style="margin: 0; font-size: 17px; font-weight: 600;">Muhammad Usman</p>
 <p style="margin: 0; font-size: 15px; line-height: 1.6; color: var(--inv-muted); max-width: 50ch;">Senior full-stack engineer building scalable products, data platforms, cloud systems, and practical AI automation.</p>

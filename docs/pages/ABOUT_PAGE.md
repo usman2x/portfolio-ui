@@ -4,7 +4,7 @@ Route: `/about/` · Page: `src/pages/about.js` · Visual reference: `docs/design
 
 For a prospective client the page answers, in order: who is this person (intro and video), what do
 they bring (core strengths), have they done it before (work experience), what do collaborators say
-(one testimonial), and what is the next step (intro buttons and the shared closing section).
+(one testimonial), and what is the next step (intro buttons and the closing band).
 
 ## Section order
 
@@ -52,7 +52,11 @@ The same component renders `/experience/`, where its title is the page `h1`.
   - Node: a 12px circle on the rail at the title's top; filled `--brand-primary` for the current
     role (period contains "Present"), page-coloured with a `--border-default` ring otherwise.
 - On phones the left column stacks above the rail column.
-- The rail is static: no scroll-drawn fill and no reveal animation.
+- Scroll progress: a 2px `--brand-primary` fill travels down each role's rail to a reach line at
+  62% of the viewport height (`transform: scaleY`, one update per animation frame), and a node
+  takes the brand ring once the fill reaches it. At the page end the whole rail is filled. Without
+  JavaScript, or under `prefers-reduced-motion: reduce`, the rail stays a static hairline. The
+  content never hides or reveals. The same timeline renders on `/experience/`.
 - Order each role's highlights in the CMS so the two with measurable results come first.
 
 ## 5. Testimonial

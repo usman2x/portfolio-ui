@@ -96,8 +96,8 @@ Rule:
 ### System pages
 
 - 404 renders `noindex` and is excluded from the sitemap.
-- `/thank-you/` has no page-specific title or description and is currently included in the
-  sitemap.
+- `/thank-you/` uses `thankYouTitle` (System Pages) as its title, renders `noindex` and is
+  excluded from the sitemap.
 
 ## Titles and metadata
 

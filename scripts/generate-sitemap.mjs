@@ -41,6 +41,7 @@ const urls = (await walk(outputDir))
   })
   .filter(url => !url.endsWith("/404/"))
   .filter(url => !url.endsWith("/quote/"))
+  .filter(url => !url.endsWith("/thank-you/"))
   .sort()
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>

@@ -1,12 +1,14 @@
 import React from "react";
 import Link from "next/link";
 import Layout from "../components/Layout";
+import SEO from "../components/seo";
 import { fetchSiteSettings, fetchSystemPages } from "../lib/cms";
 
-// Outline button: the closing section below already carries the page's one primary action.
+// Outline button: a quiet way back, with no sales panel after a completed form.
 const ThankYouPage = ({ siteSettings, systemPages }) => {
   return (
-    <Layout siteSettings={siteSettings}>
+    <Layout showBookCall={false} siteSettings={siteSettings}>
+      <SEO title={systemPages.thankYouTitle} noindex siteSettings={siteSettings} />
       <section className="container page-intro utility-page">
         <h1 className="page-title">{systemPages.thankYouTitle}</h1>
         <p className="page-description">{systemPages.thankYouMessage}</p>

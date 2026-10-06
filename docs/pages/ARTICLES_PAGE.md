@@ -16,17 +16,21 @@ opens:
    topic selected the title becomes "Articles tagged <tag>" (also used for the page and social
    titles).
 2. Two columns on desktop, stacked on phones:
-   - **Topic filter panel**: `filterTitle` (mono label), `filterDescription`, an "All" pill and one
-     pill per tag in use. One active tag at a time, stored as `/blog/?tag=<slug>`; the active pill
-     is highlighted and marked `aria-current`.
-   - **Article list** of `ArticleCard`s (hairline, 16px corners): meta (`date • N min read` or the
-     source label), title (`--fs-item`), description, tags (plain words, no `#`, linking to the
-     tag filter), "Read article" link (`readArticleLabel`), optional thumbnail.
+   - **Topic filter panel**: `filterTitle` (sans heading, `--fs-ui` 600), `filterDescription`, an
+     "All" pill and one pill per tag in use. One active tag at a time, stored as
+     `/blog/?tag=<slug>`; the active pill is highlighted and marked `aria-current`. The filter is
+     the only place the archive shows tags.
+   - **Article list**: the homepage article rows (`ArticleRow`, `.home-article-*`): meta (source
+     label, `MMM D, YYYY`, `N min`; mono), title (`h2`, `--fs-item`) and summary, and an arrow
+     (`↗` for external articles). The whole row is the link; hairlines separate the rows. Beside the
+     filter the meta column is 11rem and the text column may shrink to 20rem so meta, text and
+     arrow stay on one line down to tablet width. No boxes, tags, thumbnails or per-row link
+     label.
 3. "Load more articles": the first `postsPerPage` (default 6) articles show; the outlined button
    appends the next batch, moves focus to the first new article, and disappears when all are
    shown. Changing the topic resets to the first batch. `/blog/` is one canonical URL; there are no
    paginated routes.
-4. Shared closing section.
+4. Closing band.
 
 ## Article: `/blog/<slug>/`
 
@@ -43,7 +47,7 @@ opens:
 7. "Written by" author card from **Site Settings**: portrait, name, `professionalTitle`, social
    links and email as labelled icon links (external links open in a new tab)
 8. "Keep reading": previous and next article cards
-9. Shared closing section
+9. Closing band
 
 ## SEO
 
@@ -57,7 +61,8 @@ opens:
 - **Posts**: title, slug, excerpt, content, tags, `coverImage`, `ogImage`, publication fields,
   SEO fields, `readingTimeMinutes`
 - **Archive Settings**: `writingsTitle`, `writingsDescription`, `writingsSeoDescription`,
-  `filterTitle`, `filterDescription`, `postsPerPage`, `readArticleLabel`
+  `filterTitle`, `filterDescription`, `postsPerPage`. `readArticleLabel` and the posts'
+  `externalCtaLabel` are no longer rendered (see `docs/TODO.md`)
 - **Site Settings**: author card data
 - **Home Page**: `writingsTitle`, `writingsDescription`, `writingsArchiveLabel`, `writingsLimit`
   for the homepage Articles section

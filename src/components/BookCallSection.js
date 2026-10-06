@@ -1,8 +1,8 @@
 import React from "react"
 import Link from "next/link"
 
-// Closing call to action. It shares the inverse surface with the footer below it, so the page
-// ends on one strong block (docs/structure/STRUCTURE.md, "Closing section").
+// Closing band: the same next step on every page, a full-bleed band in a softer ink than the
+// footer, sitting directly on it (docs/structure/STRUCTURE.md, "Closing band").
 const BookCallSection = ({ siteSettings }) => {
   const content = siteSettings.bookCall || {}
   return (

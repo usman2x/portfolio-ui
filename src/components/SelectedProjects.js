@@ -1,9 +1,8 @@
 import React from "react"
 import Link from "next/link"
-import ProjectVisual from "./ProjectVisual"
+import ProjectCard from "./ProjectCard"
 
-// Featured case studies. The title link stretches over the card, so the whole card is one
-// click target and one tab stop.
+// Featured case studies, as the same cards as the Projects archive.
 const SelectedProjects = ({ projects, homeContent }) => {
   if (!projects.length) return null
 
@@ -23,30 +22,7 @@ const SelectedProjects = ({ projects, homeContent }) => {
       </div>
       <div className="home-work-grid">
         {projects.map(project => (
-          <article key={project.slug} className="home-work-card">
-            <div className="home-work-media">
-              <ProjectVisual
-                image={project.thumbnailImage || project.image}
-                alt={project.imageAlt || `${project.title} preview`}
-                title={project.title}
-                className="home-work-image"
-              />
-            </div>
-            {project.role ? (
-              <p className="home-work-role">{project.role}</p>
-            ) : null}
-            <h3 className="home-work-title">
-              <Link href={`/projects/${project.slug}/`} className="home-work-link">
-                {project.title}
-              </Link>
-            </h3>
-            <p className="home-work-summary">{project.summary}</p>
-            {project.outcome ? (
-              <p className="home-work-outcome">
-                <strong>Outcome:</strong> {project.outcome}
-              </p>
-            ) : null}
-          </article>
+          <ProjectCard key={project.slug} project={project} />
         ))}
       </div>
     </section>

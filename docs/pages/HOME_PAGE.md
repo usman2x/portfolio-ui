@@ -17,8 +17,8 @@ the next step. Testimonials and articles then support trust and branding.
 | 4 | Selected work (`#projects`) | `SelectedProjects.js` | page |
 | 5 | Ways to work together (`#services`) | `HomeServices.js` | full-bleed `--bg-brand-soft` band with hairlines |
 | 6 | Testimonial | `Testimonials.js` (`variant="home"`) | page |
-| 7 | Articles (`#articles`) | `LatestWritings.js` | page |
-| 8 | Closing CTA + footer | `BookCallSection.js` + `Footer.js` (from `Layout`) | inverse surface, site-wide |
+| 7 | Articles (`#articles`) | `LatestWritings.js` (`ArticleRow`) | page |
+| 8 | Closing band + footer | `BookCallSection.js` + `Footer.js` (from `Layout`) | `--surface-closing` band directly on the inverse footer, site-wide |
 
 Sections are `--section-gap` (80–128px) apart. Styles live in the "Phase F" block of
 `src/styles/global.css`; type, spacing and surface rules are in `docs/style/STYLEGUIDE.md`.
@@ -89,9 +89,10 @@ Sections are `--section-gap` (80–128px) apart. Styles live in the "Phase F" bl
   title and summary, arrow on the right (`↗` for external articles). Row hover uses
   `--bg-brand-soft` and nudges the arrow 4px (not under reduced motion). No tags.
 
-## 8. Closing section and footer
+## 8. Closing band and footer
 
-Site-wide; see "Closing section" in `docs/structure/STRUCTURE.md`.
+Site-wide; see "Closing band" and "Footer" in `docs/structure/STRUCTURE.md`. The band's top margin
+is the only space below the Articles section.
 
 ## Content
 

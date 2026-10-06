@@ -548,7 +548,6 @@ html[data-theme="dark"] {
 }
 
 .writings-tag-list,
-.writing-list-tags,
 .blog-post-tags {
   display: flex;
   flex-wrap: wrap;
@@ -602,84 +601,9 @@ html[data-theme="dark"] {
   color: var(--brand-text);
 }
 
-.writing-list-item {
-  display: grid;
-  gap: 1rem;
-  padding: 1.2rem;
-  border: 1px solid color-mix(in srgb, var(--border-default) 88%, white);
-  border-radius: 20px;
-  background: color-mix(in srgb, var(--bg-card) 96%, var(--bg-page));
-  box-shadow: var(--shadow-sm);
-}
-
-.writing-list-item-with-media {
-  grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.8fr);
-  align-items: start;
-}
-
-.writing-list-body {
-  display: grid;
-  gap: 0.7rem;
-  min-width: 0;
-}
-
-.writing-list-media {
-  display: block;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid var(--border-default);
-  background: var(--bg-card);
-}
-
-.writing-list-media:hover,
-.writing-list-media:focus {
-  border-color: color-mix(
-    in srgb,
-    var(--brand-primary) 36%,
-    var(--border-default)
-  );
-}
-
-.writing-list-image {
-  width: 100%;
-  height: 100%;
-}
-
-.writing-list-image {
-  object-fit: cover;
-  display: block;
-}
-
-.writing-list-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  margin-bottom: 0;
-}
-
-.writing-list-title,
 .blog-related-title {
   font-size: clamp(1.2rem, 2vw, 1.5rem);
   line-height: 1.25;
-  margin-bottom: 0;
-}
-
-.writing-list-title-link {
-  color: var(--text-main);
-  transition: color 0.2s ease;
-}
-
-.writing-list-title-link:hover,
-.writing-list-title-link:focus {
-  color: var(--brand-text);
-}
-
-.writing-list-description {
-  color: var(--text-muted);
-  max-width: 60ch;
   margin-bottom: 0;
 }
 
@@ -1212,9 +1136,7 @@ footer,
 .preview-card-role,
 .identity-supporting,
 .footer-text,
-.info-card p,
-.project-detail-summary,
-.project-detail-role {
+.info-card p {
   color: var(--text-muted);
 }
 
@@ -1493,20 +1415,8 @@ footer,
   box-shadow: var(--shadow-sm);
 }
 
-.project-preview-card,
 .writing-preview-card {
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-}
-
-.project-preview-card:hover,
-.project-preview-card:focus-within {
-  transform: translateY(-2px);
-  border-color: color-mix(
-    in srgb,
-    var(--brand-primary) 32%,
-    var(--border-default)
-  );
-  background: color-mix(in srgb, var(--bg-card) 94%, var(--bg-page));
 }
 
 .writing-preview-card:hover,
@@ -1526,8 +1436,7 @@ footer,
   margin-bottom: 0.45rem;
 }
 
-.preview-card-body,
-.projects-archive-body {
+.preview-card-body {
   display: grid;
   gap: 0.55rem;
 }
@@ -1556,38 +1465,15 @@ footer,
   padding-inline: 0.12rem;
 }
 
-.project-anchor-link {
-  color: var(--text-main);
-}
-
-.project-anchor-link:hover,
-.project-anchor-link:focus {
-  color: var(--brand-text);
-}
-
-.project-preview-media-link,
-.project-preview-media-link:link,
-.project-preview-media-link:visited {
-  display: block;
-  color: inherit;
-}
-
-.project-preview-media,
 .project-detail-media {
   width: 100%;
   overflow: hidden;
   border-radius: 18px;
 }
 
-.project-preview-media,
 .project-detail-media {
   border: 1px solid color-mix(in srgb, var(--border-default) 88%, white);
   background: color-mix(in srgb, var(--bg-card) 96%, var(--bg-page));
-}
-
-.project-preview-media {
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
 }
 
 .project-detail-media {
@@ -1595,7 +1481,6 @@ footer,
   margin-top: 0.35rem;
 }
 
-.project-preview-media img,
 .project-detail-media img {
   object-fit: cover;
 }
@@ -1622,52 +1507,8 @@ footer,
   font-size: 0.92rem;
 }
 
-.projects-preview-grid .project-preview-card {
-  gap: 0.7rem;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.projects-preview-grid .project-preview-card:hover,
-.projects-preview-grid .project-preview-card:focus-within {
-  transform: none;
-  border-color: transparent;
-  background: transparent;
-}
-
-.projects-preview-grid .preview-card-body {
-  gap: 0.45rem;
-  padding-inline: 0.15rem;
-  padding-bottom: 0.15rem;
-}
-
-.projects-archive-body {
-  padding-inline: 0.12rem;
-}
-
-.projects-preview-grid .project-preview-media {
-  height: 190px;
-  aspect-ratio: auto;
-}
-
-.projects-preview-grid .project-preview-media {
-  border: 0;
-  border-radius: 16px;
-  background: transparent;
-}
-
 .project-inline-more {
   white-space: nowrap;
-}
-
-.book-call-section {
-  border-top: 1px solid color-mix(in srgb, var(--border-default) 88%, white);
-  margin-top: 0;
-  margin-bottom: 0;
-  padding: 1.6rem 0 1.4rem;
 }
 
 .book-call-content {
@@ -1782,7 +1623,6 @@ footer,
   gap: 1.75rem;
 }
 
-.archive-page-header,
 .writings-page-header {
   display: grid;
   justify-items: center;
@@ -1792,7 +1632,6 @@ footer,
   text-align: center;
 }
 
-.archive-page-header .page-description,
 .writings-page-header .page-description {
   max-width: 62ch;
   margin-bottom: 0;
@@ -1824,16 +1663,6 @@ footer,
 .project-detail-list {
   display: grid;
   gap: 0.25rem;
-}
-
-.project-detail-summary,
-.project-detail-role {
-  font-size: 0.98rem;
-}
-
-.project-detail-role-strong {
-  color: var(--text-main);
-  font-weight: 600;
 }
 
 .project-template-shell {
@@ -2183,22 +2012,6 @@ footer,
   max-width: 58ch;
   margin-bottom: 0;
   color: var(--text-muted);
-}
-
-.projects-archive-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.projects-archive-card {
-  display: grid;
-  gap: 0.85rem;
-  padding: 1rem;
-  border-radius: 20px;
-  border: 1px solid color-mix(in srgb, var(--border-default) 88%, white);
-  background: color-mix(in srgb, var(--bg-card) 96%, var(--bg-page));
-  box-shadow: var(--shadow-sm);
 }
 
 .quote-page-shell {
@@ -2843,8 +2656,6 @@ footer,
   letter-spacing: -0.018em;
 }
 
-.projects-archive-card,
-.writing-list-item,
 .testimonial-card,
 .info-card {
   box-shadow: none;
@@ -3024,13 +2835,12 @@ footer,
   }
 
   .header-shell,
-  .landing-section-header,
-  .identity-layout,
-  .preview-grid,
-  .projects-archive-grid,
-  .quote-grid,
-  .quote-contact-grid,
-  .footer-shell {
+.landing-section-header,
+.identity-layout,
+.preview-grid,
+.quote-grid,
+.quote-contact-grid,
+.footer-shell {
     grid-template-columns: 1fr;
   }
 
@@ -3098,14 +2908,6 @@ footer,
     grid-template-columns: 1fr;
   }
 
-  .writing-list-item-with-media {
-    grid-template-columns: 1fr;
-  }
-
-  .writing-list-title {
-    font-size: 1.18rem;
-  }
-
   .blog-post-title {
     font-size: 2rem;
   }
@@ -3128,19 +2930,12 @@ footer,
     flex-direction: row;
   }
 
-  .projects-preview-grid .project-preview-media {
-    height: 168px;
-  }
-
   .footer-legal {
     margin-top: 0.85rem;
   }
 }
 
 @media (min-width: 769px) and (max-width: 1200px) {
-  .writing-list-item-with-media {
-    grid-template-columns: minmax(0, 1.2fr) minmax(180px, 0.8fr);
-  }
 
   .blog-article-layout {
     grid-template-columns: minmax(0, 1fr) 200px;
@@ -3248,7 +3043,6 @@ footer,
 }
 
 .preview-meta,
-.writing-list-meta,
 .home-proof-label,
 .identity-heading-block .identity-title {
   font-size: var(--fs-small);
@@ -3285,37 +3079,6 @@ a.text-link-cta:focus {
   .theme-btn-primary,
   .theme-btn-outline {
     min-height: 44px;
-  }
-}
-
-/* Homepage: three featured projects share one row with a consistent frame. */
-.projects-preview-grid .project-preview-media {
-  height: auto;
-  aspect-ratio: 16 / 10;
-  border: 1px solid color-mix(in srgb, var(--border-default) 70%, transparent);
-  background: var(--bg-card);
-}
-
-img.project-preview-media {
-  width: 100%;
-  object-fit: cover;
-  object-position: center top;
-}
-
-/* Placeholder tiles match real imagery so archive rows stay even. */
-.project-preview-media.project-visual-fallback {
-  height: auto;
-  aspect-ratio: 16 / 10;
-}
-
-.archive-page-header .page-title {
-  margin-inline: auto;
-}
-
-@media (min-width: 1024px) {
-  .projects-preview-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.75rem;
   }
 }
 
@@ -3411,12 +3174,6 @@ img.project-preview-media {
   margin: 0.45rem 0.8rem 0 0;
 }
 
-@media (max-width: 768px) {
-  .projects-preview-grid {
-    gap: 2rem;
-  }
-}
-
 /* Alignment: sections without a tinted surface share the header's content edge. */
 @media (min-width: 769px) {
   .landing-section:not(.landing-section-surface) {
@@ -3429,9 +3186,6 @@ img.project-preview-media {
 }
 
 /* Project previews: rows start at the top so titles align across cards. */
-.projects-preview-grid .project-preview-card {
-  align-content: start;
-}
 
 a.text-link-cta {
   width: fit-content;
@@ -3466,10 +3220,6 @@ a.text-link-cta {
   max-height: 520px;
   min-height: 0;
   object-fit: contain;
-}
-
-.projects-archive-card {
-  align-content: start;
 }
 
 /* Tinted surfaces: muted grey is 4.48:1 on the 8% orange tint (below AA), so
@@ -3536,9 +3286,7 @@ a.text-link-cta {
 
 /* Card and list titles: switch to the sans so they read as items, not sections. */
 .preview-card-title,
-.writing-list-title,
 .info-card h3,
-.projects-archive-body .interior-section-title,
 .content-navigation-card strong,
 .experience-title,
 .intent-option strong,
@@ -3548,15 +3296,9 @@ a.text-link-cta {
   letter-spacing: -0.011em;
 }
 
-.preview-card-title,
-.writing-list-title {
+.preview-card-title {
   font-size: 1.2rem;
   line-height: 1.35;
-}
-
-.projects-archive-body .interior-section-title {
-  font-size: 1.3rem;
-  line-height: 1.3;
 }
 
 /* Quotes: serif at regular weight; the one place italics carry meaning. */
@@ -3569,7 +3311,6 @@ a.text-link-cta {
 
 /* Metadata: the third voice. */
 .preview-meta,
-.writing-list-meta,
 .tag-chip,
 .blog-tag-pill,
 .identity-eyebrow,
@@ -3590,8 +3331,7 @@ a.text-link-cta {
   letter-spacing: 0.02em;
 }
 
-.preview-meta,
-.writing-list-meta {
+.preview-meta {
   font-size: var(--fs-meta);
   text-transform: uppercase;
 }
@@ -3722,7 +3462,6 @@ a.text-link-cta::after {
   transition: transform var(--duration-reveal) var(--ease-out);
 }
 
-.project-preview-card,
 .writing-preview-card {
   transition: transform var(--duration-hover) var(--ease-out),
     border-color var(--duration-hover) ease, background var(--duration-hover) ease;
@@ -3744,12 +3483,11 @@ a.text-link-cta::after {
    elements stuck in their lifted state. Keyboard focus styles are unaffected. */
 @media not all and (hover: hover) and (pointer: fine) {
   .identity-link-card:hover .identity-portrait-image,
-  .project-preview-card:hover,
-  .writing-preview-card:hover,
-  .project-gallery-item:hover img,
-  .intent-option:hover,
-  .reply-choice:hover,
-  .content-navigation-card:hover {
+.writing-preview-card:hover,
+.project-gallery-item:hover img,
+.intent-option:hover,
+.reply-choice:hover,
+.content-navigation-card:hover {
     transform: none;
   }
 }
@@ -3783,13 +3521,15 @@ a.text-link-cta::after {
    - One 9-step type scale and an 8px spacing grid on the homepage.
    - Space between sections (--section-gap) is clearly larger than space inside them.
    - No shadows on homepage content: hairline borders, warmed on hover.
-   - Two surfaces besides the page: the services band (brand tint + white cards) and the
-     inverse closing surface shared by the book-call section and the footer (site-wide).
+   - Three surfaces besides the page: the services band (brand tint + white cards), the
+     closing band (--surface-closing, full-bleed, directly on the footer) and the inverse footer.
    ========================================================================== */
 :root,
 html[data-theme="sunset"] {
   --hairline: color-mix(in srgb, var(--border-default) 70%, transparent);
   --surface-inverse: #2f2f2f;
+  /* Closing band: the inverse surface mixed with 14% primary, a softer ink above the footer. */
+  --surface-closing: #493a31;
   --on-inverse: #f7f3ee;
   --on-inverse-muted: #d1c8c1;
   --inverse-line: rgba(247, 243, 238, 0.16);
@@ -3798,6 +3538,7 @@ html[data-theme="sunset"] {
 html[data-theme="dark"] {
   --hairline: var(--border-default);
   --surface-inverse: #221f1d;
+  --surface-closing: #3f3027;
   --on-inverse: #f7f3ef;
   --on-inverse-muted: #d1c8c1;
   --inverse-line: #3d3733;
@@ -3815,14 +3556,14 @@ html[data-theme="dark"] {
 }
 
 /* Rhythm */
-/* The hero sets its own top space; drop the generic main padding on the homepage. */
+/* The hero sets its own top space; drop the generic main padding on the homepage. The closing
+   band's top margin is the only space below the last section. */
 .content:has(> .home-page) {
   padding-block: 0;
 }
 
 .home-page.landing-home {
   display: block;
-  padding-bottom: var(--section-gap);
 }
 
 .home-page > section + section {
@@ -4324,12 +4065,18 @@ a.home-article-row:hover .home-article-arrow {
   transform: translateX(4px);
 }
 
-/* Closing: book-call section and footer share one inverse surface (site-wide). */
+/* Closing band: the same next step on every page. Full-bleed in --surface-closing (a softer ink
+   in the footer's palette), a section gap below the content and directly on the footer. The band's
+   top margin is the only space below the last section, so .content drops its bottom padding. */
+.content:has(> .book-call-section) {
+  padding-bottom: 0;
+}
+
 .book-call-section {
-  margin: 0;
-  padding: clamp(4.5rem, 8vw, 7rem) 0 clamp(4rem, 7vw, 6rem);
+  margin: var(--section-gap) 0 0;
+  padding-block: clamp(4rem, 7vw, 6rem);
   border-top: 0;
-  background: var(--surface-inverse);
+  background: var(--surface-closing);
   color: var(--on-inverse);
 }
 
@@ -4353,9 +4100,9 @@ a.home-article-row:hover .home-article-arrow {
   margin: 0;
   max-width: 20ch;
   font-family: var(--font-heading);
-  font-size: clamp(2.125rem, 2vw + 1.5rem, 3rem);
+  font-size: var(--fs-section);
   font-weight: 500;
-  line-height: 1.08;
+  line-height: 1.12;
   letter-spacing: -0.015em;
   color: var(--on-inverse);
   text-wrap: balance;
@@ -4393,9 +4140,10 @@ a.home-article-row:hover .home-article-arrow {
   color: var(--color-primary);
 }
 
+/* Footer: its own inverse surface with navigation and contact details only. */
 .footer {
   margin: 0;
-  padding: 0 0 2.5rem;
+  padding: 4rem 0 2.5rem;
   border-top: 0;
   background: var(--surface-inverse);
   color: var(--on-inverse);
@@ -4405,11 +4153,10 @@ a.home-article-row:hover .home-article-arrow {
   gap: 3rem;
 }
 
-/* The hairline sits on the shell so it spans the content width, not the container padding. */
 .footer .footer-shell {
   gap: 2.5rem 4rem;
-  padding-top: 3rem;
-  border-top: 1px solid var(--inverse-line);
+  padding-top: 0;
+  border-top: 0;
 }
 
 .footer .footer-heading {
@@ -4494,7 +4241,7 @@ a.home-article-row:hover .home-article-arrow {
    Phase G: About page redesign (docs/pages/ABOUT_PAGE.md).
    Reuses the Phase F scale, spacing, hairlines and surfaces. Order: intro + video,
    core strengths, work experience (also on /experience/), one testimonial on the
-   tinted band, then the shared inverse closing section.
+   tinted band, then the closing band (a section gap below it).
    ========================================================================== */
 .content:has(> .about-page),
 .content:has(> .about-experience-page) {
@@ -4503,11 +4250,6 @@ a.home-article-row:hover .home-article-arrow {
 
 .about-page > * + * {
   margin-top: var(--section-gap);
-}
-
-/* The tinted band meets the closing surface directly; without it, keep the gap. */
-.about-page > :last-child:not(.about-testimonial-band) {
-  margin-bottom: var(--section-gap);
 }
 
 /* Intro */
@@ -4843,6 +4585,33 @@ a.experience-company:focus-visible {
   background: var(--brand-primary);
 }
 
+/* Scroll fill over the rail, drawn only once the script runs (motion allowed). */
+.experience-rail-fill {
+  display: none;
+}
+
+.experience-list[data-animated] .experience-rail-fill {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -2px;
+  width: 2px;
+  background: var(--brand-primary);
+  transform: scaleY(var(--rail-progress, 0));
+  transform-origin: top;
+}
+
+/* The node stays above the fill; a reached node takes the brand ring. */
+.experience-what::before {
+  z-index: 1;
+}
+
+.experience-list[data-animated] .experience-what[data-reached]::before {
+  border-color: var(--brand-primary);
+  transition: border-color var(--duration-hover) var(--ease-out);
+}
+
 .experience-what-last {
   padding-bottom: 0;
 }
@@ -4924,13 +4693,13 @@ a.experience-company:focus-visible {
      dates and labels mono --fs-meta.
    - No shadows; cards are single 1px hairlines with 16px corners.
    - Buttons: 44px / 15px / 8px corners; 52px only for hero and closing CTAs.
-   - Every page ends a full --section-gap above the closing section.
+   - Every page ends a full --section-gap above its closing band (or the footer).
    ========================================================================== */
 :root {
   --fs-page-title: clamp(2.25rem, 1.8vw + 1.6rem, 3rem);
 }
 
-/* Spacing: generous end before the dark closing section, on every page. */
+/* Spacing: a full section gap before the footer on pages without the closing band. */
 .content {
   padding: 0 0 var(--section-gap);
 }
@@ -4947,12 +4716,6 @@ a.experience-company:focus-visible {
   gap: 0;
   padding-top: clamp(3rem, 7vw, 6rem);
   text-align: left;
-}
-
-/* The old archive headers were centred 760px columns; the intro now spans the container. */
-.page-intro.archive-page-header {
-  max-width: none;
-  margin-inline: 0;
 }
 
 .container.page-intro {
@@ -4976,8 +4739,7 @@ a.experience-company:focus-visible {
   color: var(--text-muted);
 }
 
-.page-intro .page-title,
-.archive-page-header .page-title {
+.page-intro .page-title {
   margin: 0;
   max-width: 22ch;
   font-family: var(--font-heading);
@@ -4989,7 +4751,6 @@ a.experience-company:focus-visible {
 }
 
 .page-intro .page-description,
-.archive-page-header .page-description,
 .writings-page-header .page-description {
   margin: 1.5rem 0 0;
   max-width: 56ch;
@@ -5036,7 +4797,6 @@ a.experience-company:focus-visible {
 }
 
 /* Cards: single hairline, 16px corners, no shadow. */
-.writing-list-item,
 .testimonial-card,
 .content-navigation-card,
 .author-card,
@@ -5047,8 +4807,6 @@ a.experience-company:focus-visible {
   box-shadow: none;
 }
 
-.writing-list-media,
-.project-preview-media,
 .project-detail-media,
 .project-story-media {
   border: 1px solid var(--hairline);
@@ -5059,100 +4817,36 @@ a.experience-company:focus-visible {
   border-radius: 16px;
 }
 
-/* Projects archive: same card anatomy as homepage selected work, no outer box. */
-.projects-archive-grid {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: 3.5rem 2rem;
-}
-
-.projects-archive-card {
-  gap: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.projects-archive-body {
-  gap: 0;
-  padding: 0;
-}
-
-.projects-archive-body .interior-section-title {
-  margin: 1.5rem 0 0;
-  font-family: var(--font-body);
-  font-size: var(--fs-item);
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: -0.011em;
-}
-
-.projects-archive-body .project-detail-summary {
-  margin: 0.75rem 0 0;
-  font-size: var(--fs-body);
-  line-height: 1.6;
-  color: var(--text-muted);
-}
-
-.projects-archive-body .project-detail-role {
-  order: -1;
-  margin: 1.5rem 0 0;
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  font-weight: 500;
-  line-height: 1.3;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.projects-archive-body:has(.project-detail-role) .interior-section-title {
-  margin-top: 0.5rem;
-}
-
-/* Block-level media so every card's text starts at the same height. */
-.project-preview-media-link,
-.project-preview-media-link > img {
-  display: block;
-}
-
-.projects-archive-body .preview-tag-list {
-  padding-top: 1rem;
-}
-
-.projects-archive-card .project-preview-more {
-  margin-top: 1rem;
-  width: fit-content;
-  font-size: var(--fs-ui);
-}
-
-/* Articles archive */
+/* Articles archive: the homepage article rows (ArticleRow) beside the topic filter. */
 .writings-page {
   gap: 3.5rem;
 }
 
-.writing-list-item {
-  padding: 1.75rem;
-  background: var(--bg-card);
+.writings-list.home-articles-list {
+  display: block;
 }
 
-.writing-list-title {
-  font-size: var(--fs-item);
-  line-height: 1.3;
+/* The column beside the filter is narrower than the homepage list: a tighter meta column and
+   gaps keep meta, text and arrow on one line. */
+.writings-list a.home-article-row {
+  column-gap: 2rem;
 }
 
-.writing-list-description {
-  font-size: var(--fs-body);
-  line-height: 1.6;
+.writings-list .home-article-meta {
+  flex-basis: 11rem;
+  white-space: nowrap;
 }
 
+.writings-list .home-article-body {
+  flex-basis: 20rem;
+}
+
+/* Sans heading, not a mono label (P6). */
 .writings-filter-title {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: var(--fs-ui);
+  font-weight: 600;
+  line-height: 1.45;
   color: var(--text-main);
 }
 
