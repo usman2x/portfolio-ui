@@ -49,7 +49,9 @@ build so stale or incomplete content is never published.
 
 ## Seed data
 
-`portfolio-cms/scripts/seed-data.mjs` is the content baseline. `npm run seed:core` upserts it:
+`portfolio-cms/scripts/seed-data.mjs` is the content baseline; it contains no articles. Development
+articles live in `portfolio-cms/scripts/seed-articles.local.mjs` and load only through the local-only
+`npm run seed:dev`; production articles are written in Payload Admin. `npm run seed:core` upserts the baseline:
 records are matched by slug (posts, tags), name (testimonials), company (work experience) or title
 (services) and overwritten with the seed values; globals receive every field the seed defines. It
 never deletes records it does not define. Use it to set up environments; once production has been

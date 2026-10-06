@@ -70,7 +70,7 @@ Use `NEXT_PUBLIC_GA_TRACKING_ID` for Google Analytics. `NEXT_PUBLIC_CMS_URL` is 
 - Articles: published posts without the `case-study` tag
 - Projects: published posts tagged `case-study`
 - Services, testimonials and work experience: their Payload collections
-- Baseline content: `portfolio-cms/scripts/seed-data.mjs`
+- Baseline content: `portfolio-cms/scripts/seed-data.mjs` (no articles; local development articles live in `portfolio-cms/scripts/seed-articles.local.mjs`)
 - Public assets: `public/`
 
 See `docs/README.md` for the full documentation map.

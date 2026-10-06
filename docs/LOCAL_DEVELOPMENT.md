@@ -62,7 +62,7 @@ npm run seed:dev
 
 `seed:dev` creates the first local administrator when none exists, then idempotently loads permanent portfolio content and development articles. Use the credentials from `.env` to sign in. The first run uploads and processes project media, so it can take a minute or more.
 
-Use `npm run seed:core` instead when test articles are not wanted. Never point a local seed command at production. The script rejects non-local targets unless a deliberate override is supplied.
+Use `npm run seed:core` instead when test articles are not wanted. Never point a local seed command at production. The script rejects non-local targets unless a deliberate override is supplied. Development articles come from `portfolio-cms/scripts/seed-articles.local.mjs` and are local only: `seed:dev` has no remote override, and `seed:core` (the only seed for other environments) never includes articles.
 
 ## 3. Configure and start the UI
 
