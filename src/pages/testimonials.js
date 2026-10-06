@@ -1,7 +1,7 @@
 import React from "react"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
-import TestimonialList from "../components/TestimonialList"
+import Testimonials from "../components/Testimonials"
 import { fetchPayloadTestimonials, fetchSiteSettings, fetchTestimonialsPage } from "../lib/cms"
 
 const TestimonialsPage = ({ pageContent, siteSettings, testimonials }) => (
@@ -13,11 +13,20 @@ const TestimonialsPage = ({ pageContent, siteSettings, testimonials }) => (
       siteSettings={siteSettings}
     />
     <div className="container interior-page testimonials-page">
-      <header className="page-intro">
+      <header className="page-intro testimonials-page-intro">
+        <p className="section-eyebrow">{pageContent.eyebrow}</p>
         <h1 className="page-title">{pageContent.title}</h1>
         <p className="page-description">{pageContent.description}</p>
       </header>
-      <TestimonialList testimonials={testimonials} />
+      <Testimonials
+        testimonials={testimonials}
+        showHeading={false}
+        content={{
+          testimonialsEyebrow: pageContent.eyebrow,
+          testimonialsTitle: pageContent.title,
+          testimonialsDescription: pageContent.description,
+        }}
+      />
     </div>
   </Layout>
 )

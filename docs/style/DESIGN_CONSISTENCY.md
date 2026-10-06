@@ -33,7 +33,7 @@ Build each once and reuse it.
 | Page intro (P2) | `.page-intro` (Phase H) | every non-detail page (done) |
 | Project card: whole-card link, role, title, summary, outcome; no tags (P3, P5) | `ProjectCard.js` | Home, `/projects/` (done) |
 | Article row: meta, title + summary, arrow; whole row is the link (P3, P5) | `ArticleRow.js`, `ContentNavigation.js` | Home, `/blog/`, previous/next on detail pages (done) |
-| Quote: serif italic at `--fs-quote`, caption with initial avatar (P3) | homepage testimonial, `TestimonialList.js` | `/testimonials/` (done) |
+| Quote: serif italic at `--fs-quote`, caption with initial avatar (P3) | homepage testimonial | not `/testimonials/` (item 6, kept as cards) |
 | Closing band directly above the footer (P7) | `BookCallSection.js`, `Footer.js` | every page except Contact, Thank-you, 404 (item 1a) |
 
 ## Backlog
@@ -215,11 +215,11 @@ boxes outside media on either detail page (checked in the browser at 1440 and 39
 
 </details>
 
-### 6. Testimonials page as a quote list (P3, P6). Done.
+### 6. Testimonials page as a quote list (P3, P6). Not doing.
 
-`TestimonialList`: one 760px column of full quotes on hairlines, caption with initial avatar, name,
-role and relationship; collapse only above 600 characters. The intro names LinkedIn once (seed
-description updated) and has no eyebrow.
+Built, reviewed and reverted on 2026-10-06: the card grid reads better. The page keeps its cards,
+eyebrow and expand toggle; each card's source label now links to the LinkedIn recommendations
+page (`sourceUrl` in the seed).
 
 <details><summary>Original brief</summary>
 
@@ -233,6 +233,8 @@ description updated) and has no eyebrow.
   "Recommendations from LinkedIn" once in the intro; link each name to its source when
   `sourceUrl` exists. Expand/collapse only for quotes over ~600 characters, cut at a word.
 - **Done when:** no boxes, no repeated labels, and every quote is readable without a click.
+
+</details>
 
 </details>
 

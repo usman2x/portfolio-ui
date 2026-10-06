@@ -117,7 +117,8 @@ system fonts.
 - Headings use `text-wrap: balance`; display titles are capped at 21–22ch, paragraphs at 52–62ch.
 - Monospace is for data only (P6): dates, reading time, periods, roles, indexes and the Contact
   step counter. Never helper text, sentences, headings or tags. The Home and About reference
-  designs keep their hero eyebrows and the "Trusted by teams at" proof label.
+  designs keep their hero eyebrows and the "Trusted by teams at" proof label, and the Testimonials
+  page keeps its eyebrow and card source labels (see "Cards in use").
 
 ## Spacing
 
@@ -156,7 +157,7 @@ system fonts.
 
 Title at `--fs-page-title`, then one 20px muted lead sentence (max 56ch), left-aligned
 (`.page-intro`, P2). A label above the title only when it adds meaning. Used by Projects, Articles,
-Testimonials, Contact, 404 and Thank-you. Home, About, case studies and articles have
+Testimonials (which keeps its eyebrow), Contact, 404 and Thank-you. Home, About, case studies and articles have
 their own intros with the same rhythm at `--fs-display`.
 
 Home and About keep their own eyebrows (hero specialties, "About"), as in the reference designs.
@@ -200,7 +201,8 @@ One pattern per content type, everywhere it is listed (P5):
 - **Previous / next and "Keep reading"**: the project card or article row with a plain-text
   direction label.
 
-The Testimonials page lists quotes in this unboxed form (`TestimonialList`).
+**Exception (decided 2026-10-06):** `/testimonials/` keeps its two-column grid of hairline
+testimonial cards with the eyebrow, the source label and the "Read full recommendation" toggle.
 
 ## Motion
 

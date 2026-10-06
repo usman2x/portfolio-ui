@@ -36,8 +36,8 @@ page endings) are tracked separately in `docs/style/DESIGN_CONSISTENCY.md`.
       `testimonialsEyebrow`, `testimonialsDescription`; About Page `video.eyebrow`; Archive
       Settings `writingCtaLabel` and `readArticleLabel`; Posts `externalCtaLabel` (unused since the
       archive moved to `ArticleRow`); Project Template `stackLabel`, `linkLabel` and
-      `linkDescription` (unused since the case-study header lost its meta cards); Testimonials Page
-      `eyebrow`; Contact Page `eyebrow`. Remove with a reviewed migration (it drops columns, so back up
+      `linkDescription` (unused since the case-study header lost its meta cards); Contact Page
+      `eyebrow`. Remove with a reviewed migration (it drops columns, so back up
       first) and update `seed-data.mjs`.
 - [ ] **Legacy names:** `quote-page` / `quote-requests` (labelled Contact) and the `writings*`
       fields on Home Page and Archive Settings. Renaming changes the public API, so coordinate with
