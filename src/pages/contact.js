@@ -176,7 +176,7 @@ const ContactPage = ({ quotePage, siteSettings }) => {
           help_type: values.intent,
           wants_reply: needsReply,
           source_url: window.location.href,
-          fax_number: event.currentTarget.elements.fax_number.value,
+          hp_trap_7f3k: event.currentTarget.elements.hp_trap_7f3k.value,
         }),
       })
       const result = await response.json().catch(() => ({}))
@@ -290,9 +290,12 @@ const ContactPage = ({ quotePage, siteSettings }) => {
               </div>
             ) : (
               <form className="quote-form" onSubmit={submitContact}>
+                {/* Spam trap, hidden from people. Its name must not look like a contact field
+                    (fax, phone, website…): browser autofill fills those even when hidden, and a
+                    filled trap makes the CMS silently discard a real request. */}
                 <div className="quote-honeypot" aria-hidden="true">
                   <input
-                    name="fax_number"
+                    name="hp_trap_7f3k"
                     type="text"
                     tabIndex="-1"
                     autoComplete="off"
@@ -665,8 +668,12 @@ const ContactPage = ({ quotePage, siteSettings }) => {
                       Back
                     </button>
                   )}
+                  {/* Distinct keys: without them React reuses the clicked Continue button and
+                      turns it into the submit button during the click, which sends the form
+                      instead of stopping on Review. */}
                   {currentStep.id === "review" ? (
                     <button
+                      key="submit"
                       type="submit"
                       className="theme-btn-primary quote-submit-btn"
                       disabled={submission.state === "submitting"}
@@ -677,6 +684,7 @@ const ContactPage = ({ quotePage, siteSettings }) => {
                     </button>
                   ) : (
                     <button
+                      key="continue"
                       type="button"
                       className="theme-btn-primary"
                       onClick={goNext}
