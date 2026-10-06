@@ -33,6 +33,7 @@ const ContactPage = ({ quotePage, siteSettings }) => {
   const [submission, setSubmission] = useState({ state: "idle", message: "" })
   const [validationMessage, setValidationMessage] = useState("")
   const panelRef = useRef(null)
+  const trapRef = useRef(null)
   const cmsUrl = (
     process.env.NEXT_PUBLIC_CMS_URL || "http://localhost:3001"
   ).replace(/\/$/, "")
@@ -176,7 +177,7 @@ const ContactPage = ({ quotePage, siteSettings }) => {
           help_type: values.intent,
           wants_reply: needsReply,
           source_url: window.location.href,
-          hp_trap_7f3k: event.currentTarget.elements.hp_trap_7f3k.value,
+          hp_trap_7f3k: trapRef.current?.value || "",
         }),
       })
       const result = await response.json().catch(() => ({}))
@@ -289,20 +290,23 @@ const ContactPage = ({ quotePage, siteSettings }) => {
                 </button>
               </div>
             ) : (
+              <>
+              {/* Spam trap, hidden from people and outside the <form>: browser autofill fills
+                  fields per form, so it cannot reach this one, while bots that fill every input
+                  still do. Its name must not look like a contact field (fax, phone, website).
+                  The CMS keeps a request that fills it, marked as spam. */}
+              <div className="quote-honeypot" aria-hidden="true">
+                <input
+                  ref={trapRef}
+                  name="hp_trap_7f3k"
+                  type="text"
+                  tabIndex="-1"
+                  autoComplete="off"
+                  data-lpignore="true"
+                  data-1p-ignore="true"
+                />
+              </div>
               <form className="quote-form" onSubmit={submitContact}>
-                {/* Spam trap, hidden from people. Its name must not look like a contact field
-                    (fax, phone, website…): browser autofill fills those even when hidden, and a
-                    filled trap makes the CMS silently discard a real request. */}
-                <div className="quote-honeypot" aria-hidden="true">
-                  <input
-                    name="hp_trap_7f3k"
-                    type="text"
-                    tabIndex="-1"
-                    autoComplete="off"
-                    data-lpignore="true"
-                    data-1p-ignore="true"
-                  />
-                </div>
                 <div className="wizard-progress-mobile" aria-hidden="true">
                   <span
                     style={{
@@ -694,6 +698,7 @@ const ContactPage = ({ quotePage, siteSettings }) => {
                   )}
                 </div>
               </form>
+              </>
             )}
           </section>
         </div>

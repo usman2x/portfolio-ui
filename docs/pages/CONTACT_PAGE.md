@@ -28,10 +28,12 @@ The form posts JSON to `NEXT_PUBLIC_CMS_URL/api/quote-requests/submit`. The endp
 
 The endpoint validates intent and all branch-specific fields, normalizes and limits text, restricts browser origins, and retains the honeypot and rate limit.
 
-The honeypot is a visually hidden text field named `hp_trap_7f3k`; the CMS silently accepts and
-discards any submission that fills it. Never give it a name that looks like a contact field (fax,
-phone, website, address…): browser autofill fills those even when hidden, which discarded real
-requests while the old trap was called `fax_number` (fixed 2026-10-06).
+The honeypot is a visually hidden text field named `hp_trap_7f3k`, rendered **outside** the `<form>`
+so browser autofill (which fills one form at a time) cannot reach it. Never give it a name that
+looks like a contact field (fax, phone, website, address…). A submission that fills it is still
+stored, with status **Spam**, so a real request is never lost; filter Quote Requests by Spam in
+Payload Admin to review them. Background: while the trap was called `fax_number` inside the form,
+autofill filled it and the CMS discarded real requests (fixed 2026-10-06).
 
 The Continue and Send buttons carry distinct React `key`s. Without them React reuses the clicked
 Continue button as the Send button during the click and submits the form instead of stopping on
