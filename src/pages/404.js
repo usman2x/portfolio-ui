@@ -6,7 +6,7 @@ import SEO from "../components/seo"
 import { fetchSiteSettings, fetchSystemPages } from "../lib/cms"
 
 const NotFoundPage = ({ siteSettings, systemPages }) => (
-  <Layout showBookCall={false} siteSettings={siteSettings}>
+  <Layout siteSettings={siteSettings}>
     <SEO title={systemPages.notFoundTitle} noindex siteSettings={siteSettings} />
     <section className="container page-intro utility-page">
       <h1 className="page-title">{systemPages.notFoundTitle}</h1>

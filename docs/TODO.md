@@ -3,9 +3,6 @@
 Deferred work, not scheduled. Each item is safe to do on its own; verify with the routine in
 `.agents/skills/build-portfolio-ui/SKILL.md` and `npm run build` in both repos.
 
-Design inconsistencies across pages (page intros, list patterns, detail pages, testimonials,
-page endings) are tracked separately in `docs/style/DESIGN_CONSISTENCY.md`.
-
 ## UI (`portfolio-ui`)
 
 - [ ] **Unused CSS in `src/styles/global.css`** (about 5,250 lines). Classes with no JSX usage:
@@ -15,7 +12,8 @@ page endings) are tracked separately in `docs/style/DESIGN_CONSISTENCY.md`.
       `.theme-btn-outline-light`, `.theme-btn-lg`, `.btn-lg-theme`, `.btn-sm-theme`. Remove them.
 - [ ] **Overridden legacy rules.** Phases F, G and H override earlier rules instead of replacing
       them (`.page-title` is defined three times, plus `.landing-section-title`,
-      `.testimonial-card`, `.writings-page-header` centring, `.quote-aside-card` / `.quote-form-section` shadows, the
+      `.projects-archive-card`, `.testimonial-card`, `.archive-page-header` /
+      `.writings-page-header` centring, `.quote-aside-card` / `.quote-form-section` shadows, the
       40px button rules). Fold each component into one rule set and drop the dead declarations.
 - [ ] **Contact compatibility shims in `src/lib/cms.js`** (`fetchQuotePage` rewrites "Get a
       Quote" copy; `fetchSiteSettings` maps `/quote/` navigation). Remove once production content
@@ -34,10 +32,7 @@ page endings) are tracked separately in `docs/style/DESIGN_CONSISTENCY.md`.
 
 - [ ] **Fields stored but not rendered:** Site Settings `shortLabel`; Home Page `postHeroLine`,
       `testimonialsEyebrow`, `testimonialsDescription`; About Page `video.eyebrow`; Archive
-      Settings `writingCtaLabel` and `readArticleLabel`; Posts `externalCtaLabel` (unused since the
-      archive moved to `ArticleRow`); Project Template `stackLabel`, `linkLabel` and
-      `linkDescription` (unused since the case-study header lost its meta cards); Contact Page
-      `eyebrow`. Remove with a reviewed migration (it drops columns, so back up
+      Settings `writingCtaLabel`. Remove with a reviewed migration (it drops columns, so back up
       first) and update `seed-data.mjs`.
 - [ ] **Legacy names:** `quote-page` / `quote-requests` (labelled Contact) and the `writings*`
       fields on Home Page and Archive Settings. Renaming changes the public API, so coordinate with

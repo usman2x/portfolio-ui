@@ -1,8 +1,6 @@
 import { iconForSocial } from "../lib/socialIcons"
 import { withBasePath } from "../lib/site"
 
-// Author line under an article: no box, a hairline above, then portrait, name, title and
-// labelled icon links (STYLEGUIDE.md, "Surfaces").
 const AuthorCard = ({ siteSettings }) => {
   const links = [
     ...(siteSettings.socialLinks || []).map(item => ({

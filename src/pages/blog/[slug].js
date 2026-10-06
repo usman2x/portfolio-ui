@@ -8,8 +8,7 @@ import ShareActions from "../../components/ShareActions"
 import ContentNavigation from "../../components/ContentNavigation"
 import ReadingProgress from "../../components/ReadingProgress"
 import AuthorCard from "../../components/AuthorCard"
-import BackLink from "../../components/BackLink"
-import { tagArchiveHref } from "../../lib/writings"
+import { tagArchiveHref } from "../../components/ArticleCard"
 import { getAllBlogPosts } from "../../lib/content"
 import { siteMetadata } from "../../lib/site"
 import { resolveSiteAssetUrl } from "../../utils/url"
@@ -76,7 +75,9 @@ const BlogPostPage = ({ post, siteSettings, previousPost, nextPost }) => {
       </Head>
       <ReadingProgress startRef={articleRef} endRef={contentRef} />
       <section className="container blog-post-shell">
-        <BackLink href="/blog/">All articles</BackLink>
+        <Link href="/blog/" className="text-link-cta link-underline blog-post-back">
+          Back to all articles
+        </Link>
         <article ref={articleRef} className="blog-article">
           {post.coverImageUrl ? (
             <img
@@ -105,8 +106,8 @@ const BlogPostPage = ({ post, siteSettings, previousPost, nextPost }) => {
               className="blog-post-content article-prose"
               dangerouslySetInnerHTML={{ __html: post.contentHtml }}
             />
-            <aside className="blog-share-rail" aria-labelledby="share-title">
-              <h2 id="share-title" className="blog-share-title">Share</h2>
+            <aside className="blog-share-rail">
+              <p className="blog-detail-label">Share this article</p>
               <ShareActions title={title} pathname={`/blog/${slug}/`} />
             </aside>
           </div>

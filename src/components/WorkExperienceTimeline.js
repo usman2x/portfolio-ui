@@ -8,7 +8,7 @@ import React, { useEffect, useRef } from "react"
 const HIGHLIGHT_LIMIT = 2
 const REACH_LINE = 0.62 // fraction of the viewport height the fill reaches
 
-const WorkExperienceTimeline = ({ entries = [], title, cvHref, cvLabel = "Download full CV" }) => {
+const WorkExperienceTimeline = ({ entries = [], title, cvHref, cvLabel = "Download full CV", headingLevel = "h2" }) => {
   const listRef = useRef(null)
 
   useEffect(() => {
@@ -54,12 +54,13 @@ const WorkExperienceTimeline = ({ entries = [], title, cvHref, cvLabel = "Downlo
   }, [entries])
 
   if (!entries.length) return null
+  // /experience/ has no other heading, so it renders the title as the page's h1.
+  const Heading = headingLevel
 
   return (
-    // id="experience" is the target of the retired /experience/ route (redirected in Caddy).
-    <section id="experience" className="experience-section" aria-labelledby="experience-title">
+    <section className="experience-section" aria-labelledby="experience-title">
       <div className="landing-section-header experience-header">
-        <h2 id="experience-title" className="landing-section-title">{title}</h2>
+        <Heading id="experience-title" className="landing-section-title">{title}</Heading>
         {cvHref ? (
           <a href={cvHref} target="_blank" rel="noopener noreferrer" className="text-link-cta link-underline">
             {cvLabel}

@@ -11,40 +11,32 @@ A project is a published **Post** tagged `case-study`. Projects keep the order r
 1. Page intro: **Archive Settings** `projectsTitle` (`--fs-page-title`) and `projectsDescription`
    (20px lead), left-aligned.
 2. Project grid: `repeat(auto-fit, minmax(300px, 1fr))`, 56px / 32px gaps.
-3. Closing band.
+3. Shared closing section.
 
-Each card is the homepage project card (`ProjectCard`, `.home-work-*`), with no outer box:
+Each project card has the same anatomy as the homepage's selected work, with no outer box:
 
 - 16:10 cover image (thumbnail size) with a hairline and 16px corners; a text fallback panel
   (initials and title) when the post has no cover
 - role (mono meta, from `projectRole`)
-- title (`h2`, `--fs-item`), summary (`--fs-body` muted)
-- outcome (`projectOutcome`), hidden when empty
+- title (`--fs-item`), summary (`--fs-body` muted)
+- tags as chips
+- "View case study →" text link
 
-The title link stretches over the whole card, so each card is one click target and one tab stop.
-No tags and no per-card "View case study" link.
+Image and title both link to the case study.
 
 ## Case study: `/projects/<slug>/`
 
-1. Quiet back link "← All projects" (`BackLink`, **Project Template → backLabel**): `--fs-ui`
-   muted, underlined on hover only
+1. "Back to all projects" text link (**Project Template → backLabel**)
 2. Title (`--fs-display`, max 22ch) and summary (20px lead)
-3. Facts row on a hairline: **Role** (`projectRole`) and **Outcome** (`projectOutcome`), each
-   hidden when empty. Projects have no period field, so none is shown. No category tags; the real
-   stack is in the body.
-4. Optional reference link (post `link`, label `linkLabel` or Project Template `defaultLinkLabel`,
-   `↗`), the page's one CTA link
-5. Gallery (**Posts → projectGallery**) 40px below the header, with a keyboard-accessible
-   full-size viewer; the count and hint ("8 images · Select an image…") are `--fs-ui` sans, muted.
-   Without a gallery, the cover image.
-6. Story: the rich-text body (the **Project Template → storyTitle** heading is visually hidden);
-   headings inside the prose use the shared prose size (24–28px)
-7. Optional structured sections (text, list and image blocks; `soft` tone uses a 16px tinted panel)
-8. "Explore another case study": previous/next as article rows (`ContentNavigation`) with a plain
-   "Previous project" / "Next project" label (Project Template labels) in the meta column
-9. Closing band
-
-Sections are `--section-gap` apart and a section heading sits 48px above its content.
+3. **Tech stack** label with tag chips; optional project link block (Project Template
+   `linkLabel` / `linkDescription`, post link)
+4. Gallery (**Posts → projectGallery**) with a keyboard-accessible full-size viewer; or, without a
+   gallery, the cover image
+5. Story: **Project Template → storyTitle** (`--fs-section`) beside the rich-text body; headings
+   inside the prose use the shared prose size (24–28px)
+6. Optional structured sections (text, list and image blocks; `soft` tone uses a 16px tinted panel)
+7. "Explore another case study": previous/next cards (Project Template labels)
+8. Shared closing section
 
 ## SEO
 

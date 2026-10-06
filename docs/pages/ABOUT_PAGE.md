@@ -4,7 +4,7 @@ Route: `/about/` · Page: `src/pages/about.js` · Visual reference: `docs/design
 
 For a prospective client the page answers, in order: who is this person (intro and video), what do
 they bring (core strengths), have they done it before (work experience), what do collaborators say
-(one testimonial), and what is the next step (intro buttons and the closing band).
+(one testimonial), and what is the next step (intro buttons and the shared closing section).
 
 ## Section order
 
@@ -40,7 +40,7 @@ Sections are `--section-gap` apart. Styles live in the "Phase G" block of `src/s
 
 ## 4. Work experience
 
-The section carries `id="experience"`, the redirect target of the retired `/experience/` route.
+The same component renders `/experience/`, where its title is the page `h1`.
 
 - Header row: section title and a "Download full CV" link (resume link).
 - Each role is a row (flex-wrap, 8px / 48px gaps), no card:
@@ -56,7 +56,7 @@ The section carries `id="experience"`, the redirect target of the retired `/expe
   62% of the viewport height (`transform: scaleY`, one update per animation frame), and a node
   takes the brand ring once the fill reaches it. At the page end the whole rail is filled. Without
   JavaScript, or under `prefers-reduced-motion: reduce`, the rail stays a static hairline. The
-  content never hides or reveals.
+  content never hides or reveals. The same timeline renders on `/experience/`.
 - Order each role's highlights in the CMS so the two with measurable results come first.
 
 ## 5. Testimonial

@@ -14,7 +14,7 @@ a systemd service behind it.
 ## Reading order for UI work
 
 1. `style/STYLEGUIDE.md`: tokens, type scale, spacing, surfaces, components, motion, accessibility
-2. `structure/STRUCTURE.md`: routes, shared layout, closing band and footer, calls to action
+2. `structure/STRUCTURE.md`: routes, shared layout, closing section, calls to action
 3. The page doc in `pages/`
 4. `seo/SEO_URLS.md`: routes, metadata, sitemap
 5. `content/CONTENT_CONFIGURATION.md`: which CMS field drives what
@@ -31,7 +31,7 @@ a systemd service behind it.
 | `seo/SEO_URLS.md` | URL and metadata rules |
 | `content/CONTENT_CONFIGURATION.md` | CMS fields and editorial workflow |
 | `pages/HOME_PAGE.md` | `/` |
-| `pages/ABOUT_PAGE.md` | `/about/` |
+| `pages/ABOUT_PAGE.md` | `/about/` and `/experience/` |
 | `pages/PROJECTS_PAGE.md` | `/projects/` and case studies |
 | `pages/ARTICLES_PAGE.md` | `/blog/` and articles |
 | `pages/TESTIMONIALS_PAGE.md` | `/testimonials/` |

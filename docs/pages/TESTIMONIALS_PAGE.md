@@ -9,7 +9,7 @@ Route: `/testimonials/` · Page: `src/pages/testimonials.js` · Component: `Test
    shows the quote (Newsreader italic), attribution (avatar initial, name, role and company) and
    the source label, linked when `sourceUrl` is set. Quotes longer than 260 characters are cut at a
    word boundary with a "Read full recommendation" / "Show less" toggle.
-3. Closing band
+3. Shared closing section
 
 ## Other uses of the component
 

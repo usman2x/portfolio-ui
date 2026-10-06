@@ -3,7 +3,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import Layout from "../../components/Layout"
 import SEO from "../../components/seo"
-import ArticleRow from "../../components/ArticleRow"
+import ArticleCard from "../../components/ArticleCard"
 import { getAllBlogPosts } from "../../lib/content"
 import { fetchArchiveSettings, fetchSiteSettings } from "../../lib/cms"
 
@@ -55,7 +55,7 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
   useEffect(() => {
     if (focusIndexRef.current === null || !listRef.current) return
     const link = listRef.current
-      .querySelectorAll(".home-article-row")
+      .querySelectorAll(".writing-list-title-link")
       .item(focusIndexRef.current)
     focusIndexRef.current = null
     link?.focus()
@@ -121,11 +121,15 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
             </aside>
             <div className="writings-main">
               {visiblePosts.length ? (
-                <ul ref={listRef} className="home-articles-list writings-list">
+                <div ref={listRef} className="writings-list">
                   {visiblePosts.map(post => (
-                    <ArticleRow key={post.id} post={post} headingLevel="h2" />
+                    <ArticleCard
+                      key={post.id}
+                      post={post}
+                      readArticleLabel={archiveSettings.readArticleLabel}
+                    />
                   ))}
-                </ul>
+                </div>
               ) : (
                 <p className="page-description">No articles found.</p>
               )}

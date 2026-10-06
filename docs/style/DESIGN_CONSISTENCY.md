@@ -1,5 +1,11 @@
 # Design Consistency Backlog
 
+> **Status, 2026-10-06: reverted.** Items 1–10 were built and reviewed locally, then reverted at the
+> owner's request; the site keeps its previous design. Kept from this work: the About experience
+> rail's scroll fill (`docs/pages/ABOUT_PAGE.md`) and item 11 (Thank-you title, `noindex`, sitemap
+> exclusion). The "Done" notes below describe the reverted builds and are kept for reference only;
+> `STYLEGUIDE.md` describes the live site.
+
 Pages outside the homepage and About still use older patterns. This backlog brings them in line
 with the redesign. Each item is self-contained: pick one, implement it, verify it, commit it.
 
