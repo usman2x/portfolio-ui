@@ -346,8 +346,9 @@ then follow [First deployment](#first-deployment) here and in the CMS runbook, t
 [Caddy](#caddy), [OCI networking](#oci-networking) and the rebuild listener below.
 
 For database backups, install a PostgreSQL client whose major version is at least the server's
-(check with `psql "$DATABASE_URL" -c 'show server_version'`), from the PGDG repository
-(<https://www.postgresql.org/download/linux/ubuntu/>), for example `sudo apt install -y postgresql-client-17`.
+from the PGDG repository (<https://www.postgresql.org/download/linux/ubuntu/>). Production runs
+PostgreSQL 18 (Neon), and Ubuntu's own client is 14, so the VM has `postgresql-client-18` from PGDG
+(installed 2026-10-06).
 
 ## Deployment checklist
 
@@ -376,11 +377,16 @@ Run every production release in this order.
    git -C /srv/portfolio/portfolio-ui rev-parse HEAD > "$BACKUP/ui-commit"
    cp -p /srv/portfolio/portfolio-cms/.env "$BACKUP/cms.env"
    cp -p /srv/portfolio/portfolio-ui/.env.production "$BACKUP/ui.env.production"
-   (set -a; source /srv/portfolio/portfolio-cms/.env; set +a
-    pg_dump "$DATABASE_URL" -Fc --no-owner -n "${DB_SCHEMA:-public}" -f "$BACKUP/cms.dump")
-   pg_restore --list "$BACKUP/cms.dump" | head
+   cd /srv/portfolio/portfolio-cms
+   env_value() { node --no-warnings --env-file=.env -p "process.env.$1 || '$2'"; }
+   pg_dump "$(env_value DATABASE_URL)" -Fc --no-owner -n "$(env_value DB_SCHEMA public)" -f "$BACKUP/cms.dump"
+   chmod 600 "$BACKUP"/*
+   pg_restore --list "$BACKUP/cms.dump" | grep -c " TABLE DATA "
    ls -la "$BACKUP"
    ```
+
+   Read values through `node --env-file` as shown: `source .env` in bash does not load
+   `DATABASE_URL` correctly on the VM, and `pg_dump` then falls back to `127.0.0.1:5432`.
 
    The dump contains all CMS content, users and stored media, so treat it as a secret and delete old
    backups once releases are stable. A Neon branch or point-in-time restore is an additional option,
@@ -418,8 +424,9 @@ edited since the backup. Stop the CMS first, restore the schema, then start the 
 
 ```bash
 sudo systemctl stop portfolio-cms
-(set -a; source /srv/portfolio/portfolio-cms/.env; set +a
- pg_restore --clean --if-exists --no-owner -d "$DATABASE_URL" "$BACKUP/cms.dump")
+cd /srv/portfolio/portfolio-cms
+pg_restore --clean --if-exists --no-owner \
+  -d "$(node --no-warnings --env-file=.env -p process.env.DATABASE_URL)" "$BACKUP/cms.dump"
 sudo systemctl start portfolio-cms
 ```
 
