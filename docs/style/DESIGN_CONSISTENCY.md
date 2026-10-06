@@ -262,11 +262,14 @@ reverts the edit.
 - **Case studies:** done in `scripts/core-content/case-studies/*.md`: the repeated "Case Study: …"
   heading is gone, headings are sentence case, and the non-link "Walmart Inhouse product" sections
   are removed. Production picks this up at the next `seed:core`.
-- **Cover images:** Banking-as-a-Service and Error Reprocessing Tool have none, so they show
-  initial tiles among screenshots. Add images under `scripts/core-content/images/` and reference
-  them in `seed-data.mjs`.
-- **Homepage testimonial:** Clinton Jones is the only `featured` testimonial. To lead with
-  another (Pascal Inard's reads strongest), change `featured` / `sortOrder` in `seed-data.mjs`.
+- **Cover images:** Banking-as-a-Service and Error Reprocessing Tool keep the placeholder tile
+  (decided 2026-10-06).
+- **Homepage testimonial:** Clinton Jones stays the only `featured` testimonial (decided
+  2026-10-06); his relationship is "manager" in the seed and in `../portfolio/testimonials/`.
+- **NeMo demo link:** text and target now both use the URL from the project's `notes.md`, in the
+  seed copy and in `../portfolio/projects/real-time-nemo-asr/index.md`.
+- **Content repo in step:** `../portfolio/projects/*/index.md` bodies match the seed copies
+  (same heading fixes).
 
 ## Verifying any item
 

@@ -45,3 +45,13 @@ page endings) are tracked separately in `docs/style/DESIGN_CONSISTENCY.md`.
 - [ ] **Unused project inputs:** `scripts/core-content/case-studies/` and `core-content/images/`
       duplicate `../portfolio/projects/`; consider seeding case studies and galleries directly from
       that source with its frontmatter (gallery alt text and captions).
+
+## Content (`../portfolio`)
+
+- [ ] **Unpublished case studies:** `projects/safar-e-khudi` (complete, `order: 12`) and the drafts
+      `projects/mandione` and `projects/second-brain` exist in the content repo but are not on the
+      site. Held back on 2026-10-06. To publish one, add it to `rawPosts` and `projectEnhancements`
+      in `portfolio-cms/scripts/seed-data.mjs`, copy its body to `scripts/core-content/case-studies/`
+      and its images to `scripts/core-content/images/`.
+- [ ] **Cover images:** Banking-as-a-Service and Error Reprocessing Tool keep the placeholder tile
+      (decided 2026-10-06); their only visuals are `.drawio` sources.
