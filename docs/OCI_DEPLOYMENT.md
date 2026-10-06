@@ -286,6 +286,143 @@ Earlier `Caddyfile.pre-remlabs-*` files belong to the rem-labs deployment.
 
 To roll back a Caddy change, copy the chosen backup over `/etc/caddy/Caddyfile`, validate, and reload. To roll back the environment, restore both env files together, rebuild and restart the CMS, then rebuild the UI (or run `npm run deploy:oci`). Restoring the IP environment also requires a Caddyfile that serves the IP.
 
+## Access and prerequisites
+
+**VM access.** Connect as the `ubuntu` deployment user with an SSH key:
+
+```bash
+ssh -i <private-key> ubuntu@<PUBLIC_IP>
+```
+
+To authorize another machine, append its public key (`~/.ssh/id_ed25519.pub`) to
+`/home/ubuntu/.ssh/authorized_keys` from an existing session. If no session is available, add the key
+through the OCI Console (instance **Console connection**, or recreate access from a boot-volume
+snapshot). Never share private keys between machines.
+
+**GitHub access.** Both repositories are public, so the VM clones and pulls over HTTPS
+(`https://github.com/usman2x/<repo>.git`) without credentials. If a repository is made private, give
+the VM one read-only deploy key per repository (GitHub allows a key on only one repository):
+
+```bash
+ssh-keygen -t ed25519 -N "" -C "portfolio-prod portfolio-cms" -f ~/.ssh/portfolio-cms-deploy
+ssh-keygen -t ed25519 -N "" -C "portfolio-prod portfolio-ui" -f ~/.ssh/portfolio-ui-deploy
+cat ~/.ssh/portfolio-cms-deploy.pub ~/.ssh/portfolio-ui-deploy.pub
+```
+
+Add each public key under the repository's **Settings → Deploy keys** with write access disabled,
+then map each repository to its key in `~/.ssh/config` and switch the remotes:
+
+```sshconfig
+Host github-portfolio-cms
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/portfolio-cms-deploy
+  IdentitiesOnly yes
+
+Host github-portfolio-ui
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/portfolio-ui-deploy
+  IdentitiesOnly yes
+```
+
+```bash
+git -C /srv/portfolio/portfolio-cms remote set-url origin git@github-portfolio-cms:usman2x/portfolio-cms.git
+git -C /srv/portfolio/portfolio-ui remote set-url origin git@github-portfolio-ui:usman2x/portfolio-ui.git
+git -C /srv/portfolio/portfolio-cms fetch origin && git -C /srv/portfolio/portfolio-ui fetch origin
+```
+
+**Fresh VM prerequisites.** The current VM already has these. On a new Ubuntu 22.04 VM:
+
+```bash
+sudo apt update && sudo apt install -y git curl ca-certificates gnupg util-linux
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.nvm/nvm.sh && nvm install 22
+sudo mkdir -p /srv/portfolio && sudo chown ubuntu:ubuntu /srv/portfolio
+```
+
+Install Caddy from its official apt repository (<https://caddyserver.com/docs/install#debian-ubuntu-raspbian>),
+then follow [First deployment](#first-deployment) here and in the CMS runbook, the CMS systemd unit,
+[Caddy](#caddy), [OCI networking](#oci-networking) and the rebuild listener below.
+
+For database backups, install a PostgreSQL client whose major version is at least the server's
+(check with `psql "$DATABASE_URL" -c 'show server_version'`), from the PGDG repository
+(<https://www.postgresql.org/download/linux/ubuntu/>), for example `sudo apt install -y postgresql-client-17`.
+
+## Deployment checklist
+
+Run every production release in this order.
+
+1. **Review the release locally.** In both repositories, list what `main` will receive and look for
+   migrations, environment changes and content the release needs:
+
+   ```bash
+   git fetch origin
+   git log --oneline origin/main..origin/develop
+   git diff --stat origin/main origin/develop -- src/migrations .env.example
+   ```
+
+2. **Release.** Fast-forward `main` to `develop` in both repositories and push (see
+   [Release flow](#release-flow)).
+
+3. **Back up on the VM** before deploying. Record the running commits, copy the environment files and
+   dump the CMS schema. Keep backups outside the repositories:
+
+   ```bash
+   STAMP=$(date +%Y%m%d-%H%M%S)
+   BACKUP=/srv/portfolio/backups/$STAMP
+   mkdir -p "$BACKUP" && chmod 700 /srv/portfolio/backups "$BACKUP"
+   git -C /srv/portfolio/portfolio-cms rev-parse HEAD > "$BACKUP/cms-commit"
+   git -C /srv/portfolio/portfolio-ui rev-parse HEAD > "$BACKUP/ui-commit"
+   cp -p /srv/portfolio/portfolio-cms/.env "$BACKUP/cms.env"
+   cp -p /srv/portfolio/portfolio-ui/.env.production "$BACKUP/ui.env.production"
+   (set -a; source /srv/portfolio/portfolio-cms/.env; set +a
+    pg_dump "$DATABASE_URL" -Fc --no-owner -n "${DB_SCHEMA:-public}" -f "$BACKUP/cms.dump")
+   pg_restore --list "$BACKUP/cms.dump" | head
+   ls -la "$BACKUP"
+   ```
+
+   The dump contains all CMS content, users and stored media, so treat it as a secret and delete old
+   backups once releases are stable. A Neon branch or point-in-time restore is an additional option,
+   not a replacement for the dump.
+
+4. **Deploy:** `cd /srv/portfolio/portfolio-ui && npm run deploy:oci` (see [Updates](#updates)).
+
+5. **Verify** externally (see [External verification](#external-verification)), sign in to Payload
+   Admin, and confirm the release's pages and a content-triggered rebuild.
+
+6. **Enter release content** in Payload Admin when the release needs it. Do not seed production.
+
+### Rolling back a release
+
+`deploy:oci` always deploys `origin/main`, so roll back by reverting on `main` (from a development
+checkout) and deploying again:
+
+```bash
+git revert --no-edit <first-bad-commit>^..<last-bad-commit>
+git push origin main
+```
+
+To restore the previous build immediately, check out the recorded commits on the VM and rebuild
+manually (the next `deploy:oci` returns to `origin/main`):
+
+```bash
+cd /srv/portfolio/portfolio-cms && git checkout "$(cat "$BACKUP/cms-commit")" && npm ci \
+  && (set -a; source .env; set +a; npm run build) && sudo systemctl restart portfolio-cms
+cd /srv/portfolio/portfolio-ui && git checkout "$(cat "$BACKUP/ui-commit")" && npm ci \
+  && npm run clean && npm run build
+```
+
+Restore the database only when a migration damaged or dropped data, because it discards content
+edited since the backup. Stop the CMS first, restore the schema, then start the matching code:
+
+```bash
+sudo systemctl stop portfolio-cms
+(set -a; source /srv/portfolio/portfolio-cms/.env; set +a
+ pg_restore --clean --if-exists --no-owner -d "$DATABASE_URL" "$BACKUP/cms.dump")
+sudo systemctl start portfolio-cms
+```
+
 ## Release flow
 
 Work happens on `develop` in both repositories; production deploys `main`.
