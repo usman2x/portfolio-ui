@@ -116,8 +116,8 @@ system fonts.
   Testimonials, Contact, 404, Thank-you) use `--fs-page-title`.
 - Headings use `text-wrap: balance`; display titles are capped at 21–22ch, paragraphs at 52–62ch.
 - Monospace is for data only (P6): never labels, eyebrows, helper text, sentences or headings.
-  **Migrating:** mono labels remain on Contact and Testimonials (items 6, 7, 9). Detail pages and
-  the Articles filter use sans labels.
+  **Migrating:** mono labels remain on Contact (items 7, 9). Detail pages, Testimonials and the
+  Articles filter use sans labels.
 - `--fs-h1` is the older `.page-title` size; `--fs-page-title` supersedes it. **Migrating:** retire
   `--fs-h1` with item 2.
 
@@ -203,7 +203,7 @@ One pattern per content type, everywhere it is listed (P5):
 - **Previous / next and "Keep reading"**: the project card or article row with a plain-text
   direction label.
 
-**Migrating:** `/testimonials/` uses boxed cards (item 6).
+The Testimonials page lists quotes in this unboxed form (`TestimonialList`).
 
 ## Motion
 
