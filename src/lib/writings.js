@@ -4,13 +4,8 @@ export const isExternalWriting = post =>
 export const getWritingHref = post =>
   isExternalWriting(post) ? post.externalUrl : `/blog/${post.slug}/`
 
-export const getWritingCtaLabel = (post, nativeLabel = "Read article") => {
-  if (!isExternalWriting(post)) return nativeLabel
-  if (post.externalCtaLabel) return post.externalCtaLabel
-  if (post.externalPlatform === "medium") return "Read on Medium"
-  if (post.externalPlatform === "linkedin") return "Read on LinkedIn"
-  return "Read original article"
-}
+export const tagArchiveHref = tag =>
+  `/blog/?tag=${encodeURIComponent(tag.toLowerCase())}`
 
 export const getWritingSourceLabel = post => {
   if (!isExternalWriting(post)) return null

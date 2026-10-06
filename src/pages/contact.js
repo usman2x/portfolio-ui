@@ -210,7 +210,6 @@ const ContactPage = ({ quotePage, siteSettings }) => {
       />
       <section className="container interior-page quote-page-shell">
         <section className="interior-section page-intro quote-intro">
-          <p className="section-eyebrow">{quotePage.eyebrow}</p>
           <h1 className="page-title">{quotePage.title}</h1>
           <p className="page-description">{quotePage.description}</p>
         </section>

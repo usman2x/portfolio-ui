@@ -5,12 +5,13 @@ redirect and is excluded from the sitemap.
 
 ## Layout
 
-- Page intro: **Contact Page** eyebrow, title (`--fs-page-title`) and description, left-aligned.
-- Below, a progress aside ("Your path" steps, response note, then "Book a short call" and "Send an
-  email" text links) beside the wizard panel. Both panels are hairline cards with 16px corners and
-  no shadow; the step heading is 28px.
-- The page has no book-call section above the footer; the wizard's Continue/Send button is the
-  page's one primary action.
+- Page intro: **Contact Page** title (`--fs-page-title`) and description, left-aligned. No eyebrow
+  (`eyebrow` is no longer shown).
+- Below, a progress aside ("Your path" steps, response note, then "Prefer a conversation?" with
+  "Book a short call" and "Send an email" text links) beside the wizard panel. Both panels are
+  hairline cards with 16px corners and no shadow; the step heading is 28px.
+- The page has no closing band above the footer; the wizard's Continue/Send button is the page's
+  one primary action.
 - `?intent=<help type>` preselects the first step. The homepage service cards link here with their
   `contactIntent`.
 

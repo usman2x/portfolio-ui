@@ -22,7 +22,8 @@ const IndexPage = ({ posts, featuredProjects, services, testimonials, siteSettin
       <div className="home-page landing-home">
         <HomeIdentity siteSettings={siteSettings} homeContent={homeContent} />
         <HomeProof homeContent={homeContent} />
-        {/* Order follows a client's questions: what, proof, how to engage, trust, thinking. */}
+        {/* Order follows a client's questions: what, proof, how to engage, trust, thinking. The
+            closing band from Layout is the ending, as on every page. */}
         <SelectedProjects projects={featuredProjects} homeContent={homeContent} />
         <HomeServices services={services} homeContent={homeContent} />
         <Testimonials testimonials={testimonials} content={homeContent} archiveHref="/testimonials/" variant="home" />

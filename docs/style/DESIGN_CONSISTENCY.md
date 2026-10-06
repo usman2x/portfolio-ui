@@ -1,16 +1,12 @@
 # Design Consistency Backlog
 
-> **Status, 2026-10-06: reverted.** Items 1–10 were built and reviewed locally, then reverted at the
-> owner's request; the site keeps its previous design. Kept from this work: the About experience
-> rail's scroll fill (`docs/pages/ABOUT_PAGE.md`) and item 11 (Thank-you title, `noindex`, sitemap
-> exclusion). The "Done" notes below describe the reverted builds and are kept for reference only;
-> `STYLEGUIDE.md` describes the live site.
-
 Pages outside the homepage and About still use older patterns. This backlog brings them in line
 with the redesign. Each item is self-contained: pick one, implement it, verify it, commit it.
 
-- **Source of truth:** `docs/style/STYLEGUIDE.md` describes the target system and its principles
-  (P1–P8); every rule a page does not meet yet is marked **Migrating** there with the item below.
+- **Status (2026-10-06, after review):** done: 1a, 2, 3, 4, 8, 10, 11. Not doing: 5, 6, 7 (built,
+  reviewed and reverted; the earlier pages read better). Open: 9 (whether labels leave mono).
+- **Source of truth:** `docs/style/STYLEGUIDE.md` describes the live site and its principles
+  (P1–P8), including where pages deliberately depart from them.
   Also `docs/pages/HOME_PAGE.md`, `docs/pages/ABOUT_PAGE.md` and the Phase F/H tokens in
   `src/styles/global.css`.
 - **Visual references:** `docs/design/homepage-redesign.reference.html` and
@@ -38,7 +34,7 @@ Build each once and reuse it.
 | --- | --- | --- |
 | Page intro (P2) | `.page-intro` (Phase H) | every non-detail page (done) |
 | Project card: whole-card link, role, title, summary, outcome; no tags (P3, P5) | `ProjectCard.js` | Home, `/projects/` (done) |
-| Article row: meta, title + summary, arrow; whole row is the link (P3, P5) | `ArticleRow.js`, `ContentNavigation.js` | Home, `/blog/`, previous/next on detail pages (done) |
+| Article row: meta, title + summary, arrow; whole row is the link (P3, P5) | `ArticleRow.js` | Home, `/blog/` (done); not previous/next (item 5) |
 | Quote: serif italic at `--fs-quote`, caption with initial avatar (P3) | homepage testimonial | not `/testimonials/` (item 6, kept as cards) |
 | Closing band directly above the footer (P7) | `BookCallSection.js`, `Footer.js` | every page except Contact, Thank-you, 404 (item 1a) |
 
@@ -80,7 +76,10 @@ closing row built from the existing bookCall fields (no new CMS field).
 ### 1a. One closing band, directly above the footer (P7). Done.
 
 `BookCallSection` is a full-bleed `--surface-closing` band on every page except Contact, Thank-you
-and 404, a section gap below the content and directly on the footer. Its top margin is the only
+and 404. `--surface-closing` is derived from the palette with `color-mix()` (inverse surface + 14%
+primary), and every pair on it meets the style guide's AA rules in both themes (text 6.7–11.4:1,
+button and focus ring 3.8 / 5.7:1); the secondary link keeps its text colour on hover because
+sunset primary as text would be 3.8:1. The band sits a section gap below the content and directly on the footer. Its top margin is the only
 bottom space (the homepage and About wrappers no longer add their own). The homepage closing row
 is gone and services are back after the projects. Verified on 11 routes at 1440 and 390px in both
 themes: band-to-footer 0px, gap above 128 / 80px.
@@ -129,9 +128,9 @@ Decided 2026-10-06 after reviewing the built pages. Visual target: the endings o
 
 ### 2. One page intro pattern (P2). Done.
 
-Testimonials dropped its eyebrow (item 6), `/experience/` is gone (item 8), `--fs-h1` is retired
-(`.page-title` uses `--fs-page-title`), and the 404 title reads "This page doesn’t exist" (seed).
-Contact's eyebrow went with item 7.
+Contact dropped its eyebrow, `/experience/` is gone (item 8), `--fs-h1` is retired (`.page-title`
+uses `--fs-page-title`), and the 404 title reads "This page doesn’t exist" (seed). Testimonials keeps
+its eyebrow with its cards (item 6).
 
 <details><summary>Original brief</summary>
 
@@ -185,11 +184,10 @@ the filter title is a sans heading.
 
 </details>
 
-### 5. Detail pages: header, sharing, author and next/previous (P3, P4, P6). Done.
+### 5. Detail pages: header, sharing, author and next/previous (P3, P4, P6). Not doing.
 
-`BackLink`, a role/outcome facts row (projects have no period field), `ShareActions` as text
-links, an unboxed author line and `ContentNavigation` as article rows. No outlined buttons and no
-boxes outside media on either detail page (checked in the browser at 1440 and 390px).
+Built, reviewed and reverted on 2026-10-06; the detail pages keep their header, share buttons,
+author card and previous/next cards. Their spacing follows item 10.
 
 <details><summary>Original brief</summary>
 
@@ -244,11 +242,10 @@ page (`sourceUrl` in the seed).
 
 </details>
 
-### 7. Contact page: labels and boxes (P3, P6). Done.
+### 7. Contact page: labels and boxes (P3, P6). Not doing.
 
-No eyebrow, no "Your path" label, the progress trail without a box, "Prefer a conversation?" as a
-sans heading. The only mono label is the form's step counter; the only boxes are the form surface
-and its intent options.
+Built, reviewed and reverted on 2026-10-06; Contact keeps its progress card and labels. Only its
+eyebrow was removed (item 2).
 
 <details><summary>Original brief</summary>
 
@@ -285,11 +282,12 @@ section has `id="experience"`, and the runbook adds a permanent Caddy redirect t
 
 </details>
 
-### 9. Monospace label budget (P6). Done.
+### 9. Monospace label budget (P6). Open.
 
-Every label listed below is gone or sans; tags are sans too. A site-wide audit (10 routes) leaves
-mono only on data (dates, periods, roles, indexes, the Contact step counter) and on the Home and
-About reference eyebrows.
+The sans conversion was built with items 5 and 7 and reverted with them. Mono currently sets data
+(dates, reading time, periods, roles, indexes) and short labels (eyebrows, tags, "Tech stack",
+"Share this article", "Written by", direction labels, the gallery hint, Contact labels). Decide
+whether the labels stay mono.
 
 <details><summary>Original brief</summary>
 
@@ -304,10 +302,11 @@ About reference eyebrows.
 
 ### 10. Section rhythm (P1). Done.
 
-Case studies: `--section-gap` between sections, 48px from a heading to its content, 40px from the
-header to the gallery. Articles: "Keep reading" a full section gap below the author line. Every
-page intro now sits 40px above its first content block (`.interior-page`, `.writings-page`),
-measured on Projects, Articles, Testimonials and a case study.
+Applied to the existing detail pages: case studies have `--section-gap` between sections, 48px
+from a heading to its content (gallery, previous/next) and 40px from the header to the gallery;
+articles have 40px from the header to the body and a full section gap above "Keep reading". Every
+page intro sits 40px above its first content block (`.interior-page`, `.writings-page`). Measured
+at 1440 and 390px.
 
 <details><summary>Original brief</summary>
 
@@ -317,8 +316,6 @@ measured on Projects, Articles, Testimonials and a case study.
   from the intro to the list.
 - **Change:** `--section-gap` between sections, 48px from a section heading to its content, 40px
   from the page intro to the first content block.
-
-</details>
 
 ### 11. System pages metadata. Done.
 

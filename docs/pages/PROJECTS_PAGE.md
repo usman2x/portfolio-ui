@@ -11,18 +11,18 @@ A project is a published **Post** tagged `case-study`. Projects keep the order r
 1. Page intro: **Archive Settings** `projectsTitle` (`--fs-page-title`) and `projectsDescription`
    (20px lead), left-aligned.
 2. Project grid: `repeat(auto-fit, minmax(300px, 1fr))`, 56px / 32px gaps.
-3. Shared closing section.
+3. Closing band.
 
-Each project card has the same anatomy as the homepage's selected work, with no outer box:
+Each card is the homepage project card (`ProjectCard`, `.home-work-*`), with no outer box:
 
 - 16:10 cover image (thumbnail size) with a hairline and 16px corners; a text fallback panel
   (initials and title) when the post has no cover
 - role (mono meta, from `projectRole`)
-- title (`--fs-item`), summary (`--fs-body` muted)
-- tags as chips
-- "View case study →" text link
+- title (`h2`, `--fs-item`), summary (`--fs-body` muted)
+- outcome (`projectOutcome`), hidden when empty
 
-Image and title both link to the case study.
+The title link stretches over the whole card, so each card is one click target and one tab stop.
+No tags and no per-card "View case study" link.
 
 ## Case study: `/projects/<slug>/`
 
@@ -36,7 +36,10 @@ Image and title both link to the case study.
    inside the prose use the shared prose size (24–28px)
 6. Optional structured sections (text, list and image blocks; `soft` tone uses a 16px tinted panel)
 7. "Explore another case study": previous/next cards (Project Template labels)
-8. Shared closing section
+8. Closing band
+
+Rhythm: 40px from the header to the gallery, `--section-gap` between sections (gallery, story,
+previous/next), 48px from a section heading to its content.
 
 ## SEO
 

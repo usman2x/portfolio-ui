@@ -11,7 +11,7 @@ normalizes content: `docs/CMS_INTEGRATION.md`.
 
 | Global | Fields the UI renders |
 | --- | --- |
-| **Site Settings** | `name`, `professionalTitle`, `logo`/`logoPath`/`logoAlt`, `portrait`/`portraitPath`/`portraitAlt`, `email`, `meetingLink` (every "Book a call"), `resumeLink` (CV links), `socialLinks`, `navigation` (`isPrimary` = outlined header button), `footerDescription`, `bookCall` (closing section), `defaultSeoTitle`, `defaultSeoDescription`. Also feeds the article "Written by" card. |
+| **Site Settings** | `name`, `professionalTitle`, `logo`/`logoPath`/`logoAlt`, `portrait`/`portraitPath`/`portraitAlt`, `email`, `meetingLink` (every "Book a call"), `resumeLink` (CV links), `socialLinks`, `navigation` (`isPrimary` = outlined header button), `footerDescription`, `bookCall` (closing band), `defaultSeoTitle`, `defaultSeoDescription`. Also feeds the article "Written by" card. |
 | **Home Page** | SEO; hero `eyebrow`, `headline`, `supportingText`, `primaryCtaLabel`, `secondaryCtaLabel`, `primaryCtaNote`; proof `proofTitle`, `proofCompanies`, `proofStats`; work `projectsTitle`, `projectsArchiveLabel`, `featuredProjects` (max 3 shown); services `servicesTitle` (empty hides the section), `servicesDescription`, `servicesLimit`; testimonial `testimonialsTitle`, `testimonialsArchiveLabel`, `testimonialLimit`; articles `writingsTitle`, `writingsDescription`, `writingsArchiveLabel`, `writingsLimit`. |
 | **About Page** | SEO, `eyebrow`, `title`, `summary` (first paragraph is the lead), `video` (`title`, `description`, `url`, `transcript`, `transcriptLabel`), `strengthsTitle`, `strengths`, `experienceTitle`, `featuredTestimonial` (optional; empty hides the About testimonial). |
 | **Testimonials Page** | SEO, `eyebrow`, `title` (also the About testimonial heading), `description`. |
@@ -30,7 +30,7 @@ Stored but not rendered: Site Settings `shortLabel`; Home Page `postHeroLine`,
 | --- | --- |
 | **Posts** | Articles (no `case-study` tag) and projects (tagged `case-study`). Articles are `native` (local page) or `external` (opens the source). Projects add `projectRole`, `projectOutcome` (homepage "Outcome:" line) and an ordered `projectGallery`. |
 | **Services** | Homepage "Ways to work together": `title`, `summary`, `highlights`, `contactIntent` (must match a Contact `helpTypes` value), `ctaLabel`, `showOnHome`, `sortOrder`, `status`. |
-| **Work Experience** | About and `/experience/` timeline: `company`, `role`, `period` (contains "Present" for the current role), `location`, `website`, `summary`, `highlights` (the first two are shown; put measurable results first), `sortOrder`, `status`. |
+| **Work Experience** | About timeline (`#experience`): `company`, `role`, `period` (contains "Present" for the current role), `location`, `website`, `summary`, `highlights` (the first two are shown; put measurable results first), `sortOrder`, `status`. |
 | **Testimonials** | `name`, `role`, `company`, `relationship`, `quote`, `sourceLabel`, `sourceUrl`, `featured` (homepage), `sortOrder`, `status`. |
 | **Tags** | Article and project tags; `slug` drives `/blog/?tag=`. |
 | **Media** | Images and files; public only when `isPublic`. |
