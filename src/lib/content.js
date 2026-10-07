@@ -10,9 +10,9 @@ const loadCmsContent = () => {
   return cmsContentPromise
 }
 
-export const getAllBlogPosts = async () => {
-  const { blogPosts } = await loadCmsContent()
-  return blogPosts
+export const getAllArticles = async () => {
+  const { articles } = await loadCmsContent()
+  return articles
 }
 
 export const getAllProjects = async () => {

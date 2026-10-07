@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 import Layout from "../../components/Layout"
 import SEO from "../../components/seo"
 import ArticleRow from "../../components/ArticleRow"
-import { getAllBlogPosts } from "../../lib/content"
+import { getAllArticles } from "../../lib/content"
 import { fetchArchiveSettings, fetchSiteSettings } from "../../lib/cms"
 
 const buildArchivePath = tag =>
@@ -148,7 +148,7 @@ const BlogPage = ({ posts, archiveSettings, siteSettings }) => {
 
 export const getStaticProps = async () => {
   const [posts, archiveSettings, siteSettings] = await Promise.all([
-    getAllBlogPosts(),
+    getAllArticles(),
     fetchArchiveSettings(),
     fetchSiteSettings(),
   ])

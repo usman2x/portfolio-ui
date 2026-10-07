@@ -710,7 +710,10 @@ export const getCmsContent = async () => {
         projectRole: post.projectRole || "",
         projectOutcome: post.projectOutcome || "",
         projectGallery,
-        isCaseStudy: hasTag(post?.tags, "case-study"),
+        // kind replaced the case-study tag; the tag still identifies projects on an unmigrated CMS.
+        isCaseStudy: post?.kind
+          ? post.kind === "project"
+          : hasTag(post?.tags, "case-study"),
         publicationType: post.publicationType || "native",
         externalPlatform: post.externalPlatform || null,
         externalUrl: post.externalUrl || null,
@@ -720,7 +723,7 @@ export const getCmsContent = async () => {
     .filter(Boolean)
 
   return {
-    blogPosts: normalized.filter(post => !post.isCaseStudy),
+    articles: normalized.filter(post => !post.isCaseStudy),
     projects: normalized.filter(post => post.isCaseStudy),
   }
 }

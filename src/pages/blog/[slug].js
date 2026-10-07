@@ -9,7 +9,7 @@ import ContentNavigation from "../../components/ContentNavigation"
 import ReadingProgress from "../../components/ReadingProgress"
 import AuthorCard from "../../components/AuthorCard"
 import { tagArchiveHref } from "../../lib/writings"
-import { getAllBlogPosts } from "../../lib/content"
+import { getAllArticles } from "../../lib/content"
 import { siteMetadata } from "../../lib/site"
 import { resolveSiteAssetUrl } from "../../utils/url"
 import { fetchSiteSettings } from "../../lib/cms"
@@ -141,7 +141,7 @@ const BlogPostPage = ({ post, siteSettings, previousPost, nextPost }) => {
 }
 
 export const getStaticPaths = async () => {
-  const posts = await getAllBlogPosts()
+  const posts = await getAllArticles()
 
   return {
     paths: posts
@@ -153,7 +153,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }) => {
   const [posts, siteSettings] = await Promise.all([
-    getAllBlogPosts(),
+    getAllArticles(),
     fetchSiteSettings(),
   ])
   const nativePosts = posts.filter(item => item.publicationType !== "external")

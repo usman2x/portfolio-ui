@@ -28,7 +28,7 @@ Stored but not rendered: Site Settings `shortLabel`; Home Page `postHeroLine`,
 
 | Collection | Used for |
 | --- | --- |
-| **Posts** | Articles (no `case-study` tag) and projects (tagged `case-study`). Articles are `native` (local page) or `external` (opens the source). Projects add `projectRole`, `projectOutcome` (homepage "Outcome:" line) and an ordered `projectGallery`. |
+| **Posts** (admin: Articles / Projects) | Articles (`kind = article`) and projects (`kind = project`; older CMS data: the `case-study` tag). Articles are `native` (local page) or `external` (opens the source). Projects add `projectRole`, `projectOutcome` (homepage "Outcome:" line) and an ordered `projectGallery`. |
 | **Services** | Homepage "Ways to work together": `title`, `summary`, `highlights`, `contactIntent` (must match a Contact `helpTypes` value), `ctaLabel`, `showOnHome`, `sortOrder`, `status`. |
 | **Work Experience** | About timeline (`#experience`): `company`, `role`, `period` (contains "Present" for the current role), `location`, `website`, `summary`, `highlights` (the first two are shown; put measurable results first), `sortOrder`, `status`. |
 | **Testimonials** | `name`, `role`, `company`, `relationship`, `quote`, `sourceLabel`, `sourceUrl`, `featured` (homepage), `sortOrder`, `status`. |

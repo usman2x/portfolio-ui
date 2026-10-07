@@ -7,7 +7,7 @@ import SelectedProjects from "../components/SelectedProjects"
 import LatestWritings from "../components/LatestWritings"
 import Testimonials from "../components/Testimonials"
 import HomeServices from "../components/HomeServices"
-import { getAllBlogPosts, getAllProjects } from "../lib/content"
+import { getAllArticles, getAllProjects } from "../lib/content"
 import { fetchArchiveSettings, fetchHomePage, fetchPayloadServices, fetchPayloadTestimonials, fetchSiteSettings } from "../lib/cms"
 
 const IndexPage = ({ posts, featuredProjects, services, testimonials, siteSettings, homeContent, archiveSettings }) => {
@@ -35,7 +35,7 @@ const IndexPage = ({ posts, featuredProjects, services, testimonials, siteSettin
 
 export const getStaticProps = async () => {
   const [allPosts, projects, allTestimonials, services, siteSettings, homeContent, archiveSettings] = await Promise.all([
-    getAllBlogPosts(),
+    getAllArticles(),
     getAllProjects(),
     fetchPayloadTestimonials(),
     fetchPayloadServices(),
