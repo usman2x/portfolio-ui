@@ -1,14 +1,7 @@
 import React from "react"
-import { format } from "date-fns"
 import WritingLink from "./WritingLink"
 import { getWritingSourceLabel, isExternalWriting } from "../lib/writings"
-
-const formatPostDate = date => {
-  const parsedDate = new Date(date)
-  return Number.isNaN(parsedDate.getTime())
-    ? ""
-    : format(parsedDate, "MMM d, yyyy")
-}
+import { formatDate } from "../utils/date"
 
 // The one article list pattern (homepage and archive): meta, title + summary, arrow; the whole
 // row is the link. Render inside a `.home-articles-list` <ul>.
@@ -17,7 +10,7 @@ const ArticleRow = ({ post, headingLevel = "h3" }) => {
   const Heading = headingLevel
   const meta = [
     getWritingSourceLabel(post),
-    formatPostDate(post.date),
+    formatDate(post.date),
     !external && post.readingTimeMinutes ? `${post.readingTimeMinutes} min` : null,
   ].filter(Boolean)
 

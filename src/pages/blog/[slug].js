@@ -1,7 +1,6 @@
 import React, { useRef } from "react"
 import Head from "next/head"
 import Link from "next/link"
-import { format } from "date-fns"
 import Layout from "../../components/Layout"
 import SEO from "../../components/seo"
 import ShareActions from "../../components/ShareActions"
@@ -14,13 +13,7 @@ import { siteMetadata } from "../../lib/site"
 import { resolveSiteAssetUrl } from "../../utils/url"
 import { fetchSiteSettings } from "../../lib/cms"
 import { personReference } from "../../lib/structuredData"
-
-const formatPostDate = date => {
-  const parsedDate = new Date(date)
-  return Number.isNaN(parsedDate.getTime())
-    ? ""
-    : format(parsedDate, "MMMM d, yyyy")
-}
+import { formatDate } from "../../utils/date"
 
 const BlogPostPage = ({ post, siteSettings, previousPost, nextPost }) => {
   const articleRef = useRef(null)
@@ -93,7 +86,7 @@ const BlogPostPage = ({ post, siteSettings, previousPost, nextPost }) => {
               <p className="blog-post-description">{description}</p>
             ) : null}
             <p className="blog-post-meta">
-              <span>{formatPostDate(date)}</span>
+              <span>{formatDate(date, "long")}</span>
               <span>•</span>
               <span>{post.readingTimeMinutes} min read</span>
             </p>
