@@ -262,9 +262,9 @@ sudo ss -ltnp | grep -E ':(80|443|3001|9010)'   # 3001 and 9010 on 127.0.0.1 onl
 
 ## Remaining production steps
 
-1. Enter the content added by the 2026-10-05 release in Payload Admin (see the CMS runbook's
-   "Remaining production steps"). Do not run `seed:core` against production after manual edits: it
-   overwrites globals and matching records.
+1. Done 2026-11-12: the content added by the 2026-10-05 release is in production (applied by the
+   `seed:core` run that published Paisy). Do not run `seed:core` against production after manual
+   edits: it overwrites globals and matching records.
 2. Complete the end-to-end rebuild tests (see the TODO below).
 3. Raise HSTS to one year after a week of stable HTTPS (see [HSTS](#hsts)).
 4. rem-labs now has its own hostnames (`tabrem.com`, `cms.tabrem.com`) and its `:8080` paths

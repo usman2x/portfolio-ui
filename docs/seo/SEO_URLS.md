@@ -132,9 +132,17 @@ case studies (`/projects/<slug>/`) and articles (`/blog/<slug>/`) with each page
 description, and finally the contact page, email and social links. External articles have no local
 page, so neither file lists them.
 
-Google Search Console is not verified yet. Verify the `themuhammadusman.com` domain property with
-a DNS TXT record (it needs no code change), submit `https://www.themuhammadusman.com/sitemap.xml`,
-and resubmit after URL changes.
+The CMS host (`cms.themuhammadusman.com`) serves its own `robots.txt` that blocks crawlers except
+for `/api/media/file/`, so admin paths stay out of Google while images used by these pages remain
+crawlable (see the CMS runbook FAQ).
+
+## Google Search Console
+
+The `themuhammadusman.com` domain property is verified with a DNS TXT record on Cloudflare.
+`https://www.themuhammadusman.com/sitemap.xml` was submitted on 2026-11-19 and read with status
+Success (17 pages). Resubmit it after URL changes, and check Indexing > Pages for new 404s or
+canonical issues. Expected exclusions: `/blog/?tag=` filters and `/index.html` (canonicalised),
+redirects such as `/experience/`, and the `noindex` thank-you page.
 
 ## Canonical Rules
 
