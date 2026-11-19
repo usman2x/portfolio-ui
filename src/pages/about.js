@@ -1,6 +1,7 @@
 import React from "react"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
+import StructuredData from "../components/StructuredData"
 import WorkExperienceTimeline from "../components/WorkExperienceTimeline"
 import AboutVideo from "../components/AboutVideo"
 import Testimonials from "../components/Testimonials"
@@ -11,6 +12,7 @@ import {
   fetchTestimonialsPage,
   fetchWorkExperience,
 } from "../lib/cms"
+import { graph, personSchema, profilePageSchema } from "../lib/structuredData"
 
 // Order (docs/pages/ABOUT_PAGE.md): intro + video, core strengths, work experience,
 // one testimonial on the tinted band, then the closing band from Layout.
@@ -25,6 +27,7 @@ const AboutPage = ({ aboutPage, siteSettings, workExperience, sharedLabels }) =>
         pathname="/about/"
         siteSettings={siteSettings}
       />
+      <StructuredData data={graph([profilePageSchema(siteSettings, "/about/"), personSchema(siteSettings)])} />
       <div className="about-page">
         <section className="container about-intro" aria-labelledby="about-title">
           <p className="about-eyebrow">{aboutPage.eyebrow}</p>

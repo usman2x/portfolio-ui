@@ -105,11 +105,36 @@ Rule:
 plus the description, Open Graph and Twitter tags, the canonical link and optional `noindex`.
 Detail pages honour a post's `canonicalUrl` and `noindex`; articles add `BlogPosting` JSON-LD.
 
-## Sitemap and robots
+## Structured data
 
-`scripts/generate-sitemap.mjs` runs after `npm run build` (`postbuild`). It lists every exported
-HTML page under `NEXT_PUBLIC_SITE_URL` except 404 and `/quote/`, and writes `robots.txt` pointing
-to the sitemap. External articles have no local page, so they are never listed.
+`src/lib/structuredData.js` builds schema.org JSON-LD from Site Settings, and
+`src/components/StructuredData.js` renders it. Nodes share stable `@id`s under the site URL:
+
+- Home: one `@graph` with `WebSite` (`/#website`), `Person` (`/#person`) and `ProfessionalService`
+  (`/#service`). The person carries `name`, `professionalTitle`, portrait, `defaultSeoDescription`,
+  email and `socialLinks` as `sameAs`; the service lists the home page services as an
+  `OfferCatalog`, with the person as founder and provider.
+- About: `ProfilePage` whose `mainEntity` is the same `Person`.
+- Articles: `BlogPosting` whose `author` references the `Person` by `@id`.
+
+Validate changes with Google's Rich Results Test or the Schema.org validator.
+
+## Sitemap, robots and llms.txt
+
+`scripts/generate-sitemap.mjs` runs after `npm run build` (`postbuild`). It reads every exported
+HTML page and lists it under `NEXT_PUBLIC_SITE_URL`, except 404, `/quote/`, `/thank-you/` and any
+page rendered `noindex`. It writes `sitemap.xml`, a `robots.txt` that allows all crawlers and points
+to the sitemap, and `llms.txt` ([llmstxt.org](https://llmstxt.org)) for AI assistants.
+
+`llms.txt` uses the same page list. Its heading and summary come from the home page `Person`
+JSON-LD; it then lists the main pages, the services from the `ProfessionalService` offer catalog,
+case studies (`/projects/<slug>/`) and articles (`/blog/<slug>/`) with each page's title and meta
+description, and finally the contact page, email and social links. External articles have no local
+page, so neither file lists them.
+
+Google Search Console is not verified yet. Verify the `themuhammadusman.com` domain property with
+a DNS TXT record (it needs no code change), submit `https://www.themuhammadusman.com/sitemap.xml`,
+and resubmit after URL changes.
 
 ## Canonical Rules
 

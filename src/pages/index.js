@@ -1,6 +1,7 @@
 import React from "react"
 import Layout from "../components/Layout"
 import SEO from "../components/seo"
+import StructuredData from "../components/StructuredData"
 import HomeIdentity from "../components/HomeIdentity"
 import HomeProof from "../components/HomeProof"
 import SelectedProjects from "../components/SelectedProjects"
@@ -8,6 +9,7 @@ import LatestWritings from "../components/LatestWritings"
 import Testimonials from "../components/Testimonials"
 import HomeServices from "../components/HomeServices"
 import { getAllArticles, getAllProjects } from "../lib/content"
+import { graph, personSchema, professionalServiceSchema, websiteSchema } from "../lib/structuredData"
 import { fetchArchiveSettings, fetchHomePage, fetchPayloadServices, fetchPayloadTestimonials, fetchSiteSettings } from "../lib/cms"
 
 const IndexPage = ({ posts, featuredProjects, services, testimonials, siteSettings, homeContent, archiveSettings }) => {
@@ -18,6 +20,13 @@ const IndexPage = ({ posts, featuredProjects, services, testimonials, siteSettin
         description={homeContent.seoDescription}
         pathname="/"
         siteSettings={siteSettings}
+      />
+      <StructuredData
+        data={graph([
+          websiteSchema(siteSettings),
+          personSchema(siteSettings),
+          professionalServiceSchema(siteSettings, services),
+        ])}
       />
       <div className="home-page landing-home">
         <HomeIdentity siteSettings={siteSettings} homeContent={homeContent} />

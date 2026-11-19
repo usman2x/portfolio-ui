@@ -13,6 +13,7 @@ import { getAllArticles } from "../../lib/content"
 import { siteMetadata } from "../../lib/site"
 import { resolveSiteAssetUrl } from "../../utils/url"
 import { fetchSiteSettings } from "../../lib/cms"
+import { personReference } from "../../lib/structuredData"
 
 const formatPostDate = date => {
   const parsedDate = new Date(date)
@@ -40,10 +41,7 @@ const BlogPostPage = ({ post, siteSettings, previousPost, nextPost }) => {
     headline: title,
     description: description || `A detailed article on ${title}`,
     datePublished: date ? new Date(date).toISOString() : undefined,
-    author: {
-      "@type": "Person",
-      name: siteSettings.name,
-    },
+    author: personReference(siteSettings),
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": canonicalUrl,
